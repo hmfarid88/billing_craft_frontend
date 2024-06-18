@@ -42,7 +42,7 @@ const Login = () => {
                 const error = await response.json();
                 toast.error(error.message);
             } else {
-                const res = await fetch(`${apiBaseUrl}/billing_craft_backend/auth/user/userRole?name=${username}`);
+                const res = await fetch(`${apiBaseUrl}/auth/user/userRole?name=${username}`);
                 const user = await res.json();
                 createSession(username)
                 dispatch(addUser({ id: uid(), username }));
