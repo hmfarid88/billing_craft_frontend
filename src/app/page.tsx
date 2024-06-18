@@ -30,7 +30,7 @@ const Login = () => {
         setPending(true);
 
         try {
-            const response = await fetch(`${apiBaseUrl}/billing_craft_backend/auth/generateToken`, {
+            const response = await fetch(`${apiBaseUrl}/auth/generateToken`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
