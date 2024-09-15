@@ -1,34 +1,30 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import swal from 'sweetalert';
 
+
 interface Product {
     id: string;
+    proId: string;
     brand: string;
-    catagory: string;
     color: string;
-    pprice: string;
     productName: string;
     productno: string;
-    receiveDate: string;
-    sprice: string;
-    supplier: string;
-    supplierInvoice: string;
-    username: string;
-
+    pprice: number;
+   
 }
-
-interface ProductState {
+interface VendorSaleState {
     products: Product[];
 }
 
-const initialState: ProductState = {
+const initialState: VendorSaleState = {
     products: [],
 };
 
-export const productSlice = createSlice({
-    name: "products",
+export const vendorSaleSlice = createSlice({
+    name: "vendorSale",
     initialState,
     reducers: {
+
         addProducts: (state, action: PayloadAction<Product>) => {
             const exist = state.products.find((pro) => pro.productno === action.payload.productno)
             if (exist) {
@@ -38,18 +34,18 @@ export const productSlice = createSlice({
             }
 
         },
-
+       
         deleteProduct: (state, action) => {
             const id = action.payload;
             state.products = state.products.filter((product) => product.id !== id);
         },
-        
+
         deleteAllProducts: (state) => {
             state.products = [];
         },
-    },
-});
+    }
 
-export const { addProducts, deleteProduct, deleteAllProducts } = productSlice.actions;
+})
+export const { addProducts, deleteProduct, deleteAllProducts } = vendorSaleSlice.actions;
 
-export default productSlice.reducer;
+export default vendorSaleSlice.reducer;

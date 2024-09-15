@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import productReducer from "../store/productSlice";
 import usernameReducer from "../store/usernameSlice";
 import productsaleReducer from "../store/productSaleSlice";
+import vendorSaleReducer from "../store/vendorSaleSlice";
 import {
   persistReducer,
   persistStore,
@@ -15,10 +16,12 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
+
 const rootReducer = combineReducers({
   products: productReducer,
   username: usernameReducer,
   productTosale:productsaleReducer,
+  vendorSale:vendorSaleReducer
 });
 
 const persistConfig = {

@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 const Page = () => {
     const [pending, setPending] = useState(false);
     const [email, setEmail] = useState("");
-    const [name, setName] = useState("");
+    const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [roles, setRoles] = useState("");
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -13,7 +13,7 @@ const Page = () => {
     const handleUserAdd = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!email || !name || !password || !roles) {
+        if (!email || !username || !password || !roles) {
             toast.error("All fields are required!");
             return;
         }
@@ -24,12 +24,12 @@ const Page = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, name, password, roles }),
+                body: JSON.stringify({ email, username, password, roles }),
             });
 
             if (response.ok) {
                 setEmail("");
-                setName("");
+                setUserName("");
                 setPassword("");
                 setRoles("");
                 toast.success("User added successfully!");
@@ -60,7 +60,7 @@ const Page = () => {
                             <div className="flex p-2">
                                 <label className="input input-bordered flex items-center w-full max-w-xs gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
-                                    <input type="text" name='name' value={name} onChange={(e: any) => setName(e.target.value)} className="grow" placeholder="Username" />
+                                    <input type="text" name='name' value={username} onChange={(e: any) => setUserName(e.target.value)} className="grow" placeholder="Username" />
                                 </label>
                             </div>
                             <div className="flex p-2">
@@ -83,7 +83,7 @@ const Page = () => {
                     </form>
                 </div>
             </div>
-            <ToastContainer theme='dark' />
+            <ToastContainer autoClose={1000} theme='dark' />
         </div>
     )
 }

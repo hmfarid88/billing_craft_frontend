@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 interface User {
     email: string;
-    name: string;
+    username: string;
     password: string;
     roles: string;
 }
@@ -38,7 +38,7 @@ const Page = () => {
                         <tr key={index}>
                             <th>{index+1}</th>
                             <td>{user.email}</td>
-                            <td>{user.name}</td>
+                            <td>{user.username}</td>
                             <td>{user.password}</td>
                             <td>{user.roles}</td>
                             <td className='flex gap-2'><button className='btn btn-xs btn-warning'>EDIT</button><button className='btn btn-xs btn-error'>DELETE</button></td>

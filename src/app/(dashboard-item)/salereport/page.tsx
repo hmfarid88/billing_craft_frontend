@@ -1,5 +1,5 @@
 'use client'
-import React, { FormEvent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppSelector } from "@/app/store";
 
 interface Product {

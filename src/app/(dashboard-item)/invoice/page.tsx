@@ -6,6 +6,9 @@ import { FcPrint, FcPlus, FcDataSheet, FcSpeaker } from "react-icons/fc";
 import Link from 'next/link';
 import Loading from '@/app/loading';
 import { useSearchParams } from 'next/navigation';
+import { IoLocationOutline } from 'react-icons/io5';
+import { FaPhoneVolume } from 'react-icons/fa';
+import { AiOutlineMail } from 'react-icons/ai';
 
 const Invoice = () => {
     const uname = useAppSelector((state) => state.username.username);
@@ -27,8 +30,10 @@ const Invoice = () => {
         brand: string,
         productName: string,
         productno: string,
+        saleType:string,
         color: string,
         saleDate: string,
+        pprice:number,
         sprice: number,
         discount: number,
         offer: number,
@@ -37,7 +42,21 @@ const Invoice = () => {
         dueAmount: number,
         cid: string
     }
-
+    interface shopData{
+        shopName:string,
+        phoneNumber:string,
+        address:string,
+        email:string
+    }
+    const [shopInfo, setShopInfo] = useState<shopData>();
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/shop/getShopInfo?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                setShopInfo(data);
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }, [apiBaseUrl, username]);
 
     useEffect(() => {
         if (username && cid) {
@@ -55,7 +74,9 @@ const Invoice = () => {
     if (!invoiceData) {
         return <div><Loading /></div>;
     }
-
+    if(invoiceData[0].saleType==='vendor'){
+        invoiceData[0].sprice=invoiceData[0].pprice
+    }
     const subtotal = invoiceData.reduce((acc, item) => acc + item.sprice, 0);
     const discount = invoiceData.reduce((acc, item) => acc + item.discount, 0);
     const offer = invoiceData.reduce((acc, item) => acc + item.offer, 0);
@@ -68,17 +89,18 @@ const Invoice = () => {
                 <Link href="/sale">  <button className='btn btn-ghost btn-square'><FcPlus size={36} /></button></Link>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-5">
                 <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-5 sm:p-10 border">
                     <div className="flex w-full justify-between">
                         <h1><FcDataSheet size={50} /></h1>
-                        <h1 className='tracking-widest font-bold text-sm md:text-xl'>INVOICE</h1>
+                        <h1 className='tracking-widest font-bold text-sm md:text-lg'>INVOICE</h1>
                     </div>
                     <div className="flex flex-col w-full justify-end items-end">
-                        <h1 className='uppercase font-bold text-xs md:text-md'>COMPANY NAME</h1>
-                        <h4 className='font-serif text-xs md:text-md'>32/4 North chasara</h4>
-                        <h4 className='font-serif text-xs md:text-md'>Narayanganj</h4>
-                    </div>
+                            <h1 className='uppercase font-bold text-sm md:text-md'>{shopInfo?.shopName}</h1>
+                            <h4 className='flex font-sans text-xs md:text-md'><IoLocationOutline className='mt-0.5 mr-1'/> {shopInfo?.address}</h4>
+                            <h4 className='flex font-sans text-xs md:text-md'><FaPhoneVolume className='mt-0.5 mr-1' /> {shopInfo?.phoneNumber}</h4>
+                            <h4 className='flex font-sans text-xs md:text-md'><AiOutlineMail className='mt-0.5 mr-1'/> {shopInfo?.email}</h4>
+                        </div>
                     <div className="flex flex-col w-full">
                         <div className="divider divider-accent tracking-widest text-xs font-semibold mt-0 mb-1">INFORMATION</div>
                     </div>
@@ -90,7 +112,7 @@ const Invoice = () => {
                         </div>
                         <div className="flex flex-col items-end">
                             <h4 className='font-semibold text-xs md:text-md uppercase'>Invoice Number : {invoiceData[0]?.cid}</h4>
-                            <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.saleDate}</h4>
+                            <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.saleDate.toLocaleString()}</h4>
                         </div>
                     </div>
                     <div className="w-full pt-2">
@@ -137,7 +159,7 @@ const Invoice = () => {
                     </div>
                     <div className="flex w-full justify-between">
                     <div className="flex flex-col w-1/2 justify-start">
-                        <div className="font-semibold tracking-widest text-xs md:text-sm mb-0">SIGNATURE ---------------</div>
+                        <div className="font-semibold tracking-widest text-xs mb-0">SIGNATURE ---------------</div>
                     </div>
                     <div className="flex w-1/2 gap-5 justify-end">
                         <div className="flex flex-col items-end">
@@ -155,9 +177,9 @@ const Invoice = () => {
                     </div>
                     
                     </div>
-                    <div className="flex">
+                    <div className="flex pt-5">
                         <FcSpeaker size={30} />
-                        <p className='font-semibold font-serif text-xs md:text-sm pt-2 px-1'>বিক্রিত পণ্য ফেরতযোগ্য নয়। বৈধ ওয়ারেন্টি পরিষেবার জন্য গ্রাহককে ওয়ারেন্টি কেন্দ্রে যেতে হবে।</p>
+                        <p className='font-semibold font-serif text-xs pt-2 px-1'>বিক্রিত পণ্য ফেরতযোগ্য নয়। বৈধ ওয়ারেন্টি পরিষেবার জন্য গ্রাহককে ওয়ারেন্টি কেন্দ্রে যেতে হবে।</p>
                     </div>
                 </div>
             </div>

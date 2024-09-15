@@ -9,7 +9,7 @@ export async function encrypt(payload: any) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime('1d')
     .sign(encodedKey)
 }
 
@@ -20,13 +20,13 @@ export async function decrypt(session: string | undefined = '') {
     })
     return payload
   } catch (error) {
-    // console.log('Failed to verify session')
+    console.error('Failed to verify session', error)
   }
 }
 
-export async function createSession(username: string) {
+export async function createSession(username: string, roles:string) {
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
-  const session = await encrypt({ username, expiresAt })
+  const session = await encrypt({ username, roles, expiresAt })
 
   cookies().set('session', session, {
     httpOnly: true,

@@ -1,9 +1,9 @@
 import React from 'react'
-
+import { FcCustomerSupport } from "react-icons/fc";
 const Footer = () => {
   return (
    
-   <footer className="footer footer-center p-10 bg-base-200 text-base-content rounded">
+   <footer className="footer footer-center p-5 bg-base-200 text-base-content rounded">
     
     <nav>
       <div className="grid grid-flow-col gap-4">
@@ -13,9 +13,10 @@ const Footer = () => {
       </div>
     </nav> 
     <aside>
-      <p>Copyright © 2024 - All right reserved by <a target='http://iyadsoft.com/'>IyadSoft</a></p>
-    </aside>
-  </footer>
+    <p className='font-bold font-serif'>Copyright © 2024 - All rights reserved by <a className='text-success' href="http://iyadsoft.com/" target="_blank">IyadSoft</a></p>
+    <p className='flex gap-2'><FcCustomerSupport size={20} /> +88 01676-182277 | +88 01924-485686</p>
+        </aside>
+     </footer>
   
   )
 }

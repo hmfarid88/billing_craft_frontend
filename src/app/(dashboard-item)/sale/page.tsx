@@ -68,9 +68,7 @@ const Page: React.FC = () => {
   const handleDeleteProduct = (id: any) => {
     dispatch(deleteProduct(id));
   };
-  const handleAllDeleteProduct = (id: any) => {
-    dispatch(deleteAllProducts(id));
-  };
+
   const handleUpdateDiscount = (id: any) => {
     dispatch(updateDiscount({ id, discount: disValue }));
   };
@@ -82,23 +80,12 @@ const Page: React.FC = () => {
     e.preventDefault();
     setPending(true);
 
-    // Reset pending state after 2 seconds
-    setTimeout(() => {
-      setPending(false);
-    }, 2000);
-
-    // Validation
-    if (!cname) {
-      toast.error("Customer name is required !");
-      return;
-    }
-    if (!phoneNumber) {
-      toast.error("Phone number is required !");
+    if (!cname || !phoneNumber) {
+      toast.error("Customer name & Phone number is required !");
       return;
     }
 
     try {
-      // Submit customer info
       const customerResponse = await fetch(`${apiBaseUrl}/api/saveCustomer`, {
         method: 'POST',
         headers: {
@@ -113,7 +100,6 @@ const Page: React.FC = () => {
         return;
       }
 
-      // Submit product info
       const productResponse = await fetch(`${apiBaseUrl}/api/productSale`, {
         method: 'POST',
         headers: {
@@ -127,18 +113,13 @@ const Page: React.FC = () => {
         return;
       }
 
-      // toast.success("sale success")
-      const id = 123;
-      handleAllDeleteProduct(id);
-
+      dispatch(deleteAllProducts())
       const invoiceid = customerResult.cid;
-     router.push(`/invoice?cid=${invoiceid}`);
+      router.push(`/invoice?cid=${invoiceid}`);
     } catch (error: any) {
       toast.error("An error occurred: " + error.message);
     }
   };
-
-
 
   const handleProidSubmit = async (e: any) => {
     e.preventDefault();
@@ -182,7 +163,7 @@ const Page: React.FC = () => {
         const transformedData = data.map((item: any) => ({
           id: item.proId,
           value: item.proId,
-          label: item.productName + item.productno,
+          label: item.productName +", "+ item.productno,
         }));
         setProductOption(transformedData);
       })
@@ -302,7 +283,7 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-      <ToastContainer autoClose={2000} theme="dark" />
+      <ToastContainer autoClose={1000} theme="dark" />
     </div>
   )
 }

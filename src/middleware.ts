@@ -111,7 +111,7 @@ import { decrypt } from '@/app/lib/auth';
 import { cookies } from 'next/headers';
 
 const adminProtectedRoutes = ['/admin-dashboard'];
-const userProtectedRoutes = ['/dashboard', '/purchase'];
+const userProtectedRoutes = ['/purchase'];
 const publicRoutes = ['/'];
 
 export default async function middleware(req: NextRequest) {
