@@ -13,11 +13,18 @@ const Header:React.FC = () => {
   const { theme, setTheme } = useTheme()
   const username = useAppSelector((state) => state.username.username);
   const dispatch = useAppDispatch();
+  const defaultTheme = 'corporate';
 
+  useEffect(() => {
+    if (!theme) {
+      setTheme(defaultTheme);
+    }
+  }, [theme, setTheme]);
+  
   useEffect(() => {
     setMounted(true)
   }, [])
-
+ 
   if (!mounted) {
     return null
   }
@@ -36,8 +43,8 @@ const Header:React.FC = () => {
         <div>
           <select className="select select-accent w-full max-w-xs" value={theme} onChange={e => setTheme(e.target.value)}>
             <option selected disabled>Theme</option>
-            <option value="system">Default</option>
-            <option value="light">Light</option>
+            <option value="corporate">Default</option>
+            <option value="system">Dark</option>
             <option value="cupcake">Cupcake</option>
             <option value="coffee">Coffee</option>
             <option value="luxury">Luxury</option>

@@ -4,12 +4,12 @@ import swal from 'sweetalert';
 interface Product {
     id: string;
     brand: string;
-    catagory: string;
+    category: string;
     color: string;
     pprice: string;
     productName: string;
     productno: string;
-    receiveDate: string;
+    date: string;
     sprice: string;
     supplier: string;
     supplierInvoice: string;
@@ -30,9 +30,9 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         addProducts: (state, action: PayloadAction<Product>) => {
-            const exist = state.products.find((pro) => pro.productno === action.payload.productno)
+            const exist = state.products.find((pro) => pro.username===action.payload.username && pro.productno === action.payload.productno)
             if (exist) {
-                swal("Oops!", "This Product ID is already exist!", "error");
+                swal("Oops!", "This product is already added!", "error");
             } else {
                 state.products.push(action.payload);
             }
@@ -44,8 +44,9 @@ export const productSlice = createSlice({
             state.products = state.products.filter((product) => product.id !== id);
         },
         
-        deleteAllProducts: (state) => {
-            state.products = [];
+        deleteAllProducts: (state, action: PayloadAction<string>) => {
+            const username = action.payload;
+            state.products = state.products.filter((product) => product.username !== username);
         },
     },
 });

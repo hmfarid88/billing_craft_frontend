@@ -10,6 +10,7 @@ interface Product {
     productName: string;
     productno: string;
     pprice: number;
+    username:string;
    
 }
 interface VendorSaleState {
@@ -26,9 +27,9 @@ export const vendorSaleSlice = createSlice({
     reducers: {
 
         addProducts: (state, action: PayloadAction<Product>) => {
-            const exist = state.products.find((pro) => pro.productno === action.payload.productno)
+            const exist = state.products.find((pro) => pro.username===action.payload.username && pro.productno === action.payload.productno)
             if (exist) {
-                swal("Oops!", "This Product ID is already exist!", "error");
+                swal("Oops!", "This Product is already exist!", "error");
             } else {
                 state.products.push(action.payload);
             }
@@ -40,9 +41,11 @@ export const vendorSaleSlice = createSlice({
             state.products = state.products.filter((product) => product.id !== id);
         },
 
-        deleteAllProducts: (state) => {
-            state.products = [];
+        deleteAllProducts: (state, action: PayloadAction<string>) => {
+            const username = action.payload;
+            state.products = state.products.filter((product) => product.username !== username);
         },
+
     }
 
 })

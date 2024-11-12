@@ -13,7 +13,7 @@ const Purchase = () => {
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
   
-    const [catagory, setPcatatory] = useState("");
+    const [category, setPcatatory] = useState("");
     const [brand, setBrand] = useState("");
     const [productName, setPname] = useState("");
     const [pprice, setPprice] = useState("");
@@ -21,7 +21,7 @@ const Purchase = () => {
     const [color, setColor] = useState("");
     const [supplier, setSupplier] = useState("");
     const [supplierInvoice, setSinvoice] = useState("");
-    const [receiveDate, setDate] = useState("");
+    const [date, setDate] = useState("");
     const [productno, setPno] = useState("");
   
     const dispatch = useAppDispatch();
@@ -40,7 +40,9 @@ const Purchase = () => {
       const day = String(today.getDate()).padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
       setMaxDate(formattedDate);
+      setDate(formattedDate);
     }, []);
+
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getCategoryItem?username=${username}`)
           .then(response => response.json())
@@ -54,6 +56,7 @@ const Purchase = () => {
           })
           .catch(error => console.error('Error fetching products:', error));
       }, [apiBaseUrl, username]);
+
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getBrandItem?username=${username}`)
           .then(response => response.json())
@@ -67,6 +70,7 @@ const Purchase = () => {
           })
           .catch(error => console.error('Error fetching products:', error));
       }, [apiBaseUrl, username]);
+      
     useEffect(() => {
       fetch(`${apiBaseUrl}/api/getProductItem?username=${username}`)
         .then(response => response.json())
@@ -111,7 +115,7 @@ const Purchase = () => {
   
     const handleSubmit = (e: any) => {
       e.preventDefault();
-      const product = { id: uid(), username, catagory, brand, productName, pprice, sprice, color, supplier, supplierInvoice, receiveDate, productno }
+      const product = { id: uid(), username, category, brand, productName, pprice, sprice, color, supplier, supplierInvoice, date, productno }
       dispatch(addProducts(product));
       setPno("");
       document.getElementById('pno')?.focus();
@@ -123,17 +127,23 @@ const Purchase = () => {
     const handleDeleteProduct = (id: any) => {
       viewdispatch(deleteProduct(id));
     };
-   
+    const confirmAndHandleProductSubmit = (e: any) => {
+      e.preventDefault();
+      const isConfirmed = window.confirm("Are you sure to submit the products ?");
+      if (isConfirmed) {
+        ProductSubmit(e);
+      }
+  };
     const ProductSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
   
       try {
         if (products.length === 0) {
-          toast.error("Sorry, Your product list is empty !");
+          toast.warning("Sorry, Your product list is empty!");
           return;
         }
         setPending(true)
-          const response = await fetch(`${apiBaseUrl}/api/products`, {
+          const response = await fetch(`${apiBaseUrl}/api/addProducts`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -145,7 +155,7 @@ const Purchase = () => {
             const error = await response.json();
             toast.error(error.message);
           } else {
-            dispatch(deleteAllProducts());
+            dispatch(deleteAllProducts(username));
             toast.success("Product added successfully !");
           }
         
@@ -158,7 +168,7 @@ const Purchase = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full items-center">
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full items-center">
               <label className="form-control w-full max-w-xs">
                 <div className="label">
                   <span className="label-text-alt">CATEGORY</span>
@@ -212,7 +222,7 @@ const Purchase = () => {
                 <div className="label">
                   <span className="label-text-alt">RECEIVE DATE</span>
                 </div>
-                <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} className="border rounded-md p-2 bg-white text-black  w-full max-w-xs h-[40px]" required />
+                <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="border rounded-md p-2 bg-white text-black  w-full max-w-xs h-[40px]" required />
               </label>
               <label className="form-control w-full max-w-xs">
                 <div className="label">
@@ -228,7 +238,7 @@ const Purchase = () => {
 
           <div className="flex-col items-center justify-center">
             <div className="overflow-x-auto h-96">
-              <table className="table table-pin-rows">
+              <table className="table table-xs table-pin-rows">
                 <thead>
                   <tr className="font-bold">
                     <th>Category</th>
@@ -243,12 +253,12 @@ const Purchase = () => {
                 <tbody>
                   {products?.map((p) => (
                     <tr key={p.id}>
-                      <td>{p.catagory}, {p.brand}</td>
+                      <td>{p.category}, {p.brand}</td>
                       <td>{p.productName}, {p.color}</td>
                       <td>{p.pprice}</td>
                       <td>{p.sprice}</td>
                       <td>{p.supplier}, {p.supplierInvoice}</td>
-                      <td>{p.receiveDate}, {p.productno}</td>
+                      <td>{p.date}, {p.productno}</td>
                       <td>
                         <button onClick={() => {
                           handleDeleteProduct(p.id);
@@ -260,7 +270,7 @@ const Purchase = () => {
               </table>
             </div>
             <div className="flex items-center justify-center pt-12">
-              <form onSubmit={ProductSubmit}>
+              <form onSubmit={confirmAndHandleProductSubmit}>
                 <label className="form-control w-full max-w-sm pt-12">
                   <button
                     type="submit"

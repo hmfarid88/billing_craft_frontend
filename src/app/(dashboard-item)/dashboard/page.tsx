@@ -45,18 +45,18 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2  gap-5 p-10">
           <div className="flex flex-col items-center justify-center">
-            <div className="p-5"><h4>This month sales progress</h4></div>
+            <div className="p-5"><h4>This Month Sales Progress</h4></div>
             <div>
               <Areachart />
             </div>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <div className="p-5"><h4>Last six month sales analysis</h4></div>
+            <div className="p-5"><h4>Last Six Month Sales Analysis</h4></div>
             <div><Barchart /></div>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <div className="p-5"><h4>Last 12 month profit-loss analysis</h4></div>
+          <div className="p-5"><h4>Last 12 Month Profit-Loss Analysis</h4></div>
           <div><Linechart /></div>
         </div>
       </div>

@@ -31,7 +31,7 @@ const ShopInfo = () => {
             });
 
             if (!response.ok) {
-                toast.error("Product sale not submitted !");
+                toast.error("Shop info not submitted !");
                 return;
             } else {
                 toast.success("Info added successfully.")

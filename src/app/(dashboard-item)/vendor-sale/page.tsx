@@ -1,34 +1,25 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from "@/app/store";
 import { addProducts, deleteAllProducts, deleteProduct } from "@/app/store/vendorSaleSlice";
 import Select from "react-select";
 import { uid } from 'uid';
-import { DatePicker } from 'react-date-picker';
 import { toast, ToastContainer } from "react-toastify";
-import { FcManager } from "react-icons/fc";
-import { FcPhone } from "react-icons/fc";
-import { FcViewDetails } from "react-icons/fc";
-import { FcCalendar } from "react-icons/fc";
-import { FcDepartment } from "react-icons/fc";
-import { FaCcMastercard } from "react-icons/fa6";
-import { MdOutlineNavigateNext } from "react-icons/md";
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+import { RxCrossCircled } from "react-icons/rx";
+
 
 const Page: React.FC = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const router = useRouter();
-    const [date, setDate] = useState<Value>(new Date());
+    const [date, setDate] = useState("");
     const [pending, setPending] = useState(false);
-    const [disValue, setDisValue] = useState("");
-    const [offerValue, setOfferValue] = useState("");
     const [total, setTotal] = useState(0);
 
     const [productOption, setProductOption] = useState([]);
     const [vendorOption, setVendorOption] = useState([]);
     const [selectedProid, setSelectedProid] = useState("");
+    const [selectedProidOption, setSelectedProidOption] = useState(null);
 
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
@@ -36,24 +27,23 @@ const Page: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const [vendor, setVendor] = useState("");
-   
     const cid = uid();
-
-    const productInfo = saleProducts.map(product => ({
-        proId: product.proId,
-        saleType:'vendor',
-        discount:0,
-        offer:0,
-        saleDate: date,
-        cid: cid,
-        username: username
-    }));
-    const customerinfo = { cid, cname:vendor, username };
+    const selectRef = useRef<any>(null);
+    const [maxDate, setMaxDate] = useState("");
+    useEffect(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        setMaxDate(formattedDate);
+        setDate(formattedDate);
+    }, []);
 
     useEffect(() => {
         calculateTotal();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [disValue, offerValue, saleProducts]);
+    }, [saleProducts]);
 
     const calculateTotal = () => {
         const total = saleProducts.reduce((sum, p) => {
@@ -65,50 +55,6 @@ const Page: React.FC = () => {
 
     const handleDeleteProduct = (id: any) => {
         dispatch(deleteProduct(id));
-    };
-
-
-    const handleFinalSubmit = async (e: any) => {
-        e.preventDefault();
-        setPending(true);
-        if (!vendor) {
-            toast.error("Vendor name is required !");
-            return;
-        }
-        try {
-            const customerResponse = await fetch(`${apiBaseUrl}/api/saveCustomer`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(customerinfo),
-            });
-            const customerResult = await customerResponse.json();
-
-            if (!customerResponse.ok) {
-                toast.error(customerResult.message);
-                return;
-            }
-
-            const productResponse = await fetch(`${apiBaseUrl}/api/productSale`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(productInfo),
-            });
-
-            if (!productResponse.ok) {
-                toast.error("Product sale not submitted !");
-                return;
-            }
-
-            dispatch(deleteAllProducts())
-            const invoiceid = customerResult.cid;
-            router.push(`/invoice?cid=${invoiceid}`);
-        } catch (error: any) {
-            toast.error("An error occurred: " + error.message);
-        }
     };
 
     const handleProidSubmit = async (e: any) => {
@@ -132,15 +78,69 @@ const Page: React.FC = () => {
                 productName: data.productName,
                 productno: data.productno,
                 pprice: data.pprice,
-
+                username: username
             };
             dispatch(addProducts(productToVendor));
-
+            setSelectedProid("");
+            setSelectedProidOption(null);
+            if (selectRef.current) {
+                selectRef.current.focus();
+            }
         } catch (error) {
             console.error('Error fetching product:', error);
         }
     };
+    const productInfo = saleProducts.map(product => ({
+        proId: product.proId,
+        saleType: 'vendor',
+        discount: 0,
+        offer: 0,
+        date: date,
+        cid: cid,
+        username: username
+    }));
+    const handleFinalSubmit = async (e: any) => {
+        e.preventDefault();
+        if (!vendor) {
+            toast.error("Vendor name is required !");
+            return;
+        }
+        if (productInfo.length === 0) {
+            toast.error("Your product list is empty!");
+            return;
+        }
 
+        const salesRequest = {
+            customer: {
+                cid, cname: vendor, username
+            },
+            salesItems: productInfo,
+        };
+        setPending(true);
+        try {
+            const response = await fetch(`${apiBaseUrl}/sales/productSale`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(salesRequest),
+            });
+
+            if (!response.ok) {
+                toast.error("Product sale not submitted !");
+                return;
+            }
+
+
+            dispatch(deleteAllProducts(username));
+            router.push(`/invoice?cid=${cid}`);
+
+        } catch (error: any) {
+            toast.error("An error occurred: " + error.message);
+        } finally {
+            setPending(false);
+        }
+    };
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getProductStock?username=${username}`)
             .then(response => response.json())
@@ -157,28 +157,38 @@ const Page: React.FC = () => {
 
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getSupplierItem?username=${username}`)
-          .then(response => response.json())
-          .then(data => {
-            const transformedData = data.map((item: any) => ({
-              id: item.id,
-              value: item.supplierItem,
-              label: item.supplierItem
-            }));
-            setVendorOption(transformedData);
-          })
-          .catch(error => console.error('Error fetching products:', error));
-      }, [apiBaseUrl, username]);
+            .then(response => response.json())
+            .then(data => {
+                const transformedData = data.map((item: any) => ({
+                    id: item.id,
+                    value: item.supplierItem,
+                    label: item.supplierItem
+                }));
+                setVendorOption(transformedData);
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }, [apiBaseUrl, username]);
     return (
         <div className='container-2xl min-h-[calc(100vh-228px)]'>
             <div className="flex flex-col">
-                <div className="flex justify-start font-bold pt-5 px-10 pb-0">
-                    <p>DATE : <DatePicker calendarIcon={FcCalendar} className="rounded-md max-w-xs z-20" clearIcon={null} maxDate={new Date()} format='y-MM-dd' onChange={setDate} value={date} /></p>
+                <div className="flex pt-5 px-10 pb-0">
+                    <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-ghost" />
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="divider divider-accent tracking-widest font-bold p-5">VENDOR SALE AREA</div>
                 </div>
                 <div className="flex items-center justify-center z-10">
-                    <Select className="text-black w-64 md:w-96" autoFocus={true} onChange={(selectedOption: any) => setSelectedProid(selectedOption.value)} options={productOption} />
+                    <Select
+                        className="text-black w-64 md:w-96"
+                        ref={selectRef}
+                        autoFocus={true}
+                        value={selectedProidOption}
+                        onChange={(selectedOption: any) => {
+                            setSelectedProid(selectedOption.value);
+                            setSelectedProidOption(selectedOption);
+                        }}
+                        options={productOption}
+                    />
                     <button onClick={handleProidSubmit} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
                 </div>
                 <div className="flex items-center justify-center w-full p-5">
@@ -203,7 +213,7 @@ const Page: React.FC = () => {
                                         <td className="flex justify-between gap-3">
                                             <button onClick={() => {
                                                 handleDeleteProduct(p.id);
-                                            }} className="btn btn-xs btn-error"> Delete
+                                            }} className="btn btn-sm btn-circle btn-ghost text-error"> <RxCrossCircled size={20} />
                                             </button>
                                         </td>
                                     </tr>
@@ -223,15 +233,15 @@ const Page: React.FC = () => {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row justify-between">
-        <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-5">
-            <div className="card-title">Select Vendor</div>
-            <Select className="text-black h-[38px] w-64" onChange={(selectedOption: any) => setVendor(selectedOption.value)} options={vendorOption} />
-            <button onClick={handleFinalSubmit} disabled={pending} className="btn w-xs h-[38px] btn-success btn-outline font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : "SUBMIT"}</button>
-          </div>
-        </div>
-      </div>
-           
+                <div className="flex w-full justify-center p-5">
+                    <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-5">
+                        <div className="card-title text-sm font-semibold">SELECT VENDOR</div>
+                        <Select className="text-black h-[38px] w-64" onChange={(selectedOption: any) => setVendor(selectedOption.value)} options={vendorOption} />
+                        <button onClick={handleFinalSubmit} disabled={pending} className="btn w-xs h-[38px] btn-success btn-outline font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : "SUBMIT"}</button>
+                    </div>
+                </div>
+            </div>
+
             <ToastContainer autoClose={1000} theme="dark" />
         </div>
     )

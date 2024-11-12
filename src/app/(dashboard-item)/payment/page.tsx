@@ -6,7 +6,7 @@ import React from 'react'
 const page = () => {
   return (
     <div className='container-2xl min-h-screen'>
-    <div className="flex w-full">
+    <div className="flex w-full items-center justify-center">
       <div role="tablist" className="tabs tabs-bordered">
         <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="EXPENSE" defaultChecked />
         <div role="tabpanel" className="tab-content p-10">

@@ -11,6 +11,7 @@ import { VscRepo } from 'react-icons/vsc';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BsDatabaseAdd } from 'react-icons/bs';
 import CashBook from './CashBook';
+import Invoice from './Invoice';
 
 export const Sidebar = () => {
     return (
@@ -39,8 +40,16 @@ export const Sidebar = () => {
                         </details>
                     </li>
                     <li><Link href="/payment"><RiSecurePaymentLine size={20} /> PAYMENT ENTRY</Link></li>
-                       
-                    <li><Link href="/stockreport"><GoDatabase size={20} /> STOCK REPORT</Link></li>
+                       <li>
+                        <details>
+                            <summary><GoDatabase size={20} /> STOCK REPORT</summary>
+                            <ul>
+                            <li><Link href="/stockreport">STOCK SUMMARY</Link></li>
+                            <li><Link href="/stock-details">STOCK DETAILS</Link></li>
+                            </ul>
+                        </details>
+                       </li>
+                   
                     <li>
                         <details>
                             <summary><TbReportSearch size={20} /> SALE REPORT</summary>
@@ -54,8 +63,8 @@ export const Sidebar = () => {
                         <details>
                             <summary><MdOutlinePayments size={20} /> PAYMENT REPORT</summary>
                             <ul>
-                                <li><a><Link href="/paymentreport"> PAYMENT REPORT</Link></a></li>
-                                <li><a><Link href="/paymentreport"> RECEIVE REPORT</Link></a></li>
+                                <li><Link href="/paymentreport"> PAYMENT REPORT</Link></li>
+                                <li><Link href="/paymentreport"> RECEIVE REPORT</Link></li>
                             </ul>
                         </details>
                     </li>
@@ -63,8 +72,8 @@ export const Sidebar = () => {
                         <details>
                             <summary><PiNotebook size={20} /> LEDGER BOOK</summary>
                             <ul>
-                                <li><a><Link href="/supplier-ledger">SUPPLIER LEDGER</Link></a></li>
-                                <li><a><Link href="/stock-ledger">RETAILER LEDGER</Link></a></li>
+                                <li><Link href="/supplier-ledger">SUPPLIER LEDGER</Link></li>
+                                <li><Link href="/stock-ledger">RETAILER LEDGER</Link></li>
                             </ul>
                         </details>
                     </li>
@@ -83,7 +92,7 @@ export const Sidebar = () => {
                             <summary><a className='flex gap-2'><PiNotebook size={20} />FIND INVOICE </a></summary>
                             <ul>
                                 <li>
-                                    {/* <Invoice /> */}
+                                    <Invoice />
                                 </li>
                             </ul>
                         </details>
