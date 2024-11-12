@@ -43,87 +43,23 @@
 
 // solution 02
 
+import { NextRequest, NextResponse } from 'next/server'
+import { decrypt } from '@/app/lib/auth'
+import { cookies } from 'next/headers'
 
-
-// import { NextRequest, NextResponse } from 'next/server'
-// import { decrypt } from '@/app/lib/auth'
-// import { cookies } from 'next/headers'
-
-// const adminProtectedRoutes = ['/admin-dashboard'];
-// const userProtectedRoutes = ['/dashboard', '/purchase'];
-// const publicRoutes = ['/'];
-
-// export default async function middleware(req: NextRequest) {
-//   const path = req.nextUrl.pathname;
-//   const isAdminProtectedRoute = adminProtectedRoutes.includes(path);
-//   const isUserProtectedRoute = userProtectedRoutes.includes(path);
-//   const isPublicRoute = publicRoutes.includes(path);
-//   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-//   const cookie = cookies().get('session')?.value;
-  
-//   // Handle missing cookie
-//   if (!cookie) {
-//     if (isAdminProtectedRoute || isUserProtectedRoute) {
-//       return NextResponse.redirect(new URL('/', req.nextUrl));
-//     }
-//     return NextResponse.next();
-//   }
-
-//   const session = await decrypt(cookie);
-
-//   // If decryption fails or userId is missing, redirect to login for protected routes
-//   if (isAdminProtectedRoute || isUserProtectedRoute && !session?.username) {
-//     return NextResponse.redirect(new URL('/', req.nextUrl));
-//   }
-
-//   if (session?.username) {
-//     try {
-//       const res = await fetch(`${apiBaseUrl}/auth/user/userRole?name=${session.username}`);
-//       const user = await res.json();
-
-//       if (isPublicRoute) {
-//         if (user.roles === 'ROLE_ADMIN' && !req.nextUrl.pathname.startsWith('/admin-dashboard')) {
-//           return NextResponse.redirect('/admin-dashboard');
-//         }
-//         if (user.roles === 'ROLE_USER' && !req.nextUrl.pathname.startsWith('/dashboard')) {
-//           return NextResponse.redirect('/dashboard');
-//         }
-//       }
-//     } catch (error) {
-//       console.error('Error fetching user role:', error);
-//       // Handle error accordingly, maybe log it or notify admin
-//     }
-//   }
-
-//   return NextResponse.next();
-// }
-
-// export const config = {
-//   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-// };
-
-// solution 03
-
-
-import { NextRequest, NextResponse } from 'next/server';
-import { decrypt } from '@/app/lib/auth';
-import { cookies } from 'next/headers';
-
-const adminProtectedRoutes = ['/admin-dashboard'];
-const userProtectedRoutes = ['/purchase'];
+const adminProtectedRoutes = [''];
+const userProtectedRoutes = [''];
 const publicRoutes = ['/'];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   const isAdminProtectedRoute = adminProtectedRoutes.includes(path);
   const isUserProtectedRoute = userProtectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const cookie = cookies().get('session')?.value;
-
+  
   // Handle missing cookie
   if (!cookie) {
     if (isAdminProtectedRoute || isUserProtectedRoute) {
@@ -132,43 +68,30 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  try {
-    const session = await decrypt(cookie);
+  const session = await decrypt(cookie);
 
-    // If decryption fails or userId is missing, redirect to login for protected routes
-    if ((isAdminProtectedRoute || isUserProtectedRoute) && !session?.username) {
-      return NextResponse.redirect(new URL('/', req.nextUrl));
-    }
+  // If decryption fails or userId is missing, redirect to login for protected routes
+  if (isAdminProtectedRoute || isUserProtectedRoute && !session?.username) {
+    return NextResponse.redirect(new URL('/', req.nextUrl));
+  }
 
-    if (session?.username) {
+  if (session?.username) {
+    try {
       const res = await fetch(`${apiBaseUrl}/auth/user/userRole?name=${session.username}`);
-      
-      if (!res.ok) {
-        throw new Error('Failed to fetch user role');
-      }
-
       const user = await res.json();
-
-      if (isUserProtectedRoute && user.roles !== 'ROLE_USER') {
-        return NextResponse.redirect(new URL('/', req.nextUrl));
-      }
-
-      if (isAdminProtectedRoute && user.roles !== 'ROLE_ADMIN') {
-        return NextResponse.redirect(new URL('/', req.nextUrl));
-      }
 
       if (isPublicRoute) {
         if (user.roles === 'ROLE_ADMIN' && !req.nextUrl.pathname.startsWith('/admin-dashboard')) {
-          return NextResponse.redirect(new URL('/admin-dashboard', req.nextUrl));
+          return NextResponse.redirect('/admin-dashboard');
         }
         if (user.roles === 'ROLE_USER' && !req.nextUrl.pathname.startsWith('/dashboard')) {
-          return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
+          return NextResponse.redirect('/dashboard');
         }
       }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      // Handle error accordingly, maybe log it or notify admin
     }
-  } catch (error) {
-    console.error('Error in middleware:', error);
-    // Consider adding more robust error handling here
   }
 
   return NextResponse.next();
@@ -177,6 +100,81 @@ export default async function middleware(req: NextRequest) {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 };
+
+// solution 03
+
+
+// import { NextRequest, NextResponse } from 'next/server';
+// import { decrypt } from '@/app/lib/auth';
+// import { cookies } from 'next/headers';
+
+// const adminProtectedRoutes = ['/admin-dashboard'];
+// const userProtectedRoutes = ['/purchase'];
+// const publicRoutes = ['/'];
+
+// export default async function middleware(req: NextRequest) {
+//   const path = req.nextUrl.pathname;
+//   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+//   const isAdminProtectedRoute = adminProtectedRoutes.includes(path);
+//   const isUserProtectedRoute = userProtectedRoutes.includes(path);
+//   const isPublicRoute = publicRoutes.includes(path);
+
+//   const cookie = cookies().get('session')?.value;
+
+//   // Handle missing cookie
+//   if (!cookie) {
+//     if (isAdminProtectedRoute || isUserProtectedRoute) {
+//       return NextResponse.redirect(new URL('/', req.nextUrl));
+//     }
+//     return NextResponse.next();
+//   }
+
+//   try {
+//     const session = await decrypt(cookie);
+
+//     // If decryption fails or userId is missing, redirect to login for protected routes
+//     if ((isAdminProtectedRoute || isUserProtectedRoute) && !session?.username) {
+//       return NextResponse.redirect(new URL('/', req.nextUrl));
+//     }
+
+//     if (session?.username) {
+//       const res = await fetch(`${apiBaseUrl}/auth/user/userRole?name=${session.username}`);
+      
+//       if (!res.ok) {
+//         throw new Error('Failed to fetch user role');
+//       }
+
+//       const user = await res.json();
+
+//       if (isUserProtectedRoute && user.roles !== 'ROLE_USER') {
+//         return NextResponse.redirect(new URL('/', req.nextUrl));
+//       }
+
+//       if (isAdminProtectedRoute && user.roles !== 'ROLE_ADMIN') {
+//         return NextResponse.redirect(new URL('/', req.nextUrl));
+//       }
+
+//       if (isPublicRoute) {
+//         if (user.roles === 'ROLE_ADMIN' && !req.nextUrl.pathname.startsWith('/admin-dashboard')) {
+//           return NextResponse.redirect(new URL('/admin-dashboard', req.nextUrl));
+//         }
+//         if (user.roles === 'ROLE_USER' && !req.nextUrl.pathname.startsWith('/dashboard')) {
+//           return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Error in middleware:', error);
+//     // Consider adding more robust error handling here
+//   }
+
+//   return NextResponse.next();
+// }
+
+// export const config = {
+//   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+// };
 
 
 
