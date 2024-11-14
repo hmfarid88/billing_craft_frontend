@@ -108,7 +108,7 @@ const Invoice = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div className="flex justify-center mb-5">
-                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-5 sm:p-10 border">
+                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-5 border">
                     <div className="flex w-full justify-between">
                         <h1><FcDataSheet size={50} /></h1>
                         <h1 className='tracking-widest font-bold text-sm md:text-lg'>INVOICE</h1>

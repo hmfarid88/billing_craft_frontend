@@ -39,7 +39,7 @@ export const Sidebar = () => {
                             </ul>
                         </details>
                     </li>
-                    <li><Link href="/payment"><RiSecurePaymentLine size={20} /> PAYMENT ENTRY</Link></li>
+                    <li><Link href="/payment"><RiSecurePaymentLine size={20} /> TRANSACTION</Link></li>
                        <li>
                         <details>
                             <summary><GoDatabase size={20} /> STOCK REPORT</summary>

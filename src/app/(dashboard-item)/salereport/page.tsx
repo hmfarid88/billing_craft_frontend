@@ -13,7 +13,8 @@ interface Product {
   sprice: number;
   discount: number;
   offer: number;
-  saleDate: string;
+  date: string;
+  time: string;
 }
 const Page = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -33,16 +34,16 @@ const Page = () => {
     <div className="container-2xl">
       <div className="flex w-full min-h-[calc(100vh-228px)] items-center justify-center">
         <div className="overflow-x-auto">
-          <table className="table table-xs">
+          <table className="table table-sm">
             <thead>
               <tr>
                 <th>SN</th>
                 <th>SALE DATE</th>
+                <th>SALE TIME</th>
                 <th>INVOICE NO</th>
                 <th>CUSTOMER INFO</th>
                 <th>PRODUCT</th>
                 <th>PRODUCT NO</th>
-                <th>QTY</th>
                 <th>SALE PRICE</th>
                 <th>DISCOUNT</th>
                 <th>OFFER</th>
@@ -53,12 +54,12 @@ const Page = () => {
               {soldProducts?.map((product, index) => (
                 <tr key={index}>
                   <th>{index + 1}</th>
-                  <td>{product.saleDate}</td>
+                  <td>{product.date}</td>
+                  <td>{product.time}</td>
                   <td className="uppercase">{product.cid}</td>
-                  <td>{product.cname}, {product.phoneNumber} {product.address}</td>
-                  <td>{product.productName}</td>
+                  <td className="capitalize">{product.cname}, {product.phoneNumber} {product.address}</td>
+                  <td className="capitalize">{product.productName}</td>
                   <td>{product.productno}</td>
-                  <td>1</td>
                   <td>{product.sprice}</td>
                   <td>{product.discount}</td>
                   <td>{product.offer}</td>

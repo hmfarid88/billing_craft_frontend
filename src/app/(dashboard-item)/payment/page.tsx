@@ -1,5 +1,6 @@
 import Expense from '@/app/components/Expense'
 import OfficeCost from '@/app/components/OfficeCost'
+import ProfitWithdraw from '@/app/components/ProfitWithdraw'
 import SupplierPayment from '@/app/components/SupplierPayment'
 import React from 'react'
 
@@ -12,13 +13,17 @@ const page = () => {
         <div role="tabpanel" className="tab-content p-10">
           <Expense />
         </div>
-        <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="OFFICE PAYMENT" />
+        <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="OFFICE TRANSACTION" />
         <div role="tabpanel" className="tab-content p-10">
           <OfficeCost />
         </div>
-        <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="SUPPLIER PAYMENT" />
+        <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="SUPPLIER TRANSACTION" />
         <div role="tabpanel" className="tab-content p-10">
           <SupplierPayment />
+        </div>
+        <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="PROFIT WITHDRAW" />
+        <div role="tabpanel" className="tab-content p-10">
+          <ProfitWithdraw />
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import { toast } from "react-toastify";
-import { FcCalendar } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
 
 const Expense = () => {
@@ -29,13 +28,13 @@ const Expense = () => {
 
   const handleExpenseSubmit = async (e: any) => {
     e.preventDefault();
-    if (!expenseName || !expenseNote || !expensAmount) {
+    if (!expenseName || !expensAmount) {
       toast.warning("Item is empty !");
       return;
     }
     setPending(true);
     try {
-      const response = await fetch(`${apiBaseUrl}/paymentApi/expenseRecord`, {
+      const response = await fetch(`${apiBaseUrl}/payment/expenseRecord`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +63,7 @@ const Expense = () => {
         <div className="label">
           <span className="label-text-alt">DATE</span>
         </div>
-        <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="border rounded-md p-2 mt-1.5 bg-white text-black  w-full max-w-xs h-[40px]" />
+        <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
       </label>
 
 
@@ -74,10 +73,10 @@ const Expense = () => {
         </div>
         <select className='select select-bordered' onChange={(e: any) => { setExpenseName(e.target.value) }}>
           <option selected disabled>Select . . .</option>
-          <option value="OFFICE COST">OFFICE COST</option>
-          <option value="STAFF SALARY">STAFF SALARY</option>
-          <option value="HOUSE RENT">HOUSE RENT</option>
-          <option value="OTHERS">OTHERS</option>
+          <option value="Office Cost">Office Cost</option>
+          <option value="Employee Salary">Employee Salary</option>
+          <option value="Shop Rent">Shop Rent</option>
+          <option value="Others">Others</option>
         </select>
 
       </label>

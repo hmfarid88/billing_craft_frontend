@@ -7,32 +7,21 @@ import { useReactToPrint } from 'react-to-print';
 interface Payment {
   date: string;
   name: string;
-  type: string;
+  note: string;
   amount: number;
 }
 interface Receive {
   date: string;
   name: string;
-  type: string;
+  note: string;
   amount: number;
 }
 interface Sale {
   date: String;
-  soldInvoice: string;
-  productQty: number;
-  saleRate: number;
+  invoice: string;
+  value: number;
 }
-// const formatDate = (dateString: string) => {
-//   const options: Intl.DateTimeFormatOptions = {
-//     year: 'numeric',
-//     month: '2-digit',
-//     day: '2-digit',
-//     hour: '2-digit',
-//     minute: '2-digit',
-//     second: '2-digit',
-//   };
-//   return new Date(dateString).toLocaleString(undefined, options);
-// };
+
 const CashBook = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const uname = useAppSelector((state) => state.username.username);
@@ -43,9 +32,9 @@ const CashBook = () => {
   const [netSumAmount, setNetSumAmount] = useState(0);
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/paymentApi/net-sum-before-today?username=${username}&date=${date}`)
+    fetch(`${apiBaseUrl}/cashbook/net-sum-before-today?username=${username}&date=${date}`)
       .then(response => response.json())
-      .then(data => setNetSumAmount(data.netSumAmount))
+      .then(data => setNetSumAmount(data))
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, date, username]);
 
@@ -57,40 +46,39 @@ const CashBook = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/paymentApi/payments/today?username=${username}&date=${date}`)
+    fetch(`${apiBaseUrl}/cashbook/payments/today?username=${username}&date=${date}`)
       .then(response => response.json())
       .then(data => setPayments(data))
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, date, username]);
 
-  const totalCredit = () => {
-    return payments.reduce((debit, payment) => debit + (payment.amount), 0);
-  };
 
   const [receives, setReceives] = useState<Receive[]>([]);
   useEffect(() => {
-    fetch(`${apiBaseUrl}/paymentApi/receives/today?username=${username}&date=${date}`)
+    fetch(`${apiBaseUrl}/cashbook/receives/today?username=${username}&date=${date}`)
       .then(response => response.json())
       .then(data => setReceives(data))
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, date, username]);
 
-  const [saledata, setSaleData] = useState([]);
+  const [saledata, setSaleData] = useState<Sale[]>([]);
   useEffect(() => {
-    fetch(`${apiBaseUrl}/sales/cashbook/dateWiseSale?username=${username}&date=${date}&status=sold`)
+    fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}&date=${date}`)
       .then(response => response.json())
-      .then(data => { 
-        console.log('Fetched sales data:', data);
-        setSaleData(data) ;
+      .then(data => {
+        setSaleData(data);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, username, date]);
 
   const totalDebit = () => {
-    return receives.reduce((credit, receive) => credit + (receive.amount), 0);
+    return receives.reduce((debit, receive) => debit + (receive.amount), 0);
   };
-  const totalAdsale = () => {
-    return saledata.reduce((credit, sale) => credit + (sale[2]), 0);
+  const totalCredit = () => {
+    return payments.reduce((credit, payment) => credit + (payment.amount), 0);
+  };
+  const totalSale = () => {
+    return saledata.reduce((debit, sale) => debit + (sale.value), 0);
   };
 
   return (
@@ -99,16 +87,19 @@ const CashBook = () => {
         <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
       </div>
       <div className="w-full card">
-        <div ref={contentToPrint} className="flex w-full items-center justify-center pt-5">
+        <div ref={contentToPrint} className="flex flex-col w-full items-center justify-center pt-5">
+          <div className="flex flex-col items-center justify-center">
+            <h4 className='font-bold'>CASH BOOK</h4>
+            <h4 className='font-semibold'>{date}</h4>
+          </div>
           <div className="overflow-x-auto">
-            <div className="flex w-full items-center justify-between p-5">
+            <div className="flex w-full items-center justify-between text-sm font-semibold p-5">
               <h4>DEBIT</h4>
-              <h4>CASH BOOK ({date})</h4>
               <h4>CREDIT</h4>
             </div>
             <div className="flex w-full gap-10">
               <div className="flex">
-                <table className="table">
+                <table className="table table-sm">
                   <thead>
                     <tr>
                       <th>DATE</th>
@@ -122,40 +113,39 @@ const CashBook = () => {
                       <td>BALANCE B/D</td>
                       <td>{(netSumAmount ?? 0).toLocaleString('en-IN')}</td>
                     </tr>
-                    {saledata?.map((sold:any, index) => (
+                    {saledata?.map((sold, index) => (
                       <tr key={index}>
-                        <td>{sold[0]}</td>
-                        <td className='uppercase'>{sold[1]}</td>
-                        <td>{(sold[2]).toLocaleString('en-IN')}</td>
+                        <td>{sold.date}</td>
+                        <td className='uppercase'>{sold.invoice}</td>
+                        <td>{(sold.value).toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
                     {receives?.map((receive, index) => (
                       <tr key={index}>
                         <td>{receive.date}</td>
-                        <td className='uppercase'>{receive.name}, {receive.type}</td>
+                        <td className='capitalize'>{receive.name}</td>
                         <td>{(receive.amount ?? 0).toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
-                    
-                    <tr>
+
+                    <tr className='text-sm font-bold'>
                       <td colSpan={1}></td>
                       <td>TOTAL</td>
-                      <td>{(totalDebit() + totalAdsale() + netSumAmount).toLocaleString('en-IN')}</td>
+                      <td>{(totalDebit() + totalSale() + netSumAmount).toLocaleString('en-IN')}</td>
                     </tr>
 
                   </tbody>
                   <tfoot>
-                    <tr>
+                    <tr className='text-sm font-bold'>
                       <td></td>
                       <td>BALANCE B/D</td>
-                      <td>{((totalDebit()+ totalAdsale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+                      <td>{Number((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
-              <div className="flex">
-                <table className="table">
-
+              <div>
+                <table className="table table-sm">
                   <thead>
                     <tr>
                       <th>DATE</th>
@@ -167,19 +157,24 @@ const CashBook = () => {
                     {payments.map((payment, index) => (
                       <tr key={index}>
                         <td>{payment.date}</td>
-                        <td className='uppercase'>{payment.name}, {payment.type}</td>
+                        <td className='capitalize'>{payment.name}</td>
                         <td>{(payment.amount ?? 0).toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
-                    <tr>
+                    <tr className='font-semibold'>
                       <td>{date}</td>
-                      <td>BALANCE C/D</td>
-                      <td>{((totalDebit()+totalAdsale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+                      <td className='text-sm'>TOTAL CREDIT</td>
+                      <td>{Number(totalCredit()).toLocaleString('en-IN')}</td>
                     </tr>
-                    <tr>
+                    <tr className='font-semibold'>
+                      <td>{date}</td>
+                      <td className='text-sm'>BALANCE C/D</td>
+                      <td>{((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+                    </tr>
+                    <tr className='text-sm font-bold'>
                       <td colSpan={1}></td>
                       <td>TOTAL</td>
-                      <td>{(totalCredit() + ((totalDebit()+totalAdsale() + netSumAmount) - (totalCredit()))).toLocaleString('en-IN')}</td>
+                      <td>{(totalCredit() + ((totalDebit() + totalSale() + netSumAmount) - (totalCredit()))).toLocaleString('en-IN')}</td>
                     </tr>
                   </tbody>
                   <tfoot>

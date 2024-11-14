@@ -1,29 +1,36 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import { DatePicker } from 'react-date-picker';
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { FcCalendar } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
 import Select from "react-select";
 
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const SupplierPayment = () => {
-    const uname = useAppSelector((state) => state.username.username);
+  const uname = useAppSelector((state) => state.username.username);
   const username = uname ? uname.username : 'Guest';
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const [pending, setPending] = useState(false);
-  const [date, setDate] = useState<Value>(new Date());
+  const [date, setDate] = useState('');
   const [supplierName, setSupplierName] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [supplierAmount, setSupplierAmount] = useState("");
   const [supplierNote, setSupplierNote] = useState("");
-
+  const [maxDate, setMaxDate] = useState('');
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    setMaxDate(formattedDate);
+    setDate(formattedDate);
+  }, []);
   const handleSupplierPayment = async (e: any) => {
     e.preventDefault();
-    if (!supplierName ||!paymentType || !supplierAmount || !supplierNote) {
+    if (!supplierName || !paymentType || !supplierAmount ) {
       toast.warning("Item is empty !");
       return;
     }
@@ -57,60 +64,64 @@ const SupplierPayment = () => {
     fetch(`${apiBaseUrl}/api/getSupplierItem?username=${username}`)
       .then(response => response.json())
       .then(data => {
-        const transformedData = data.map((item: any) => ({
-          id: item.id,
-          value: item.supplierItem,
-          label: item.supplierItem
-        }));
-        setSupplierOption(transformedData);
+        setSupplierOption(data);
       })
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
 
   return (
-    <div>
-        <p>DATE : <DatePicker calendarIcon={FcCalendar} className="rounded-md max-w-xs z-20" clearIcon={null} maxDate={new Date()} format='y-MM-dd' onChange={setDate} value={date} /></p>
-            <div className="flex pt-5">
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Pick the Supplier</span>
-                </div>
-                <Select className="text-black" name="supplier" onChange={(selectedOption: any) => setSupplierName(selectedOption.value)} options={supplierOption} />
-              </label>
-            </div>
-            <div className="flex">
-            <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Payment Type</span>
-                </div>
-                <select className='select select-bordered' onChange={(e:any)=>{setPaymentType(e.target.value)}}>
-                <option selected disabled>Select . . .</option>
-                    <option value="Payment">PAYMENT</option>
-                    <option value="Receive">RECEIVE</option>
-                </select>
-                </label>
-            </div>
-            <div className="flex">
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Payment Note</span>
-                </div>
-                <input type="text" value={supplierNote} onChange={(e) => setSupplierNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-              </label>
-            </div>
-            <div className="flex">
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Payment Amount</span>
-                </div>
-                <input type="number" value={supplierAmount} onChange={(e) => setSupplierAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-              </label>
-            </div>
-            <div className="flex pt-5">
-              <label className="form-control w-full max-w-xs">
-                <button onClick={handleSupplierPayment} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
-              </label>
-            </div>
+    <div className='flex flex-col gap-3 items-center justify-center'>
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text-alt">DATE</span>
+        </div>
+        <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text-alt">SUPPLIER NAME</span>
+        </div>
+        <select className='select select-bordered' onChange={(e: any) => { setSupplierName(e.target.value) }}>
+          <option selected disabled>Select . . .</option>
+          {supplierOption?.map((name: any, index) => (
+            <option key={index} value={name.supplierItem}>
+              {name.supplierItem}
+            </option>
+          ))}
+        </select>
+       
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text-alt">TRANSACTION TYPE</span>
+        </div>
+        <select className='select select-bordered' onChange={(e: any) => { setPaymentType(e.target.value) }}>
+          <option selected disabled>Select . . .</option>
+          <option value="payment">PAYMENT</option>
+          <option value="receive">RECEIVE</option>
+        </select>
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text-alt">NOTE</span>
+        </div>
+        <input type="text" value={supplierNote} onChange={(e) => setSupplierNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text-alt">AMOUNT</span>
+        </div>
+        <input type="number" value={supplierAmount} onChange={(e) => setSupplierAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <button onClick={handleSupplierPayment} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
+      </label>
+
     </div>
   )
 }
