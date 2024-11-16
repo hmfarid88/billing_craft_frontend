@@ -55,7 +55,7 @@ export const Sidebar = () => {
                             <summary><TbReportSearch size={20} /> SALE REPORT</summary>
                             <ul>
                                 <li><Link href="/salereport">CUSTOMER SALE</Link></li>
-                                <li><Link href="/salereport">VENDOR SALE</Link></li>
+                                <li><Link href="/vendor-sale-report">VENDOR SALE</Link></li>
                             </ul>
                         </details>
                     </li>
@@ -63,7 +63,7 @@ export const Sidebar = () => {
                         <details>
                             <summary><MdOutlinePayments size={20} /> PAYMENT REPORT</summary>
                             <ul>
-                                <li><Link href="/paymentreport"> PAYMENT REPORT</Link></li>
+                                <li><Link href="/expense-report"> EXPENSE REPORT</Link></li>
                                 <li><Link href="/paymentreport"> RECEIVE REPORT</Link></li>
                             </ul>
                         </details>
