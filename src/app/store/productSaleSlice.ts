@@ -36,6 +36,13 @@ export const productSaleSlice = createSlice({
             }
 
         },
+        updateSprice: (state, action) => {
+            const { id, sprice } = action.payload;
+            const product = state.products.find(product => product.id === id);
+            if (product) {
+                product.sprice = sprice;
+            }
+        },
         updateDiscount: (state, action) => {
             const { id, discount } = action.payload;
             const product = state.products.find(product => product.id === id);
@@ -62,6 +69,6 @@ export const productSaleSlice = createSlice({
     }
 
 })
-export const { addProducts, updateDiscount, updateOffer, deleteProduct, deleteAllProducts } = productSaleSlice.actions;
+export const { addProducts, updateSprice, updateDiscount, updateOffer, deleteProduct, deleteAllProducts } = productSaleSlice.actions;
 
 export default productSaleSlice.reducer;

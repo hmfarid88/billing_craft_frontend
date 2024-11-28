@@ -58,10 +58,10 @@ const Page = () => {
 
     return (
         <div className="container-2xl">
-            <div className="flex flex-col w-full  min-h-[calc(100vh-228px)] p-4">
-                <div className="flex p-5 justify-end items-end"><DateToDate routePath="/datewise-expense-report" /></div>
-                <div className="items-center justify-center">
-                    <div className="flex justify-between p-5">
+            <div className="flex flex-col w-full  min-h-[calc(100vh-228px)] items-center justify-center p-4">
+                <div className="flex p-5"><DateToDate routePath="/datewise-expense-report" /></div>
+                
+                    <div className="flex w-full justify-between p-5">
                         <label className="input input-bordered flex max-w-xs  items-center gap-2">
                             <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 opacity-70">
@@ -70,40 +70,42 @@ const Page = () => {
                         </label>
                         <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
                     </div>
-                    <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">EXPENSE REPORT</h4><CurrentMonthYear /></div>
-                        <table className="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>SN</th>
-                                    <th>DATE</th>
-                                    <th>EXPENSE NAME</th>
-                                    <th>EXPENSE NOTE</th>
-                                    <th>AMOUNT</th>
+                    <div className="overflow-x-auto items-center justify-center">
+                        <div ref={contentToPrint} className="flex-1 p-5">
+                            <div className="flex flex-col items-center pb-5"><h4 className="font-bold">EXPENSE REPORT</h4><CurrentMonthYear /></div>
+                            <table className="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>DATE</th>
+                                        <th>EXPENSE NAME</th>
+                                        <th>EXPENSE NOTE</th>
+                                        <th>AMOUNT</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredProducts?.map((product, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{product.date}</td>
-                                        <td>{product.expenseName}</td>
-                                        <td>{product.expenseNote}</td>
-                                        <td>{Number(product.amount.toFixed(2)).toLocaleString('en-IN')}</td>
                                     </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr className="font-semibold text-lg">
-                                    <td colSpan={3}></td>
-                                    <td>TOTAL</td>
-                                    <td>{Number(totalValue.toFixed(2)).toLocaleString('en-IN')}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {filteredProducts?.map((product, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{product.date}</td>
+                                            <td>{product.expenseName}</td>
+                                            <td>{product.expenseNote}</td>
+                                            <td>{Number(product.amount.toFixed(2)).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr className="font-semibold text-lg">
+                                        <td colSpan={3}></td>
+                                        <td>TOTAL</td>
+                                        <td>{Number(totalValue.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
-                </div>
+            
             </div>
         </div>
     )

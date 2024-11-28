@@ -9,6 +9,7 @@ const ColorName = () => {
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
     const [colorItem, setColorItem] = useState("");
+    
     const handleColoritem = async (e: any) => {
         e.preventDefault();
         if (!colorItem) {
@@ -28,6 +29,7 @@ const ColorName = () => {
             if (response.ok) {
               setColorItem("");
               toast.success("Item added successfully !");
+             
             } else {
               const data = await response.json();
               toast.error(data.message);
@@ -49,6 +51,7 @@ const ColorName = () => {
         <button onClick={handleColoritem} disabled={pending} className="btn btn-square btn-success">{pending ? "Adding..." : "ADD"}</button>
       </div>
     </label>
+   
   </div>
   )
 }

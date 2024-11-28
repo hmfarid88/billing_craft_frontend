@@ -3,75 +3,71 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcPrint } from "react-icons/fc";
-import DateToDate from "@/app/components/DateToDate";
-import CurrentMonthYear from "@/app/components/CurrentMonthYear";
-
+import CurrentDate from "@/app/components/CurrentDate";
 interface Product {
-    cname: string;
-    phoneNumber: string;
-    address: string;
-    category: string;
+
     brand: string;
+    category: string;
+    oldpprice: number;
+    newpprice: number;
     productName: string;
     productno: string;
-    color: string;
-    cid: string;
-    pprice: number;
     date: string;
-    time: string;
+    supplier: string;
+
 }
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
+    const [filterCriteria, setFilterCriteria] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
     });
-    const [soldProducts, setSoldProducts] = useState<Product[]>([]);
-    const [filterCriteria, setFilterCriteria] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getMonthlyVendorSale?username=${username}`)
+        fetch(`${apiBaseUrl}/api/pricedrop-list?username=${username}`)
             .then(response => response.json())
             .then(data => {
-                setSoldProducts(data);
-
+                setAllProducts(data);
+                setFilteredProducts(data);
             })
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
+
     useEffect(() => {
-        const filtered = soldProducts.filter(product =>
-            (product.cname?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.phoneNumber?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+        const filtered = allProducts.filter(product =>
             (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.supplier?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
 
         );
         setFilteredProducts(filtered);
-    }, [filterCriteria, soldProducts]);
+    }, [filterCriteria, allProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
+
     const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
-    const totalSprice = filteredProducts.reduce((total, product) => {
-        return total + product.pprice;
+    const totalPprice = filteredProducts.reduce((total, product) => {
+        return total + product.oldpprice;
     }, 0);
 
-
+    const totalSprice = filteredProducts.reduce((total, product) => {
+        return total + product.newpprice;
+    }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
-            <div className="flex justify-between pl-5 pr-5 pt-5">
-                <DateToDate routePath="/datewise-vendor-salereport" />
-            </div>
+
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">
                     <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
@@ -81,35 +77,39 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
+
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">VENDOR SALE REPORT</h4>
-                <h4 className="pb-5"><CurrentMonthYear /></h4>
+                <h4 className="font-bold">PRICE-DROP LIST</h4>
+                <h4 className="pb-5"><CurrentDate /></h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
+                    <table className="table table-sm capitalize">
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>SALE DATE</th>
-                                <th>SALE TIME</th>
-                                <th>INVOICE NO</th>
-                                <th>CUSTOMER INFO</th>
+                                <th>DATE</th>
+                                <th>CATEGORY</th>
+                                <th>BRAND</th>
                                 <th>PRODUCT</th>
+                                <th>SUPPLIER</th>
                                 <th>PRODUCT NO</th>
-                                <th>PRICE</th>
+                                <th>OLD PURCHASE</th>
+                                <th>NEW PURCHASE</th>
+
 
                             </tr>
                         </thead>
                         <tbody>
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
-                                    <th>{index + 1}</th>
+                                    <td>{index + 1}</td>
                                     <td>{product.date}</td>
-                                    <td>{product.time}</td>
-                                    <td className="uppercase">{product.cid}</td>
-                                    <td className="capitalize">{product.cname} {product.phoneNumber} {product.address}</td>
-                                    <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
+                                    <td>{product.category}</td>
+                                    <td>{product.brand}</td>
+                                    <td>{product.productName}</td>
+                                    <td>{product.supplier}</td>
                                     <td>{product.productno}</td>
-                                    <td>{product.pprice}</td>
+                                    <td>{product.oldpprice}</td>
+                                    <td>{product.newpprice}</td>
 
                                 </tr>
                             ))}
@@ -119,8 +119,8 @@ const Page = () => {
                                 <td colSpan={5}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
-
                             </tr>
                         </tfoot>
                     </table>

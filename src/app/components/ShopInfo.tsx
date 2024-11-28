@@ -56,25 +56,25 @@ const ShopInfo = () => {
                     <div className="label">
                         <span className="label-text-alt">SHOP NAME</span>
                     </div>
-                    <input type="text" name="item" onChange={(e: any) => setShopName(e.target.value)} value={shopName} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" />
+                    <input type="text" name="item" onChange={(e: any) => setShopName(e.target.value)} value={shopName} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <div className="label">
                         <span className="label-text-alt">PHONE NUMBER</span>
                     </div>
-                    <input type="text" maxLength={11} name="item" onChange={(e: any) => setPhoneNumber(e.target.value.replace(/\D/g, ""))} value={phoneNumber} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" />
+                    <input type="text" maxLength={11} name="item" onChange={(e: any) => setPhoneNumber(e.target.value.replace(/\D/g, ""))} value={phoneNumber} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <div className="label">
                         <span className="label-text-alt">ADDRESS</span>
                     </div>
-                    <input type="text" name="item" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" />
+                    <input type="text" name="item" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <div className="label">
                         <span className="label-text-alt">EMAIL</span>
                     </div>
-                    <input type="text" name="item" onChange={(e: any) => setEmail(e.target.value)} value={email} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" />
+                    <input type="text" name="item" onChange={(e: any) => setEmail(e.target.value)} value={email} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <button onClick={submitShopInfo} disabled={pending} className="btn btn-outline btn-success">{pending ? "Submitting..." : "SUBMIT"}</button>

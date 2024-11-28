@@ -22,7 +22,7 @@ interface Sale {
   value: number;
 }
 
-const CashBook = () => {
+const Page = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const uname = useAppSelector((state) => state.username.username);
   const username = uname ? uname.username : 'Guest';
@@ -194,4 +194,4 @@ const CashBook = () => {
   )
 }
 
-export default CashBook
+export default Page

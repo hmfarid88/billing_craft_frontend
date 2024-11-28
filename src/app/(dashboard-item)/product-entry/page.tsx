@@ -7,16 +7,15 @@ import DateToDate from "@/app/components/DateToDate";
 import CurrentMonthYear from "@/app/components/CurrentMonthYear";
 
 interface Product {
-    cname: string;
-    phoneNumber: string;
-    address: string;
     category: string;
     brand: string;
     productName: string;
     productno: string;
     color: string;
-    cid: string;
+    supplier: string;
+    supplierInvoice: string;
     pprice: number;
+    sprice: number;
     date: string;
     time: string;
 }
@@ -32,20 +31,21 @@ const Page = () => {
     const [soldProducts, setSoldProducts] = useState<Product[]>([]);
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getMonthlyVendorSale?username=${username}`)
+
+     useEffect(() => {
+        fetch(`${apiBaseUrl}/api/getMonthlyProductEntry?username=${username}`)
             .then(response => response.json())
             .then(data => {
                 setSoldProducts(data);
-
+                setFilteredProducts(data);
             })
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
     useEffect(() => {
         const filtered = soldProducts.filter(product =>
-            (product.cname?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.phoneNumber?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.supplier?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.supplierInvoice?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
@@ -63,6 +63,10 @@ const Page = () => {
     const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
     const totalSprice = filteredProducts.reduce((total, product) => {
+        return total + product.sprice;
+    }, 0);
+
+    const totalPprice = filteredProducts.reduce((total, product) => {
         return total + product.pprice;
     }, 0);
 
@@ -70,7 +74,8 @@ const Page = () => {
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-between pl-5 pr-5 pt-5">
-                <DateToDate routePath="/datewise-vendor-salereport" />
+                <DateToDate routePath="/datewise-entry-report" />
+
             </div>
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">
@@ -82,21 +87,24 @@ const Page = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">VENDOR SALE REPORT</h4>
+                <h4 className="font-bold">PRODUCT ENTRY REPORT</h4>
                 <h4 className="pb-5"><CurrentMonthYear /></h4>
                 <div className="flex items-center justify-center">
                     <table className="table table-sm">
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>SALE DATE</th>
-                                <th>SALE TIME</th>
+                                <th>ENTRY DATE</th>
+                                <th>ENTRY TIME</th>
                                 <th>INVOICE NO</th>
-                                <th>CUSTOMER INFO</th>
+                                <th>SUPPLIER</th>
+                                <th>CATEGORY</th>
+                                <th>BRAND</th>
                                 <th>PRODUCT</th>
+                                <th>COLOR</th>
                                 <th>PRODUCT NO</th>
-                                <th>PRICE</th>
-
+                                <th>PURCHASE PRICE</th>
+                                <th>SALE PRICE</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,20 +113,25 @@ const Page = () => {
                                     <th>{index + 1}</th>
                                     <td>{product.date}</td>
                                     <td>{product.time}</td>
-                                    <td className="uppercase">{product.cid}</td>
-                                    <td className="capitalize">{product.cname} {product.phoneNumber} {product.address}</td>
-                                    <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
+                                    <td className="uppercase">{product.supplierInvoice}</td>
+                                    <td className="capitalize">{product.supplier}</td>
+                                    <td className="capitalize">{product.category}</td>
+                                    <td className="capitalize">{product.brand}</td>
+                                    <td className="capitalize">{product.productName}</td>
+                                    <td className="capitalize">{product.color}</td>
                                     <td>{product.productno}</td>
                                     <td>{product.pprice}</td>
+                                    <td>{product.sprice}</td>
 
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
                             <tr className="font-semibold text-lg">
-                                <td colSpan={5}></td>
+                                <td colSpan={8}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
 
                             </tr>

@@ -3,25 +3,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcPrint } from "react-icons/fc";
-import DateToDate from "@/app/components/DateToDate";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 
 interface Product {
-    cname: string;
-    phoneNumber: string;
-    address: string;
     category: string;
     brand: string;
     productName: string;
-    productno: string;
-    color: string;
-    cid: string;
+    qty: number;
+    pprice: number;
     sprice: number;
     discount: number;
-    offer: number;
-    date: string;
-    time: string;
+
 }
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -29,35 +21,62 @@ const Page = () => {
     const username = uname ? uname.username : 'Guest';
 
     const searchParams = useSearchParams();
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const year = searchParams.get('year');
+    const month = searchParams.get('month');
 
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
     });
+
+    const getMonthName = (monthNumber: string | null) => {
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December",
+        ];
+        const monthIndex = monthNumber ? parseInt(monthNumber, 10) - 1 : -1;
+        return months[monthIndex] || "Invalid month";
+    };
+
+    const [profitWithdraw, setProfitWithdraw] = useState(0)
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/profit/selected-month-sum?username=${username}&year=${year}&month=${month}`)
+            .then(response => response.json())
+            .then(data => {
+                setProfitWithdraw(data);
+
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }, [apiBaseUrl, username, year, month]);
+
+    const [totalExpense, setTotalExpense] = useState(0)
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/payment/getSelectedSum?username=${username}&year=${year}&month=${month}`)
+            .then(response => response.json())
+            .then(data => {
+                setTotalExpense(data);
+
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }, [apiBaseUrl, username, year, month]);
+
     const [soldProducts, setSoldProducts] = useState<Product[]>([]);
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getDatewiseProductSale?username=${username}&startDate=${startDate}&endDate=${endDate}`)
+        fetch(`${apiBaseUrl}/api/getSelectedProfitSale?username=${username}&year=${year}&month=${month}`)
             .then(response => response.json())
             .then(data => {
                 setSoldProducts(data);
 
             })
             .catch(error => console.error('Error fetching products:', error));
-    }, [apiBaseUrl, username, startDate, endDate]);
+    }, [apiBaseUrl, username, year, month]);
 
     useEffect(() => {
         const filtered = soldProducts.filter(product =>
-            (product.cname?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.phoneNumber?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
 
         );
@@ -67,7 +86,10 @@ const Page = () => {
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
-    const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
+
+    const totalPprice = filteredProducts.reduce((total, product) => {
+        return total + product.pprice;
+    }, 0);
 
     const totalSprice = filteredProducts.reduce((total, product) => {
         return total + product.sprice;
@@ -77,14 +99,12 @@ const Page = () => {
         return total + product.discount;
     }, 0);
 
-    const totalOffer = filteredProducts.reduce((total, product) => {
-        return total + product.offer;
+    const totalQty = filteredProducts.reduce((total, product) => {
+        return total + product.qty;
     }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
-            <div className="flex justify-between pl-5 pr-5 pt-5">
-                <DateToDate routePath="/datewise-salereport" /><Link href="/monthly-salereport"><button className="btn btn-sm btn-outline">This Month Sale</button></Link>
-            </div>
+
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">
                     <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
@@ -95,54 +115,56 @@ const Page = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">SALE REPORT</h4>
-                <h4 className="pb-5">{startDate} TO {endDate}</h4>
-                <div className="flex items-center justify-center">
+                <h4 className="font-bold">PROFIT / LOSS REPORT</h4>
+                <h4 className="pb-5">{getMonthName(month)} {year}</h4>
+                <div className="flex flex-col">
                     <table className="table table-sm">
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>SALE DATE</th>
-                                <th>SALE TIME</th>
-                                <th>INVOICE NO</th>
-                                <th>CUSTOMER INFO</th>
-                                <th>PRODUCT</th>
-                                <th>PRODUCT NO</th>
+                                <th>CATEGORY</th>
+                                <th>BRAND</th>
+                                <th>PRODUCT NAME</th>
+                                <th>QTY</th>
+                                <th>PURCHASE PRICE</th>
                                 <th>SALE PRICE</th>
                                 <th>DISCOUNT</th>
-                                <th>OFFER</th>
-                                <th>TOTAL</th>
+                                <th>PROFIT</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                     <th>{index + 1}</th>
-                                    <td>{product.date}</td>
-                                    <td>{product.time}</td>
-                                    <td className="uppercase">{product.cid}</td>
-                                    <td className="capitalize">{product.cname}, {product.phoneNumber} {product.address}</td>
-                                    <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
-                                    <td>{product.productno}</td>
+                                    <td className="capitalize">{product.category}</td>
+                                    <td className="capitalize">{product.brand}</td>
+                                    <td className="capitalize">{product.productName}</td>
+                                    <td>{product.qty}</td>
+                                    <td>{product.pprice}</td>
                                     <td>{product.sprice}</td>
                                     <td>{product.discount}</td>
-                                    <td>{product.offer}</td>
-                                    <td>{product.sprice - product.discount - product.offer}</td>
+                                    <td>{product.sprice - product.pprice - product.discount}</td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="font-semibold text-lg">
-                                <td colSpan={5}></td>
+                            <tr className="font-bold">
+                                <td colSpan={3}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalDiscount.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalOffer.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number((totalSprice - totalDiscount - totalOffer).toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number((totalSprice - totalPprice - totalDiscount).toFixed(2)).toLocaleString('en-IN')}</td>
                             </tr>
                         </tfoot>
                     </table>
+                    <div className="flex flex-col items-end text-sm font-semibold p-5 gap-2">
+                        <label>TOTAL EXPENSE : {Number(totalExpense.toFixed(2)).toLocaleString('en-IN')}</label>
+                        <label>NET PROFIT : {Number((totalSprice - totalPprice - totalDiscount - totalExpense).toFixed(2)).toLocaleString('en-IN')}</label>
+                        <label>PROFIT WITHDRAW : {Number(profitWithdraw.toFixed(2)).toLocaleString('en-IN')}</label>
+                        <label>PROFIT REMAINING : {Number((totalSprice - totalPprice - totalDiscount - totalExpense - profitWithdraw).toFixed(2)).toLocaleString('en-IN')}</label>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,9 +4,7 @@ import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcPrint } from "react-icons/fc";
 import DateToDate from "@/app/components/DateToDate";
-import CurrentMonthYear from "@/app/components/CurrentMonthYear";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 
 interface Product {
     cname: string;
@@ -18,10 +16,8 @@ interface Product {
     productno: string;
     color: string;
     cid: string;
-    sprice: number;
-    discount: number;
-    offer: number;
-    date: string;
+    pprice: number;
+       date: string;
     time: string;
 }
 const Page = () => {
@@ -71,17 +67,10 @@ const Page = () => {
     const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
     const totalSprice = filteredProducts.reduce((total, product) => {
-        return total + product.sprice;
+        return total + product.pprice;
     }, 0);
 
-    const totalDiscount = filteredProducts.reduce((total, product) => {
-        return total + product.discount;
-    }, 0);
-
-    const totalOffer = filteredProducts.reduce((total, product) => {
-        return total + product.offer;
-    }, 0);
-    return (
+       return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <DateToDate routePath="/datewise-vendor-salereport" />
@@ -109,10 +98,8 @@ const Page = () => {
                                 <th>CUSTOMER INFO</th>
                                 <th>PRODUCT</th>
                                 <th>PRODUCT NO</th>
-                                <th>SALE PRICE</th>
-                                <th>DISCOUNT</th>
-                                <th>OFFER</th>
-                                <th>TOTAL</th>
+                                <th>PRICE</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -125,10 +112,8 @@ const Page = () => {
                                     <td className="capitalize">{product.cname}, {product.phoneNumber} {product.address}</td>
                                     <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
                                     <td>{product.productno}</td>
-                                    <td>{product.sprice}</td>
-                                    <td>{product.discount}</td>
-                                    <td>{product.offer}</td>
-                                    <td>{product.sprice - product.discount - product.offer}</td>
+                                    <td>{product.pprice}</td>
+                                    
                                 </tr>
                             ))}
                         </tbody>
@@ -138,9 +123,7 @@ const Page = () => {
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalDiscount.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalOffer.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number((totalSprice - totalDiscount - totalOffer).toFixed(2)).toLocaleString('en-IN')}</td>
+                               
                             </tr>
                         </tfoot>
                     </table>

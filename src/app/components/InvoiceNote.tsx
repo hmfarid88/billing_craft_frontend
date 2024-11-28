@@ -83,7 +83,7 @@ const InvoiceNote = () => {
 
     return (
 
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center justify-center">
 
             <div className="flex flex-col gap-3 pb-5">
 
@@ -91,7 +91,7 @@ const InvoiceNote = () => {
                     <div className="label">
                         <span className="label-text-alt">NOTE</span>
                     </div>
-                    <input type="text" name="item" onChange={(e: any) => setNote(e.target.value)} value={note} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" />
+                    <input type="text" name="item" onChange={(e: any) => setNote(e.target.value)} value={note} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <button onClick={submitNoteInfo} disabled={pending} className="btn btn-outline btn-success">{pending ? "Submitting..." : "SUBMIT"}</button>

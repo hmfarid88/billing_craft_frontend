@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from "@/app/store";
-import { addProducts, updateDiscount, updateOffer, deleteAllProducts, deleteProduct } from "@/app/store/productSaleSlice";
+import { addProducts, updateSprice, updateDiscount, updateOffer, deleteAllProducts, deleteProduct } from "@/app/store/productSaleSlice";
 import Select from "react-select";
 import { uid } from 'uid';
 import { toast, ToastContainer } from "react-toastify";
@@ -23,6 +23,7 @@ const Page: React.FC = () => {
   const [date, setDate] = useState('');
   const [pending, setPending] = useState(false);
   const [disValue, setDisValue] = useState("");
+  const [sprice, setSprice] = useState<{ [key: string]: string | number }>({});
   const [offerValue, setOfferValue] = useState("");
   const [total, setTotal] = useState(0);
 
@@ -61,8 +62,8 @@ const Page: React.FC = () => {
     setReceived(receivedValue);
     const returnAmountValue = receivedValue - (Number(total) + Number(vatAmount) - Number(cardPay));
     setReturnAmount(returnAmountValue);
-};
-const selectRef = useRef<any>(null);
+  };
+  const selectRef = useRef<any>(null);
 
   useEffect(() => {
     calculateTotal();
@@ -81,6 +82,7 @@ const selectRef = useRef<any>(null);
     dispatch(deleteProduct(id));
   };
 
+ 
   const handleUpdateDiscount = (id: any) => {
     dispatch(updateDiscount({ id, discount: disValue }));
   };
@@ -120,7 +122,7 @@ const selectRef = useRef<any>(null);
         setSelectedProidOption(null);
         if (selectRef.current) {
           selectRef.current.focus();
-      }
+        }
       } else {
         toast.error("Incomplete data information !")
       }
@@ -131,6 +133,7 @@ const selectRef = useRef<any>(null);
   };
 
   const productInfo = saleProducts.map(product => ({
+    sprice: product.sprice,
     discount: product.discount,
     offer: product.offer,
     proId: product.proId,
@@ -142,7 +145,7 @@ const selectRef = useRef<any>(null);
   const handleFinalSubmit = async (e: any) => {
     e.preventDefault();
     if (!cname || !phoneNumber) {
-      toast.error("Customer name & Phone number is required !");
+      toast.info("Customer & Phone Number IS Required !");
       return;
     }
     if (productInfo.length === 0) {
@@ -255,7 +258,27 @@ const selectRef = useRef<any>(null);
                     <td>{index + 1}</td>
                     <td>{p.brand}, {p.productName} {p.color}</td>
                     <td>{p.productno}</td>
-                    <td>{p.sprice.toLocaleString('en-IN')}</td>
+                    <td>
+                      <div className="flex flex-col gap-2">
+                        <input
+                          type="number"
+                          name="sprice"
+                          value={sprice[p.id] || p.sprice}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const updatedValue = e.target.value;
+                            setSprice((prev: any) => ({
+                              ...prev,
+                              [p.id]: updatedValue,
+                            }));
+                          }}
+                          className="bg-base-100 w-20 p-1 rounded-md border"
+                        />
+                        <button onClick={() => {
+                          const updatedValue = sprice[p.id] || p.sprice;
+                          dispatch(updateSprice({ id: p.id, sprice: updatedValue }));
+                        }} className="btn btn-xs btn-outline w-20"> Apply
+                        </button></div>
+                    </td>
                     <td><div className="flex flex-col gap-2">
                       <input type="number" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 p-1 rounded-md border" />
                       <button onClick={() => {

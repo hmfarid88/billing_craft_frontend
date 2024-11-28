@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { IoHomeOutline } from 'react-icons/io5';
-import { MdOutlineInterests, MdOutlinePayments } from 'react-icons/md';
+import { MdOutlineInterests, MdOutlinePayments, MdAccountBalance } from 'react-icons/md';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { RiSecurePaymentLine } from 'react-icons/ri';
 import { GoDatabase } from 'react-icons/go';
@@ -10,6 +10,8 @@ import { PiNotebook } from 'react-icons/pi';
 import { VscRepo } from 'react-icons/vsc';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BsDatabaseAdd } from 'react-icons/bs';
+import { IoListSharp } from "react-icons/io5";
+import { PiUserListBold } from "react-icons/pi";
 import CashBook from './CashBook';
 import Invoice from './Invoice';
 
@@ -40,16 +42,18 @@ export const Sidebar = () => {
                         </details>
                     </li>
                     <li><Link href="/payment"><RiSecurePaymentLine size={20} /> TRANSACTION</Link></li>
-                       <li>
+                    <li>
                         <details>
                             <summary><GoDatabase size={20} /> STOCK REPORT</summary>
                             <ul>
-                            <li><Link href="/stockreport">STOCK SUMMARY</Link></li>
-                            <li><Link href="/stock-details">STOCK DETAILS</Link></li>
+                                <li><Link href="/stockreport">STOCK SUMMARY</Link></li>
+                                <li><Link href="/stock-details">STOCK DETAILS</Link></li>
+                                <li><Link href="/product-entry">ENTRY REPORT</Link></li>
+                                <li><Link href="/pricedrop-list">PRICE-DROP LIST</Link></li>
                             </ul>
                         </details>
-                       </li>
-                   
+                    </li>
+
                     <li>
                         <details>
                             <summary><TbReportSearch size={20} /> SALE REPORT</summary>
@@ -64,19 +68,11 @@ export const Sidebar = () => {
                             <summary><MdOutlinePayments size={20} /> PAYMENT REPORT</summary>
                             <ul>
                                 <li><Link href="/expense-report"> EXPENSE REPORT</Link></li>
-                                <li><Link href="/paymentreport"> RECEIVE REPORT</Link></li>
+                                <li><Link href="/payment-report"> PAYMENT REPORT</Link></li>
                             </ul>
                         </details>
                     </li>
-                    <li>
-                        <details>
-                            <summary><PiNotebook size={20} /> LEDGER BOOK</summary>
-                            <ul>
-                                <li><Link href="/supplier-ledger">SUPPLIER LEDGER</Link></li>
-                                <li><Link href="/stock-ledger">RETAILER LEDGER</Link></li>
-                            </ul>
-                        </details>
-                    </li>
+                    <li><Link href="/supplier-report"><PiUserListBold size={20} /> SUPPLIER REPORT</Link></li>
                     <li>
                         <details>
                             <summary><a className='flex gap-2'><VscRepo size={20} /> CASH BOOK </a></summary>
@@ -97,7 +93,15 @@ export const Sidebar = () => {
                             </ul>
                         </details>
                     </li>
-                    <li><Link href="/profitloss"><MdOutlineInterests size={20} /> PROFIT / LOSS</Link></li>
+                    <li><details>
+                        <summary><MdOutlineInterests size={20} />PROFIT REPORT</summary>
+                        <ul>
+                            <li> <Link href="/profit-report">PROFIT / LOSS</Link></li>
+                            <li> <Link href="/profit-withdraws">PROFIT WITHDRAW</Link></li>
+                        </ul>
+                    </details>
+                    </li>
+                    <li><Link href=""><MdAccountBalance size={20} /> BALANCE SHEET</Link></li>
                     <li><Link href="/adminstration"><GrUserAdmin size={20} /> ADMINSTRATION</Link></li>
 
 

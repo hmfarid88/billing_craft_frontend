@@ -1,5 +1,6 @@
 import InvoiceNote from '@/app/components/InvoiceNote'
 import ShopInfo from '@/app/components/ShopInfo'
+import Theme from '@/app/components/Theme'
 import VatInfo from '@/app/components/VatInfo'
 import React from 'react'
 
@@ -21,6 +22,11 @@ const page = () => {
           <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="INVOICE NOTE" />
           <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
             <InvoiceNote />
+          </div>
+
+          <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="THEME SETTING" />
+          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <Theme />
           </div>
         </div>
 

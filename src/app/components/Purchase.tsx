@@ -12,7 +12,7 @@ const Purchase = () => {
     const [pending, setPending] = useState(false);
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
-  
+   
     const [category, setPcatatory] = useState("");
     const [brand, setBrand] = useState("");
     const [productName, setPname] = useState("");
@@ -85,6 +85,7 @@ const Purchase = () => {
         .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
   
+    
     useEffect(() => {
       fetch(`${apiBaseUrl}/api/getColorItem?username=${username}`)
         .then(response => response.json())
