@@ -87,7 +87,7 @@ const Page = () => {
                 <h4 className="font-bold">PRODUCT ENTRY REPORT</h4>
                 <h4 className="pb-5">{startDate} TO {endDate}</h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
+                    <table className="table table-xs">
                         <thead>
                             <tr>
                             <th>SN</th>
