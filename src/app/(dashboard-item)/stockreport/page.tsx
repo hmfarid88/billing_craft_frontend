@@ -6,6 +6,7 @@ import { FcPrint } from "react-icons/fc";
 import { FcAutomatic } from "react-icons/fc";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface Product {
   category: string;
@@ -25,7 +26,7 @@ const Page = () => {
   const uname = useAppSelector((state) => state.username.username);
   const username = uname ? uname.username : 'Guest';
   const [pending, setPending] = useState(false);
-  const [productNo, setProductNo] = useState('');
+  const [productno, setProductno] = useState('');
   const [supplier, setSupplier] = useState("");
   const [productName, setProductName] = useState("");
   const [pprice, setPprice] = useState(0);
@@ -38,17 +39,18 @@ const Page = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filterCriteria, setFilterCriteria] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
+  const router = useRouter();
   const [selectedValue, setSelectedValue] = useState(null);
 
-  const handleRadioChange = (e:any) => {
+  const handleRadioChange = (e: any) => {
     setSelectedValue(e.target.value);
   };
   const handleProductEdit = () => {
-    if (!productNo) {
+    if (!productno) {
       toast.info("Product No Required!")
       return;
     }
+    router.push(`/product-edit?productno=${productno}`);
 
   }
   const contentToPrint = useRef(null);
@@ -218,7 +220,7 @@ const Page = () => {
           <div className="flex items-center justify-center">
             <label className="form-control w-full max-w-xs pt-3">
               <div className="flex items-center justify-between">
-                <input type="text" value={productNo} name="colorItem" onChange={(e: any) => setProductNo(e.target.value)} placeholder="Product No" className="input input-bordered w-3/4 max-w-xs" />
+                <input type="text" value={productno} name="colorItem" onChange={(e: any) => setProductno(e.target.value)} placeholder="Product No" className="input input-bordered w-3/4 max-w-xs" />
                 <button onClick={handleProductEdit} className="btn btn-square btn-success">GO</button>
               </div>
             </label>
@@ -274,7 +276,7 @@ const Page = () => {
                   <input type="number" value={newSprice} onChange={(e) => setNewSprice(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
-                <div className="label">
+                  <div className="label">
                     <span className="label-text-alt">SAVE IN PRICEDROP</span>
                   </div>
                   <label className="cursor-pointer label gap-3">

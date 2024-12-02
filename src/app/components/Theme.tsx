@@ -22,7 +22,7 @@ const Theme = () => {
     }
     return (
         <div className='flex items-center justify-center'>
-            <select className="select select-accent w-44" value={theme} onChange={e => setTheme(e.target.value)}>
+            <select className="select select-accent w-36" value={theme} onChange={e => setTheme(e.target.value)}>
                 <option selected disabled>Theme</option>
                 <option value="corporate">Default</option>
                 <option value="system">Dark</option>

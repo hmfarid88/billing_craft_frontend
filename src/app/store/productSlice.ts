@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import swal from 'sweetalert';
 
 interface Product {
@@ -30,7 +30,7 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         addProducts: (state, action: PayloadAction<Product>) => {
-            const exist = state.products.find((pro) => pro.username===action.payload.username && pro.productno === action.payload.productno)
+            const exist = state.products.find((pro) => pro.username === action.payload.username && pro.productno === action.payload.productno)
             if (exist) {
                 swal("Oops!", "This product is already added!", "error");
             } else {
@@ -43,7 +43,7 @@ export const productSlice = createSlice({
             const id = action.payload;
             state.products = state.products.filter((product) => product.id !== id);
         },
-        
+
         deleteAllProducts: (state, action: PayloadAction<string>) => {
             const username = action.payload;
             state.products = state.products.filter((product) => product.username !== username);
@@ -51,6 +51,10 @@ export const productSlice = createSlice({
     },
 });
 
+export const selectTotalQuantity = createSelector(
+    (state: { products: ProductState }) => state.products.products,
+    (products) => products.reduce((total, product) => total + 1, 0)
+);
 export const { addProducts, deleteProduct, deleteAllProducts } = productSlice.actions;
 
 export default productSlice.reducer;

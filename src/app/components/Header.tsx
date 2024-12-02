@@ -5,6 +5,7 @@ import { FcBusinessman } from "react-icons/fc";
 import { deleteSession } from '../lib/auth';
 import { useAppSelector, useAppDispatch } from "@/app/store";
 import { deleteUser } from "@/app/store/usernameSlice"
+import Theme from './Theme';
 
 const Header: React.FC = () => {
   const username = useAppSelector((state) => state.username.username);
@@ -23,6 +24,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className="flex-none gap-2">
+        <Theme/>
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">

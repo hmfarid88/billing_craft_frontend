@@ -10,8 +10,8 @@ import { PiNotebook } from 'react-icons/pi';
 import { VscRepo } from 'react-icons/vsc';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BsDatabaseAdd } from 'react-icons/bs';
-import { IoListSharp } from "react-icons/io5";
 import { PiUserListBold } from "react-icons/pi";
+import { ImBarcode } from "react-icons/im";
 import CashBook from './CashBook';
 import Invoice from './Invoice';
 
@@ -101,7 +101,8 @@ export const Sidebar = () => {
                         </ul>
                     </details>
                     </li>
-                    <li><Link href=""><MdAccountBalance size={20} /> BALANCE SHEET</Link></li>
+                    
+                    <li><Link href="/barcode-generation"><ImBarcode size={20} />MAKE BARCODE</Link></li>
                     <li><Link href="/adminstration"><GrUserAdmin size={20} /> ADMINSTRATION</Link></li>
 
 

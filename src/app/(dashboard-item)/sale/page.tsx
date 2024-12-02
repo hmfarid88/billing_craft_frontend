@@ -64,7 +64,18 @@ const Page: React.FC = () => {
     setReturnAmount(returnAmountValue);
   };
   const selectRef = useRef<any>(null);
+  // const selectRef = useRef(null); // Reference for the select
+  const buttonRef = useRef<HTMLButtonElement>(null); // Reference for the button
 
+  const handleOptionChange = (selectedOption: any) => {
+    setSelectedProid(selectedOption.value);
+    setSelectedProidOption(selectedOption);
+
+    // Focus the button after selecting an option
+    if (buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  };
   useEffect(() => {
     calculateTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,7 +93,7 @@ const Page: React.FC = () => {
     dispatch(deleteProduct(id));
   };
 
- 
+
   const handleUpdateDiscount = (id: any) => {
     dispatch(updateDiscount({ id, discount: disValue }));
   };
@@ -229,13 +240,10 @@ const Page: React.FC = () => {
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}
-            onChange={(selectedOption: any) => {
-              setSelectedProid(selectedOption.value);
-              setSelectedProidOption(selectedOption);
-            }}
+            onChange={handleOptionChange}
             options={productOption}
           />
-          <button onClick={handleProidSubmit} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
+          <button onClick={handleProidSubmit} ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
         </div>
         <div className="flex items-center justify-center w-full p-5">
           <div className="overflow-x-auto max-h-96">
@@ -263,22 +271,30 @@ const Page: React.FC = () => {
                         <input
                           type="number"
                           name="sprice"
-                          value={sprice[p.id] || p.sprice}
+                          value={sprice[p.id] !== undefined ? sprice[p.id] : p.sprice}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const updatedValue = e.target.value;
                             setSprice((prev: any) => ({
                               ...prev,
-                              [p.id]: updatedValue,
+                              [p.id]: updatedValue === "" ? "" : Number(updatedValue),
                             }));
                           }}
                           className="bg-base-100 w-20 p-1 rounded-md border"
                         />
-                        <button onClick={() => {
-                          const updatedValue = sprice[p.id] || p.sprice;
-                          dispatch(updateSprice({ id: p.id, sprice: updatedValue }));
-                        }} className="btn btn-xs btn-outline w-20"> Apply
-                        </button></div>
+                        <button
+                          onClick={() => {
+                            const updatedValue = sprice[p.id] !== undefined ? sprice[p.id] : p.sprice;
+                            if (updatedValue !== "") {
+                              dispatch(updateSprice({ id: p.id, sprice: Number(updatedValue) }));
+                            }
+                          }}
+                          className="btn btn-xs btn-outline w-20"
+                        >
+                          Apply
+                        </button>
+                      </div>
                     </td>
+
                     <td><div className="flex flex-col gap-2">
                       <input type="number" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 p-1 rounded-md border" />
                       <button onClick={() => {
@@ -298,7 +314,7 @@ const Page: React.FC = () => {
 
                       <button onClick={() => {
                         handleDeleteProduct(p.id);
-                      }} className="btn btn-sm btn-circle btn-ghost text-error"> <RxCrossCircled size={20} />
+                      }} className="btn btn-sm btn-circle btn-ghost text-error"> <RxCrossCircled size={24} />
                       </button>
                     </td>
                   </tr>
@@ -320,9 +336,9 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row justify-between">
+      <div className="flex flex-col md:flex-row justify-center items-center">
         <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-5">
+          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">CUSTOMER INFORMATION</h1>
             <label className="input input-bordered flex items-center gap-2">
               <FcManager size={20} />
@@ -339,7 +355,7 @@ const Page: React.FC = () => {
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-5">
+          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">PAYMENT INFORMATION</h1>
             <label className="input input-bordered flex items-center gap-2">
               <HiOutlineReceiptTax size={20} />
@@ -359,7 +375,7 @@ const Page: React.FC = () => {
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-5">
+          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">EXCHANGE INFORMATION</h1>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
               <HiCurrencyBangladeshi size={20} />
@@ -375,8 +391,8 @@ const Page: React.FC = () => {
             </label>
           </div>
         </div>
-        <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg items-center justify-center gap-3 p-5">
+        <div className="flex w-full justify-center p-2">
+          <div className="card shadow shadow-slate-500 max-w-lg items-center justify-center gap-3 p-2">
             <h1 className="tracking-widest font-bold">SUBMIT</h1>
             <button onClick={handleFinalSubmit} disabled={pending} className="btn btn-success btn-circle font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : <MdOutlineNavigateNext size={36} />}</button>
           </div>
