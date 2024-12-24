@@ -1,26 +1,41 @@
+
 "use client"
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React from 'react';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '../store';
 
 const Invoice = () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const uname = useAppSelector((state) => state.username.username);
+    const username = uname ? uname.username : 'Guest';
     const router = useRouter();
-    const [invoiceNo, setInvoiceNo] = useState("");
-    const handleInvoice = (e: any) => {
+
+    const handleInvoice = async (e: any) => {
         e.preventDefault();
-        if(!invoiceNo){
-            toast.warning("Invoice no is required !");
-            return;
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/sales/lastCustomerCid?username=${username}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch invoice number');
+            }
+
+            const data = await response.json();
+            if (data) {
+                router.push(`/invoice?cid=${data.lastCid}`); 
+            } else {
+                toast.warning("No invoice number found!");
+            }
+        } catch (error) {
+           toast.error("An error occurred while fetching invoice number.");
         }
-        router.push(`/invoice?cid=${invoiceNo}`);
-        setInvoiceNo("");
-    }
+    };
+
     return (
         <div className="flex flex-col gap-3 justify-center font-bold">
-            <input type='text' value={invoiceNo} className='input input-sm input-success w-[150px]' placeholder='Invoice No' onChange={(e: any) => setInvoiceNo(e.target.value)} />
-            <button onClick={handleInvoice} className='btn btn-sm btn-success w-[150px]'> FIND </button>
+            <button onClick={handleInvoice} className='text-sm' > LAST INVOICE </button>
         </div>
-    )
+    );
 }
 
-export default Invoice
+export default Invoice;

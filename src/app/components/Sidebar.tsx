@@ -6,14 +6,18 @@ import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { RiSecurePaymentLine } from 'react-icons/ri';
 import { GoDatabase } from 'react-icons/go';
 import { TbReportSearch } from 'react-icons/tb';
-import { PiNotebook } from 'react-icons/pi';
 import { VscRepo } from 'react-icons/vsc';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BsDatabaseAdd } from 'react-icons/bs';
 import { PiUserListBold } from "react-icons/pi";
+import { AiOutlineFileSearch } from "react-icons/ai";
+import { TbShoppingBagSearch } from "react-icons/tb";
 import { ImBarcode } from "react-icons/im";
 import CashBook from './CashBook';
 import Invoice from './Invoice';
+import FindProduct from './FindProduct';
+import PrevInvoice from './PrevInvoice';
+import Admin from './Admin';
 
 export const Sidebar = () => {
     return (
@@ -85,10 +89,23 @@ export const Sidebar = () => {
                     </li>
                     <li>
                         <details>
-                            <summary><a className='flex gap-2'><PiNotebook size={20} />FIND INVOICE </a></summary>
+                            <summary><a className='flex gap-2'><AiOutlineFileSearch size={20} />FIND INVOICE </a></summary>
                             <ul>
                                 <li>
                                     <Invoice />
+                                </li>
+                                <li>
+                                    <PrevInvoice />
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary><a className='flex gap-2'><TbShoppingBagSearch size={20} />FIND PRODUCT </a></summary>
+                            <ul>
+                                <li>
+                                    <FindProduct />
                                 </li>
                             </ul>
                         </details>
@@ -101,12 +118,17 @@ export const Sidebar = () => {
                         </ul>
                     </details>
                     </li>
-                    
+
                     <li><Link href="/barcode-generation"><ImBarcode size={20} />MAKE BARCODE</Link></li>
-                    <li><Link href="/adminstration"><GrUserAdmin size={20} /> ADMINSTRATION</Link></li>
-
-
-
+                    <li>
+                        <details>
+                            <summary><GrUserAdmin size={20} /> ADMINSTRATION</summary>
+                            <ul>
+                                <li><Admin/></li>
+                            </ul>
+                        </details>
+                    </li>
+                   
                 </ul>
 
             </div>

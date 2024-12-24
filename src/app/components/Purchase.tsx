@@ -445,15 +445,18 @@ const Purchase = () => {
       ProductSubmit(e);
     }
   };
+  
   const ProductSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
+    if (products.length === 0) {
+      toast.warning("Sorry, your product list is empty!");
+      return;
+    }
+  
     try {
-      if (products.length === 0) {
-        toast.warning("Sorry, Your product list is empty!");
-        return;
-      }
-      setPending(true)
+      setPending(true);
+  
       const response = await fetch(`${apiBaseUrl}/api/addProducts`, {
         method: 'POST',
         headers: {
@@ -461,21 +464,22 @@ const Purchase = () => {
         },
         body: JSON.stringify(products),
       });
-
+  
       if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.message);
-      } else {
-        dispatch(deleteAllProducts(username));
-        toast.success("Product added successfully !");
+        const error = await response.json().catch(() => ({ message: 'Something went wrong!' }));
+        toast.info(error.message || "Failed to add products. Please try again!");
+        return;
       }
-
-    } catch (error) {
-      toast.error("Invalid product item !")
+  
+      dispatch(deleteAllProducts(username));
+      toast.success("Product added successfully !");
+    } catch (error: any) {
+      toast.error(error.message || "Invalid product item!");
     } finally {
-      setPending(false)
+      setPending(false);
     }
   };
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full items-center">
       <form onSubmit={handleSubmit}>

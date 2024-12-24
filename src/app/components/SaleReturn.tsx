@@ -10,37 +10,51 @@ const SaleReturn = () => {
     const [pending, setPending] = useState(false);
     const [productno, setProductno] = useState("");
 
-    const submitSaleReturn = async (e: any) => {
+    const confirmSaleReturn = (e: any) => {
         e.preventDefault();
-        if (!productno) {
-            toast.warning("Product no is required");
+        const isConfirmed = window.confirm("Are you sure to return the sale ?");
+        if (isConfirmed) {
+            submitSaleReturn(e);
+        }
+      };
+
+    const submitSaleReturn = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!productno.trim()) {
+            toast.warning("Product no is required.");
             return;
         }
+
         setPending(true);
+
         try {
-            const response = await fetch(`${apiBaseUrl}/api/vatEntry`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productno, username }),
-            });
+            const response = await fetch(
+                `${apiBaseUrl}/sales/saleReturn?username=${encodeURIComponent(username)}&productno=${encodeURIComponent(productno)}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
             if (!response.ok) {
-                toast.info("Sale is not returned !");
+                const errorData = await response.json();
+                toast.info(errorData?.message || "Sale is not returned!");
                 return;
-            } else {
-                toast.success("Sale is returned successfully.")
-                setProductno("");
-
             }
-        } catch (error: any) {
-            toast.error("An error occurred: " + error.message);
+
+            toast.success("Sale is returned successfully.");
+            setProductno("");
+
+        } catch (error) {
+            toast.error("An error occurred: " + (error as Error).message);
         } finally {
             setPending(false);
         }
+    };
 
-    }
     return (
 
         <div className="flex items-center justify-center">
@@ -49,10 +63,10 @@ const SaleReturn = () => {
                     <div className="label">
                         <span className="label-text-alt">PRODUCT NO</span>
                     </div>
-                    <input type="number" name="item" onChange={(e: any) => setProductno(e.target.value)} value={productno} placeholder="Type Here" className="input input-bordered w-full max-w-xs" />
+                    <input type="text" name="productno" onChange={(e: any) => setProductno(e.target.value)} value={productno} placeholder="Type Here" className="input input-bordered w-full max-w-xs" />
                 </label>
                 <label className="form-control w-full max-w-xs">
-                    <button onClick={submitSaleReturn} disabled={pending} className="btn btn-outline btn-success">{pending ? "Wait..." : "RETURN"}</button>
+                    <button onClick={confirmSaleReturn} disabled={pending} className="btn btn-outline btn-success">{pending ? "Wait..." : "RETURN"}</button>
                 </label>
             </div>
 

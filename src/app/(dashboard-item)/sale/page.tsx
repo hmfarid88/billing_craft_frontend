@@ -105,7 +105,7 @@ const Page: React.FC = () => {
   const handleProidSubmit = async (e: any) => {
     e.preventDefault();
     if (!selectedProid) {
-      toast.error("Select an item first.")
+      toast.info("Valid product not found !")
       return;
     }
     try {

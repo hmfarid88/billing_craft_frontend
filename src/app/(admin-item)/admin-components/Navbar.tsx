@@ -38,12 +38,12 @@ const Navbar = () => {
                     <ul className="menu menu-horizontal px-1">
                     <li><Link href="/admin-dashboard">HOME</Link></li>
                     <li><Link href="/adduser">ADD USER</Link></li>
+                    <li><Link href="/addadmin">ADD ADMIN USER</Link></li>
                         <li>
                             <details>
                                 <summary>ITEM 2</summary>
                                 <ul className="p-2">
-                                    <li><a>Submenu 1</a></li>
-                                    <li><a>Submenu 2</a></li>
+                                 <li><a>ITEM 2</a></li>
                                 </ul>
                             </details>
                         </li>

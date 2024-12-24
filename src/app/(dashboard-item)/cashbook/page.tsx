@@ -44,7 +44,6 @@ const Page = () => {
   });
 
   const [payments, setPayments] = useState<Payment[]>([]);
-
   useEffect(() => {
     fetch(`${apiBaseUrl}/cashbook/payments/today?username=${username}&date=${date}`)
       .then(response => response.json())
