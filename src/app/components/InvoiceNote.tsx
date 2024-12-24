@@ -80,7 +80,6 @@ const InvoiceNote = () => {
     }, [apiBaseUrl, username, note]);
 
     return (
-
         <div className="flex flex-col items-center justify-center">
 
             <div className="flex flex-col gap-3 pb-5">
