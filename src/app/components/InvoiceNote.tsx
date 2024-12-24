@@ -35,7 +35,6 @@ const InvoiceNote = () => {
             } else {
                 toast.success("Info added successfully.")
                 setNote("");
-
             }
         } catch (error: any) {
             toast.error("An error occurred: " + error.message);
