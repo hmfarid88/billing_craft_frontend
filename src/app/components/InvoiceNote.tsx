@@ -41,7 +41,6 @@ const InvoiceNote = () => {
         } finally {
             setPending(false);
         }
-
     }
     const handleDelete = async (id: any) => {
         try {
