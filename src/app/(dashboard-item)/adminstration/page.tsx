@@ -6,40 +6,25 @@ import SaleReturn from '@/app/components/SaleReturn'
 import ShopInfo from '@/app/components/ShopInfo'
 import UserChange from '@/app/components/UserChange'
 import VatInfo from '@/app/components/VatInfo'
+import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-interface Props {
-    searchParams: { [key: string]: string | undefined };
-}
-const Page = ({ searchParams }: Props) => {
-    
+const Page = () => {
+
+    const searchParams = useSearchParams();
+    const access = searchParams.get('access');
     const [isAuthorized, setIsAuthorized] = useState(false);
-    
+
     useEffect(() => {
-        if (searchParams?.access === "granted") {
-            setIsAuthorized(true);
-        } else {
-            setIsAuthorized(false);
-        }
-    }, [searchParams]);
+        setIsAuthorized(access === "granted");
+    }, [access]);
 
     if (!isAuthorized) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="text-center p-6 bg-red-100 border border-red-300 rounded-lg">
-                    <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
-                    <p className="mt-2 text-gray-700">
-                        You do not have permission to access this page.
-                    </p>
-                    <a
-                        href="/dashboard"
-                        className="mt-4 inline-block px-4 py-2 bg-info text-white rounded hover:bg-blue-700"
-                    >
-                        Go Back to Dashboard
-                    </a>
-                </div>
+            <div className="flex items-center justify-center min-h-[calc(100vh-228px)]">
+                <p className='text-red-500 uppercase font-semibold'>Unauthorized access !!!</p>
             </div>
-        );
+        )
     }
 
     return (
