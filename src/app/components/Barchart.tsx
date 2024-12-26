@@ -6,8 +6,8 @@ import {
 import { useAppSelector } from '../store';
 
 interface SalesData {
-  month: string; // Month Name
-  totalSaleValue: number;
+  month: string;
+  Value: number;
 }
 
 const Barchart = () => {
@@ -16,13 +16,12 @@ const Barchart = () => {
   const username = uname ? uname.username : 'Guest';
   const [data, setData] = useState<SalesData[]>([]);
 
-  // Fetch data from the backend
-  useEffect(() => {
+   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${apiBaseUrl}/sales/last-six-months?username=${username}`);
-        const result = await response.json(); // Corrected: Removed redundant `.then()`
-        setData(result); // Updated: Use `result` directly
+        const result = await response.json(); 
+        setData(result); 
       } catch (error) {
         console.error('Error fetching sales data:', error);
       }
@@ -38,7 +37,7 @@ const Barchart = () => {
           <XAxis dataKey="month" angle={-45} tickMargin={25} />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="totalSaleValue" fill="#82ca9d" />
+          <Bar dataKey="Value" fill="#82ca9d" />
         </BarChart>
       </ResponsiveContainer>
     </div>
