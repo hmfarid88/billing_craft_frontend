@@ -11,14 +11,15 @@ import React, { useEffect, useState } from 'react'
 interface Props {
     searchParams: { [key: string]: string | undefined };
 }
-
 const Page = ({ searchParams }: Props) => {
     
     const [isAuthorized, setIsAuthorized] = useState(false);
-
+    
     useEffect(() => {
         if (searchParams?.access === "granted") {
             setIsAuthorized(true);
+        } else {
+            setIsAuthorized(false);
         }
     }, [searchParams]);
 

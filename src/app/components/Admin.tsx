@@ -18,9 +18,8 @@ const Admin = () => {
             toast.info("Username and password are required!");
             return;
         }
-
         try {
-            const response = await fetch(`${apiBaseUrl}/auth/adminValidate?username=${username}&password=${password}`, {
+            const response = await fetch(`${apiBaseUrl}/auth/adminValidate?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
