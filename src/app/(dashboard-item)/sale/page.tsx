@@ -234,17 +234,19 @@ const Page: React.FC = () => {
         <div className="flex flex-col w-full">
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>
         </div>
-        <div className="flex items-center justify-center z-10">
+        <form onSubmit={handleProidSubmit}>
+        <div className="flex items-center justify-center">
           <Select
-            className="text-black w-64 md:w-96"
+            className="text-black w-64 md:w-96 z-50"
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}
             onChange={handleOptionChange}
             options={productOption}
           />
-          <button onClick={handleProidSubmit} ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
+          <button type="submit" ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
         </div>
+        </form>
         <div className="flex items-center justify-center w-full p-5">
           <div className="overflow-x-auto max-h-96">
             <table className="table table-pin-rows">
@@ -279,7 +281,7 @@ const Page: React.FC = () => {
                               [p.id]: updatedValue === "" ? "" : Number(updatedValue),
                             }));
                           }}
-                          className="bg-base-100 w-20 p-1 rounded-md border"
+                          className="bg-base-100 w-20 input input-xs input-bordered"
                         />
                         <button
                           onClick={() => {
@@ -296,13 +298,13 @@ const Page: React.FC = () => {
                     </td>
 
                     <td><div className="flex flex-col gap-2">
-                      <input type="number" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 p-1 rounded-md border" />
+                      <input type="number" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered" />
                       <button onClick={() => {
                         handleUpdateDiscount(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
                       </button></div>
                     </td>
-                    <td><div className="flex flex-col gap-2"><input type="number" name="offer" placeholder="0.00" onChange={(e: any) => setOfferValue(e.target.value)} className="bg-base-100 w-20 p-1 rounded-md border" />
+                    <td><div className="flex flex-col gap-2"><input type="number" name="offer" placeholder="0.00" onChange={(e: any) => setOfferValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered" />
                       <button onClick={() => {
                         handleUpdateOffer(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply

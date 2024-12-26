@@ -488,7 +488,7 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">ENTRY DATE</span>
             </div>
-            <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="border rounded-md p-2 bg-white text-black  w-full max-w-xs h-[40px]" required />
+            <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered rounded-md bg-white text-black  w-full max-w-xs h-[40px]" required />
           </label>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -512,14 +512,14 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">PURCHASE PRICE</span>
             </div>
-            <input type="number" name="pprice" onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="border rounded-md p-2 w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="number" name="pprice" onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
 
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text-alt">SALE PRICE</span>
             </div>
-            <input type="number" name="rsale" onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="border rounded-md p-2 w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="number" name="rsale" onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -537,14 +537,14 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">SUPPLIER INVOICE NO</span>
             </div>
-            <input type="text" name="sinvoice" onChange={(e: any) => setSinvoice(e.target.value)} placeholder="Type here" className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="text" name="sinvoice" onChange={(e: any) => setSinvoice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md  w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
          
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text-alt">PRODUCT ID</span>
             </div>
-            <input type="text" id="pno" maxLength={15} value={productno} name="pno" placeholder="Type here" onChange={(e: any) => setPno(e.target.value.replace(/\D/g, ""))} className="border rounded-md p-2  w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="text" id="pno" maxLength={15} value={productno} name="pno" placeholder="Type here" onChange={(e: any) => setPno(e.target.value.replace(/\D/g, ""))} className="input input-bordered rounded-md  w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
           <label className="form-control w-full max-w-xs pt-7">
             <button type="submit" className="btn btn-accent btn-sm h-[40px] w-full max-w-xs" >Add Product</button>
