@@ -18,7 +18,7 @@ const PrevInvoice = () => {
         setPhoneNo("");
     }
     return (
-        <div className="flex flex-col gap-3 justify-center font-bold">
+        <div className="flex flex-col gap-3 font-bold">
             <input type='text' value={phoneNo} className='input input-sm input-success w-[150px]' placeholder='Mobile No' onChange={(e: any) => setPhoneNo(e.target.value)} />
             <button onClick={handleInvoice} className='btn btn-sm btn-success w-[150px]'>PREV INVOICE </button>
         </div>

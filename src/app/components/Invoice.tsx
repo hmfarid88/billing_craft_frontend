@@ -32,7 +32,7 @@ const Invoice = () => {
     };
 
     return (
-        <div className="flex flex-col gap-3 justify-center font-bold">
+        <div className="flex flex-col gap-3 justify-center">
             <button onClick={handleInvoice} className='text-sm' > LAST INVOICE </button>
         </div>
     );

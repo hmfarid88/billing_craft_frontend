@@ -91,11 +91,16 @@ export const Sidebar = () => {
                         <details>
                             <summary><a className='flex gap-2'><AiOutlineFileSearch size={20} />FIND INVOICE </a></summary>
                             <ul>
+                                <li> <summary> <Invoice /></summary></li>
                                 <li>
-                                    <Invoice />
-                                </li>
-                                <li>
-                                    <PrevInvoice />
+                                    <details>
+                                        <summary>
+                                            <a>PREV INVOICE</a>
+                                        </summary>
+                                        <ul>
+                                            <li><PrevInvoice /></li>
+                                        </ul>
+                                    </details>
                                 </li>
                             </ul>
                         </details>
@@ -124,11 +129,11 @@ export const Sidebar = () => {
                         <details>
                             <summary><GrUserAdmin size={20} /> ADMINSTRATION</summary>
                             <ul>
-                                <li><Admin/></li>
+                                <li><Admin /></li>
                             </ul>
                         </details>
                     </li>
-                   
+
                 </ul>
 
             </div>
