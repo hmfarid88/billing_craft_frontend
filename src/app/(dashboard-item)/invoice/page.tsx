@@ -115,9 +115,8 @@ const Invoice = () => {
       
         const handleNavigation = (type: string) => {
           if (type === "prev" && prevInvoice.length > 0) {
-        //   const newCid = prevInvoice[0]?.cid;
-          const newCid = 33;
-            if (newCid) {
+          const newCid = prevInvoice[0]?.cid;
+          if (newCid) {
             router.push(`/invoice?cid=${newCid}`);
           } else {
             console.error("No valid CID found for the previous invoice.");
@@ -147,7 +146,7 @@ const Invoice = () => {
           })
           .catch(error => console.error('Error fetching data:', error));
       }, [apiBaseUrl, username]);
-      
+
     const subtotal = invoiceData.reduce((acc, item) => acc + item.sprice, 0);
     const discount = invoiceData.reduce((acc, item) => acc + item.discount, 0);
     const offer = invoiceData.reduce((acc, item) => acc + item.offer, 0);
