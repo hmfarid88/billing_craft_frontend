@@ -79,7 +79,6 @@ const Page = () => {
                         <Currency />
                     </div>
 
-                    {/* Tab 3: Invoice Note */}
                     <input
                         type="radio"
                         name="my_tabs_2"
