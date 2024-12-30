@@ -16,7 +16,7 @@ const BarcodeGenerator: React.FC = () => {
     const generateBarcodes = (quantity: number): string[] => {
         const generatedBarcodes = new Set<string>();
         while (generatedBarcodes.size < quantity) {
-            const uniqueNumber = Math.floor(1000000000 + Math.random() * 9000000000);
+            const uniqueNumber = Math.floor(100000000000000 + Math.random() * 900000000000000);
             generatedBarcodes.add(uniqueNumber.toString());
         }
         return Array.from(generatedBarcodes);
@@ -28,12 +28,12 @@ const BarcodeGenerator: React.FC = () => {
             return;
         }
         const quantity = parseInt(qty as string, 10);
-        if (quantity > 0) {
+        if (quantity > 0 && quantity<=1000) {
             const generated = generateBarcodes(quantity);
             setBarcodes(generated);
             setQty('');
         } else {
-            toast.info("Please enter a valid quantity.");
+            toast.info("Please enter quantity 1-1000.");
         }
     };
 
@@ -42,24 +42,24 @@ const BarcodeGenerator: React.FC = () => {
             <div className="flex justify-between w-full p-5">
                 <div className="flex gap-3">
                     <input
-                        className="input input-bordered"
+                        className="input input-bordered w-full max-w-xs"
                         type="number"
                         value={qty}
                         onChange={(e) => setQty(e.target.value)}
                         placeholder="Enter quantity"
                         min="1"
                     />
-                    <button className="btn btn-outline btn-accent" onClick={handleGenerate}>Generate</button>
+                    <button type='submit' className="btn btn-outline btn-accent" onClick={handleGenerate}>Generate</button>
                 </div>
                 <div className="flex">
                     <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
                 </div>
             </div>
             <div  ref={contentToPrint}
-                className="grid gap-4 pl-5 pr-5"
+                className="grid gap-2 pl-5 pr-5"
                 style={{
                     gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
-                    marginTop: '10px',
+                    marginTop: '5px',
                 }}
             >
                 {barcodes.map((barcode, index) => (

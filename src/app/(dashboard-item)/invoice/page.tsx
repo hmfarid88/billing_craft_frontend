@@ -5,12 +5,15 @@ import { useReactToPrint } from 'react-to-print';
 import { FcPrint, FcPlus, FcDataSheet, FcAdvertising } from "react-icons/fc";
 import Link from 'next/link';
 import Loading from '@/app/loading';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { IoLocationOutline } from 'react-icons/io5';
 import { FaPhoneVolume } from 'react-icons/fa';
 import { AiOutlineMail } from 'react-icons/ai';
+import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
+
 
 const Invoice = () => {
+    const router = useRouter();
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -22,6 +25,8 @@ const Invoice = () => {
     const searchParams = useSearchParams();
     const cid = searchParams.get('cid');
     const [invoiceData, setInvoiceData] = useState<invoiceData[]>([]);
+    const [prevInvoice, setPrevInvoice] = useState<invoiceData[]>([]);
+    const [nextInvoice, setNextInvoice] = useState<invoiceData[]>([]);
 
     interface invoiceData {
         cname: string,
@@ -41,7 +46,8 @@ const Invoice = () => {
         cardAmount: number,
         vatAmount: number,
         received: number,
-        cid: string
+        cid: string,
+        saleId: number
     }
     interface shopData {
         shopName: string,
@@ -75,8 +81,6 @@ const Invoice = () => {
             fetch(`${apiBaseUrl}/api/getInvoiceData?username=${username}&cid=${cid}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Fetched invoice data:', data);
-                    // Update sprice to be pprice if saleType is 'vendor'
                     const updatedData = data.map((item: invoiceData) => {
                         if (item.saleType === 'vendor') {
                             return { ...item, sprice: item.pprice };
@@ -91,16 +95,69 @@ const Invoice = () => {
     const isVendorSale = invoiceData.some(item => item.saleType === 'vendor');
     const saleLink = isVendorSale ? "/vendor-sale" : "/sale";
 
-    if (!invoiceData) {
-        return <div><Loading /></div>;
-    }
+    useEffect(() => {
+        if (invoiceData[0]?.saleId) {
+          const saleId = invoiceData[0].saleId;
+          
+          // Fetch previous invoice
+          fetch(`${apiBaseUrl}/api/getPreviousInvoice?username=${username}&saleId=${saleId}`)
+            .then((response) => response.json())
+            .then((data) =>setPrevInvoice(data))
+            .catch((error) => console.error("Error fetching previous invoice:", error));
+           
+          // Fetch next invoice
+          fetch(`${apiBaseUrl}/api/getNextInvoice?username=${username}&saleId=${saleId}`)
+            .then((response) => response.json())
+            .then((data) => setNextInvoice(data))
+            .catch((error) => console.error("Error fetching next invoice:", error));
+        }
+      }, [apiBaseUrl, username, invoiceData]);
+      
+        const handleNavigation = (type: string) => {
+          if (type === "prev" && prevInvoice.length > 0) {
+        //   const newCid = prevInvoice[0]?.cid;
+          const newCid = 33;
+            if (newCid) {
+            router.push(`/invoice?cid=${newCid}`);
+          } else {
+            console.error("No valid CID found for the previous invoice.");
+          }
+        } else if (type === "next" && nextInvoice.length > 0) {
+          const newCid = nextInvoice[0]?.cid;
+          if (newCid) {
+            router.push(`/invoice?cid=${newCid}`);
+          } else {
+            console.error("No valid CID found for the next invoice.");
+          }
+        } else {
+          console.error("No data found for navigation.");
+        }
+      };
 
+      const [currency, setCurrency] = useState<string>('');
+      useEffect(() => {
+        fetch(`${apiBaseUrl}/api/getCurrency?username=${username}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.currency === 'BDT' || !data.currency) {
+              setCurrency('৳');
+            } else {
+              setCurrency(data.currency);
+            }
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }, [apiBaseUrl, username]);
+      
     const subtotal = invoiceData.reduce((acc, item) => acc + item.sprice, 0);
     const discount = invoiceData.reduce((acc, item) => acc + item.discount, 0);
     const offer = invoiceData.reduce((acc, item) => acc + item.offer, 0);
     const vat = invoiceData.reduce((acc, item) => item.vatAmount, 0);
     const card = invoiceData.reduce((acc, item) => item.cardAmount, 0);
     const received = invoiceData.reduce((acc, item) => item.received, 0);
+
+          if (!invoiceData) {
+        return <div><Loading /></div>;
+    }
     return (
         <div className="container min-h-[calc(100vh-228px)]">
             <div className="flex justify-end pr-10 pt-5 gap-3">
@@ -167,10 +224,10 @@ const Invoice = () => {
                             <p className='uppercase font-semibold text-xs md:text-md'>VAT :</p>
                         </div>
                         <div className="flex flex-col items-end">
-                            <p className='font-semibold text-xs md:text-md'>{subtotal?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{discount?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{offer?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{vat?.toLocaleString('en-IN')}</p>
+                            <p className='font-semibold text-xs md:text-md'>{currency} {subtotal?.toLocaleString('en-IN')}</p>
+                            <p className='font-semibold text-xs md:text-md'>{currency} {discount?.toLocaleString('en-IN')}</p>
+                            <p className='font-semibold text-xs md:text-md'>{currency} {offer?.toLocaleString('en-IN')}</p>
+                            <p className='font-semibold text-xs md:text-md'>{currency} {vat?.toLocaleString('en-IN')}</p>
                         </div>
                     </div>
                     <div className="flex w-full justify-between">
@@ -188,11 +245,11 @@ const Invoice = () => {
                                 ) : null}
                             </div>
                             <div className="flex flex-col items-end">
-                                <p className='font-semibold text-xs md:text-md'>{((subtotal + vat) - discount - offer).toLocaleString('en-IN')}</p>
-                                <p className='font-semibold text-xs md:text-md'>{card?.toLocaleString('en-IN')}</p>
-                                <p className='font-semibold text-xs md:text-md'>{received?.toLocaleString('en-IN')}</p>
-                                {received ? (
-                                    <p className='font-semibold text-xs md:text-md'>{(received-((subtotal + vat) - discount - offer- card)).toLocaleString('en-IN')}</p>
+                                <p className='font-semibold text-xs md:text-md'>{currency} {((subtotal + vat) - discount - offer).toLocaleString('en-IN')}</p>
+                                <p className='font-semibold text-xs md:text-md'>{currency} {card?.toLocaleString('en-IN')}</p>
+                                <p className='font-semibold text-xs md:text-md'>{currency} {received?.toLocaleString('en-IN') || 0}</p>
+                                {received ?(
+                                    <p className='font-semibold text-xs md:text-md'>{currency} {(received - ((subtotal + vat) - discount - offer - card)).toLocaleString('en-IN')}</p>
                                 ) : null}
                             </div>
                         </div>
@@ -201,11 +258,14 @@ const Invoice = () => {
                         {allNotes?.map((item: any, index) => (
                             <tr key={index}>
                                 <td><p className='flex gap-2 text-left'> <FcAdvertising size={20} /> {item.note}</p></td>
-
                             </tr>
                         ))}
                     </div>
                 </div>
+            </div>
+            <div className="flex items-center justify-center gap-10 pb-5">
+                <button className='text-success btn btn-ghost btn-square' onClick={() => handleNavigation("prev")} disabled={!prevInvoice.length}><CiSquareChevLeft size={36} /></button>
+                <button className='text-success btn btn-ghost btn-square' onClick={() => handleNavigation("next")} disabled={!nextInvoice.length}><CiSquareChevRight size={36} /></button>
             </div>
         </div>
     )

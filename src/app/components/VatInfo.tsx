@@ -10,7 +10,7 @@ const VatInfo = () => {
     const [pending, setPending] = useState(false);
 
     const [percent, setPercent] = useState("");
-    
+
     const submitVatInfo = async (e: any) => {
         e.preventDefault();
         if (!percent) {
@@ -24,7 +24,7 @@ const VatInfo = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({percent, username}),
+                body: JSON.stringify({ percent, username }),
             });
 
             if (!response.ok) {
@@ -33,7 +33,7 @@ const VatInfo = () => {
             } else {
                 toast.success("Info added successfully.")
                 setPercent("");
-               
+
             }
         } catch (error: any) {
             toast.error("An error occurred: " + error.message);
@@ -45,9 +45,7 @@ const VatInfo = () => {
     return (
 
         <div className="flex items-center justify-center">
-
             <div className="flex flex-col gap-3">
-                
                 <label className="form-control w-full max-w-xs">
                     <div className="label">
                         <span className="label-text-alt">VAT (%)</span>

@@ -423,12 +423,36 @@ const Purchase = () => {
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username, colorItem, colorDel]);
 
+  const [bulkQty, setBulkQty] = useState(false);
+  const [bulkQuantity, setBulkQuantity] = useState(0);
+  const generateProductNo = () => {
+    return (Math.floor(100000000000000 + Math.random() * 900000000000000)).toString();
+  };
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const product = { id: uid(), username, category, brand, productName, pprice, sprice, color, supplier, supplierInvoice, date, productno }
-    dispatch(addProducts(product));
-    setPno("");
-    document.getElementById('pno')?.focus();
+    if (bulkQty && bulkQuantity > 0) {
+      const products = Array.from({ length: bulkQuantity }).map(() => ({
+        id: uid(),
+        username,
+        category,
+        brand,
+        productName,
+        pprice,
+        sprice,
+        color,
+        supplier,
+        supplierInvoice,
+        date,
+        productno: generateProductNo(),
+      }));
+      products.forEach((product) => dispatch(addProducts(product)));
+      setBulkQuantity(0);
+    } else {
+      const product = { id: uid(), username, category, brand, productName, pprice, sprice, color, supplier, supplierInvoice, date, productno }
+      dispatch(addProducts(product));
+      setPno("");
+      document.getElementById('pno')?.focus();
+    }
   }
 
   const products = useAppSelector((state) => state.products.products);
@@ -445,18 +469,18 @@ const Purchase = () => {
       ProductSubmit(e);
     }
   };
-  
+
   const ProductSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     if (products.length === 0) {
       toast.warning("Sorry, your product list is empty!");
       return;
     }
-  
+
     try {
       setPending(true);
-  
+
       const response = await fetch(`${apiBaseUrl}/api/addProducts`, {
         method: 'POST',
         headers: {
@@ -464,13 +488,13 @@ const Purchase = () => {
         },
         body: JSON.stringify(products),
       });
-  
+
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'Something went wrong!' }));
         toast.info(error.message || "Failed to add products. Please try again!");
         return;
       }
-  
+
       dispatch(deleteAllProducts(username));
       toast.success("Product added successfully !");
     } catch (error: any) {
@@ -479,12 +503,12 @@ const Purchase = () => {
       setPending(false);
     }
   };
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full items-center">
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full items-center">
-        <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text-alt">ENTRY DATE</span>
             </div>
@@ -533,35 +557,57 @@ const Purchase = () => {
             </div>
             <Select className="text-black" name="psupplier" onChange={(selectedOption: any) => setSupplier(selectedOption.value)} options={supplierOption} required />
           </label>
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full max-w-xs pt-1">
             <div className="label">
               <span className="label-text-alt">SUPPLIER INVOICE NO</span>
             </div>
             <input type="text" name="sinvoice" onChange={(e: any) => setSinvoice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md  w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
-         
+
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text-alt">PRODUCT ID</span>
+
+              <span className="label-text-alt">PRODUCT ID / QTY</span>
+
+              <div className="flex gap-2">
+                <span className="label-text-alt">BULK QTY</span>
+                <input type="checkbox" className="checkbox checkbox-success w-[20px] h-[20px]" checked={bulkQty}
+                  onChange={(e) => setBulkQty(e.target.checked)} />
+              </div>
             </div>
-            <input type="text" id="pno" maxLength={15} value={productno} name="pno" placeholder="Type here" onChange={(e: any) => setPno(e.target.value.replace(/\D/g, ""))} className="input input-bordered rounded-md  w-full max-w-xs h-[40px] bg-white text-black" required />
+
+            {!bulkQty && (
+              <input type="text" id="pno" maxLength={15} value={productno} name="pno" placeholder="Enter Product ID" onChange={(e: any) => setPno(e.target.value.replace(/\D/g, ""))} className="input input-bordered rounded-md  w-full max-w-xs h-[40px] bg-white text-black" required />
+            )}
+            {bulkQty && (
+              <label className="form-control w-full max-w-xs">
+                <input
+                  type="number"
+                  name="bulkQuantity"
+                  onChange={(e: any) => setBulkQuantity(Number(e.target.value))}
+                  placeholder="Enter Quantity" max={1000} value={bulkQuantity}
+                  className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black"
+                  required />
+              </label>
+
+            )}
           </label>
           <label className="form-control w-full max-w-xs pt-7">
             <button type="submit" className="btn btn-accent btn-sm h-[40px] w-full max-w-xs" >Add Product</button>
           </label>
         </div>
       </form>
-      
+
       <div className="flex-col items-center justify-center">
-      <div className="flex">
-        <div className="avatar-group -space-x-6 rtl:space-x-reverse">
-          <div className="avatar placeholder">
-            <div className="bg-neutral text-neutral-content w-12">
-              <span>{totalQuantity}</span>
+        <div className="flex">
+          <div className="avatar-group -space-x-6 rtl:space-x-reverse">
+            <div className="avatar placeholder">
+              <div className="bg-neutral text-neutral-content w-12">
+                <span>{totalQuantity}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
         <div className="overflow-x-auto h-80">
           <table className="table table-xs table-pin-rows">
             <thead>

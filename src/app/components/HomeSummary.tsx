@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../store';
-import { HiCurrencyBangladeshi } from "react-icons/hi";
 
 const HomeSummary = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -25,6 +24,7 @@ const HomeSummary = () => {
   const [monthlyTotalValue, setMonthlySaleValue] = useState<number>(0);
   const [payValue, setPayValue] = useState<number>(0);
   const [recvValue, setRecvValue] = useState<number>(0);
+  
 
   const dashboardData = [
     { id: 1, title: "Stock Today" },
@@ -33,7 +33,7 @@ const HomeSummary = () => {
     { id: 4, title: "Payment Today" },
     { id: 5, title: "Cash Balance" }
   ];
-
+interface Currency{currency:string}
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getProductStock?username=${username}`)
       .then(response => response.json())
@@ -127,6 +127,20 @@ const HomeSummary = () => {
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, date, username]);
 
+  const [currency, setCurrency] = useState<string>('');
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/api/getCurrency?username=${username}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.currency === 'BDT' || !data.currency) {
+          setCurrency('৳');
+        } else {
+          setCurrency(data.currency);
+        }
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, [apiBaseUrl, username]);
+
   return (
     <div className='flex flex-col md:flex-row gap-5 p-4 items-center justify-center w-full'>
       {dashboardData?.map((item) =>
@@ -134,27 +148,27 @@ const HomeSummary = () => {
           {item.title === "Stock Today" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><HiCurrencyBangladeshi size={26} /> {Number(stockValue.toFixed(2)).toLocaleString('en-IN')} | {Number(stockQty.toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number(stockValue.toFixed(2)).toLocaleString('en-IN')}  | {Number(stockQty.toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : item.title === "Sales Today" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><HiCurrencyBangladeshi size={26} /> {Number(saleValue.toFixed(2)).toLocaleString('en-IN')} | {Number(saleQty.toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number(saleValue.toFixed(2)).toLocaleString('en-IN')} | {Number(saleQty.toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : item.title === "Monthly Total" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><HiCurrencyBangladeshi size={26} /> {Number(monthlyTotalValue.toFixed(2)).toLocaleString('en-IN')} | {Number(monthlyTotalQty.toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number(monthlyTotalValue.toFixed(2)).toLocaleString('en-IN')} | {Number(monthlyTotalQty.toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : item.title === "Payment Today" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><HiCurrencyBangladeshi size={26} /> {Number(payValue.toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number(payValue.toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : item.title === "Cash Balance" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><HiCurrencyBangladeshi size={26} /> {Number((((netSumAmount + saleValue + recvValue) - payValue)).toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number((((netSumAmount + saleValue + recvValue) - payValue)).toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : (
             <p>{item.title}</p>

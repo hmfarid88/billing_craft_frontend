@@ -40,7 +40,7 @@ const Admin = () => {
     };
     return (
         <div className="flex flex-col gap-3 justify-center items-center font-bold">
-            <input type='text' placeholder='Password' className='input input-sm input-success w-full max-w-xs' value={password} onChange={(e: any) => setPassword(e.target.value)} />
+            <input type='password' placeholder='Password' className='input input-sm input-success w-full max-w-xs' value={password} onChange={(e: any) => setPassword(e.target.value)} />
             <button onClick={handleAdmin} className='btn btn-sm btn-success w-full max-w-xs'> GO </button>
         </div>
     )

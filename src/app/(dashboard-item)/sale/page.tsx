@@ -70,7 +70,7 @@ const Page: React.FC = () => {
   const handleOptionChange = (selectedOption: any) => {
     setSelectedProid(selectedOption.value);
     setSelectedProidOption(selectedOption);
-
+   
     // Focus the button after selecting an option
     if (buttonRef.current) {
       buttonRef.current.focus();
@@ -102,46 +102,46 @@ const Page: React.FC = () => {
   };
 
 
-  const handleProidSubmit = async (e: any) => {
-    e.preventDefault();
-    if (!selectedProid) {
-      toast.info("Valid product not found !")
-      return;
-    }
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedProid}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (data.proId && data.brand && data.color && data.productName && data.productno && data.sprice) {
+  // const handleProidSubmit = async (e:any) => {
+  //   e.preventDefault();
+  //   if (!selectedProid) {
+  //     toast.info("Valid product not found !")
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedProid}`);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     if (data.proId && data.brand && data.color && data.productName && data.productno && data.sprice) {
 
-        const productToSale = {
-          id: uid(),
-          proId: data.proId,
-          brand: data.brand,
-          color: data.color,
-          productName: data.productName,
-          productno: data.productno,
-          sprice: data.sprice,
-          discount: 0,
-          offer: 0,
-          username: username
-        };
-        dispatch(addProducts(productToSale));
-        setSelectedProid("");
-        setSelectedProidOption(null);
-        if (selectRef.current) {
-          selectRef.current.focus();
-        }
-      } else {
-        toast.error("Incomplete data information !")
-      }
+  //       const productToSale = {
+  //         id: uid(),
+  //         proId: data.proId,
+  //         brand: data.brand,
+  //         color: data.color,
+  //         productName: data.productName,
+  //         productno: data.productno,
+  //         sprice: data.sprice,
+  //         discount: 0,
+  //         offer: 0,
+  //         username: username
+  //       };
+  //       dispatch(addProducts(productToSale));
+  //       setSelectedProid("");
+  //       setSelectedProidOption(null);
+  //       if (selectRef.current) {
+  //         selectRef.current.focus();
+  //       }
+  //     } else {
+  //       toast.error("Incomplete data information !")
+  //     }
 
-    } catch (error) {
-      console.error('Error fetching product:', error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error fetching product:', error);
+  //   }
+  // };
 
   const productInfo = saleProducts.map(product => ({
     sprice: product.sprice,
@@ -208,7 +208,7 @@ const Page: React.FC = () => {
         const transformedData = data.map((item: any) => ({
           id: item.proId,
           value: item.proId,
-          label: item.productName + ", " + item.productno,
+          label: item.productName + ", " + item.productno
         }));
         setProductOption(transformedData);
       })
@@ -225,6 +225,19 @@ const Page: React.FC = () => {
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
 
+  const [currency, setCurrency] = useState<string>('');
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/api/getCurrency?username=${username}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.currency === 'BDT' || !data.currency) {
+          setCurrency('৳');
+        } else {
+          setCurrency(data.currency);
+        }
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, [apiBaseUrl, username]);
   return (
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex flex-col">
@@ -234,19 +247,56 @@ const Page: React.FC = () => {
         <div className="flex flex-col w-full">
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>
         </div>
-        <form onSubmit={handleProidSubmit}>
+        
         <div className="flex items-center justify-center">
           <Select
             className="text-black w-64 md:w-96 z-50"
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}
-            onChange={handleOptionChange}
             options={productOption}
+            // onChange={handleOptionChange}
+
+            onChange={async (selectedOption: any) => {
+              if (!selectedOption) return;
+              setSelectedProid(selectedOption.value);
+              setSelectedProidOption(selectedOption);
+      
+              try {
+                  const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedOption.value}`);
+                  if (!response.ok) {
+                      toast.error("Error fetching product data");
+                      return;
+                  }
+                  const data = await response.json();
+                  const productToSale = {
+                    id: uid(),
+                    proId: data.proId,
+                    brand: data.brand,
+                    color: data.color,
+                    productName: data.productName,
+                    productno: data.productno,
+                    sprice: data.sprice,
+                    discount: 0,
+                    offer: 0,
+                    username: username
+                  };
+      
+                  dispatch(addProducts(productToSale));
+                  setSelectedProid("");
+                  setSelectedProidOption(null);
+                  if (selectRef.current) {
+                      selectRef.current.focus();
+                  }
+              } catch (error) {
+                  console.error('Error fetching product:', error);
+               
+              }
+          }}
           />
-          <button type="submit" ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button>
+          {/* <button onClick={handleProidSubmit} ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button> */}
         </div>
-        </form>
+    
         <div className="flex items-center justify-center w-full p-5">
           <div className="overflow-x-auto max-h-96">
             <table className="table table-pin-rows">
@@ -330,7 +380,7 @@ const Page: React.FC = () => {
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td className="text-lg font-semibold">{total.toLocaleString('en-IN')}</td>
+                  <td className="text-lg font-semibold">{currency} {total.toLocaleString('en-IN')}</td>
                   <td></td>
                 </tr>
               </tfoot>
@@ -365,7 +415,7 @@ const Page: React.FC = () => {
               <input type="number" className="grow" value={vatAmount.toFixed(2)} readOnly placeholder="Vat" />
             </label>
             <label className="input input-bordered flex items-center gap-2">
-              <HiCurrencyBangladeshi size={20} />
+            <div className="text-lg">{currency}</div>
               <span className="text-sm">TOTAL</span>
               <input type="number" className="grow" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
@@ -380,7 +430,7 @@ const Page: React.FC = () => {
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">EXCHANGE INFORMATION</h1>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
-              <HiCurrencyBangladeshi size={20} />
+            <div className="text-lg">{currency}</div>
               <input type="text" className="grow" value={Number((total + vatAmount).toFixed(2)).toLocaleString('en-IN')} placeholder="Total Amount" readOnly />
             </label>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">

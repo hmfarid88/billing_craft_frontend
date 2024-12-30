@@ -1,6 +1,7 @@
 "use client"
 import AdminChange from '@/app/components/AdminChange'
 import BalanceSheet from '@/app/components/BalanceSheet'
+import Currency from '@/app/components/Currency'
 import InvoiceNote from '@/app/components/InvoiceNote'
 import SaleReturn from '@/app/components/SaleReturn'
 import ShopInfo from '@/app/components/ShopInfo'
@@ -63,6 +64,19 @@ const Page = () => {
                         className="tab-content bg-base-100 border-base-300 rounded-box p-6"
                     >
                         <VatInfo />
+                    </div>
+                    <input
+                        type="radio"
+                        name="my_tabs_2"
+                        role="tab"
+                        className="tab"
+                        aria-label="CURRENCY"
+                    />
+                    <div
+                        role="tabpanel"
+                        className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+                    >
+                        <Currency />
                     </div>
 
                     {/* Tab 3: Invoice Note */}

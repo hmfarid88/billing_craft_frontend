@@ -39,15 +39,8 @@ const Navbar = () => {
                     <li><Link href="/admin-dashboard">HOME</Link></li>
                     <li><Link href="/adduser">ADD USER</Link></li>
                     <li><Link href="/addadmin">ADD ADMIN USER</Link></li>
-                        <li>
-                            <details>
-                                <summary>ITEM 2</summary>
-                                <ul className="p-2">
-                                 <li><a>ITEM 2</a></li>
-                                </ul>
-                            </details>
-                        </li>
-                        <li><a>ITEM 3</a></li>
+                    <li><Link href="/user-pass">USER PASSWORD</Link></li>
+                       
                     </ul>
                 </div>
                 <div className="navbar-end">
