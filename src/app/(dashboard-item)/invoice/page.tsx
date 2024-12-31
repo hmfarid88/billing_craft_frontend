@@ -25,8 +25,8 @@ const Invoice = () => {
     const searchParams = useSearchParams();
     const cid = searchParams.get('cid');
     const [invoiceData, setInvoiceData] = useState<invoiceData[]>([]);
-    const [prevInvoice, setPrevInvoice] = useState<invoiceData[]>([]);
-    const [nextInvoice, setNextInvoice] = useState<invoiceData[]>([]);
+    const [prevInvoice, setPrevInvoice] = useState("");
+    const [nextInvoice, setNextInvoice] = useState("");
 
     interface invoiceData {
         cname: string,
@@ -67,7 +67,6 @@ const Invoice = () => {
 
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
-
         fetch(`${apiBaseUrl}/shop/getInvoiceNote?username=${username}`)
             .then(response => response.json())
             .then(data => {
@@ -102,34 +101,34 @@ const Invoice = () => {
           // Fetch previous invoice
           fetch(`${apiBaseUrl}/api/getPreviousInvoice?username=${username}&saleId=${saleId}`)
             .then((response) => response.json())
-            .then((data) =>setPrevInvoice(data))
+            .then((data) =>setPrevInvoice(data.cid))
             .catch((error) => console.error("Error fetching previous invoice:", error));
            
           // Fetch next invoice
           fetch(`${apiBaseUrl}/api/getNextInvoice?username=${username}&saleId=${saleId}`)
             .then((response) => response.json())
-            .then((data) => setNextInvoice(data))
+            .then((data) => setNextInvoice(data.cid))
             .catch((error) => console.error("Error fetching next invoice:", error));
         }
       }, [apiBaseUrl, username, invoiceData]);
-      
+     
         const handleNavigation = (type: string) => {
           if (type === "prev" && prevInvoice.length > 0) {
-          const newCid = prevInvoice[0]?.cid;
+          const newCid = prevInvoice;
           if (newCid) {
             router.push(`/invoice?cid=${newCid}`);
           } else {
-            console.error("No valid CID found for the previous invoice.");
+            console.error("No valid invoice found !");
           }
         } else if (type === "next" && nextInvoice.length > 0) {
-          const newCid = nextInvoice[0]?.cid;
+          const newCid = nextInvoice;
           if (newCid) {
             router.push(`/invoice?cid=${newCid}`);
           } else {
-            console.error("No valid CID found for the next invoice.");
+            console.error("No valid invoice found !");
           }
         } else {
-          console.error("No data found for navigation.");
+          console.error("No data found !");
         }
       };
 
