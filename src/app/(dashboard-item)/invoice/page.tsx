@@ -10,6 +10,7 @@ import { IoLocationOutline } from 'react-icons/io5';
 import { FaPhoneVolume } from 'react-icons/fa';
 import { AiOutlineMail } from 'react-icons/ai';
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
+import { toWords } from 'number-to-words';
 
 
 const Invoice = () => {
@@ -152,7 +153,9 @@ const Invoice = () => {
     const vat = invoiceData.reduce((acc, item) => item.vatAmount, 0);
     const card = invoiceData.reduce((acc, item) => item.cardAmount, 0);
     const received = invoiceData.reduce((acc, item) => item.received, 0);
-
+    const total = (subtotal + vat) - discount - offer;
+    const totalInWords = toWords(total);
+    
           if (!invoiceData) {
         return <div><Loading /></div>;
     }
@@ -234,7 +237,7 @@ const Invoice = () => {
                     </div>
                     <div className="flex w-full justify-end">
                         <div className="flex w-1/2 gap-5 justify-end">
-                            <div className="flex flex-col items-end">
+                           <div className="flex flex-col items-end">
                                 <p className='uppercase font-semibold text-xs md:text-md'>TOTAL :</p>
                                 <p className='uppercase font-semibold text-xs md:text-md'>CARD PAY :</p>
                                 <p className='uppercase font-semibold text-xs md:text-md'>RECEIVED :</p>
@@ -243,15 +246,18 @@ const Invoice = () => {
                                 ) : null}
                             </div>
                             <div className="flex flex-col items-end">
-                                <p className='font-semibold text-xs md:text-md'>{currency} {((subtotal + vat) - discount - offer).toLocaleString('en-IN')}</p>
+                                <p className='font-semibold text-xs md:text-md'>{currency} {total.toLocaleString('en-IN')}</p>
                                 <p className='font-semibold text-xs md:text-md'>{currency} {card?.toLocaleString('en-IN')}</p>
                                 <p className='font-semibold text-xs md:text-md'>{currency} {received?.toLocaleString('en-IN') || 0}</p>
                                 {received ?(
-                                    <p className='font-semibold text-xs md:text-md'>{currency} {(received - ((subtotal + vat) - discount - offer - card)).toLocaleString('en-IN')}</p>
+                                    <p className='font-semibold text-xs md:text-md'>{currency} {(received - (total - card)).toLocaleString('en-IN')}</p>
                                 ) : null}
+                                 
                             </div>
+                            
                         </div>
                     </div>
+                    <div className="flex items-end justify-end capitalize pt-2"><p className='font-semibold text-sm'>(In Words : {totalInWords})</p></div>
                     <div className="flex flex-col pt-5 capitalize">
                         {allNotes?.map((item: any, index) => (
                             <tr key={index}>

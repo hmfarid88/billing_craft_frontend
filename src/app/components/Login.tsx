@@ -32,18 +32,24 @@ const Login = () => {
             const response = await fetch(`${apiBaseUrl}/auth/userLogin?username=${username}&password=${password}`);
             const data = await response.json();
             if (!response.ok) {
-                toast.error(data.message);
+                toast.info(data.message);
                 return;
             } else {
-                const roles: string = data.roles;
-                createSession(username, roles);
-                dispatch(addUser({ id: uid(), username }));
-                if (data.roles === 'ROLE_USER') {
-                    router.push("/dashboard");
-                } else if (data.roles === 'ROLE_ADMIN') {
-                    router.push("/admin-dashboard");
+                const status: string = data.status;
+                if (status === "OFF") {
+                    toast.info("Sorry, Your login access is off !");
+                    return;
+                } else {
+                    const roles: string = data.roles;
+                    createSession(username, roles);
+                    dispatch(addUser({ id: uid(), username }));
+                    if (data.roles === 'ROLE_USER') {
+                        router.push("/dashboard");
+                    } else if (data.roles === 'ROLE_ADMIN') {
+                        router.push("/admin-dashboard");
+                    }
+                    toast.success("Congrats, login successful!");
                 }
-                toast.success("Congrats, login successful!");
             }
 
         } catch (error) {

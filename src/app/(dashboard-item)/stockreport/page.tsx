@@ -196,7 +196,9 @@ const Page = () => {
                   <td>{product.productName}</td>
                   <td>{product.countBeforeToday}</td>
                   <td>{product.countToday}</td>
-                  <td>{product.countBeforeToday + product.countToday}</td>
+                  <td className={product.countBeforeToday + product.countToday < 3 ? "text-red-500 font-bold" : ""}>
+                    {product.countBeforeToday + product.countToday}
+                  </td>
                 </tr>
               ))}
             </tbody>

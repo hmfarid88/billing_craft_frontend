@@ -9,6 +9,7 @@ type Product = {
     date: string;
     year: string;
     month: string;
+    type: string;
     note: string;
     amount: number;
 
@@ -43,6 +44,7 @@ const Page = () => {
         const filtered = allProducts.filter(product =>
             String(product.year)?.toLowerCase().includes(filterCriteria.toLowerCase()) ||
             String(product.month)?.toLowerCase().includes(filterCriteria.toLowerCase()) ||
+            String(product.type)?.toLowerCase().includes(filterCriteria.toLowerCase()) ||
             String(product.note)?.toLowerCase().includes(filterCriteria.toLowerCase())
         );
         setFilteredProducts(filtered);
@@ -51,11 +53,7 @@ const Page = () => {
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
-    const totalValue = filteredProducts.reduce((total, product) => {
-        return total + product.amount;
-    }, 0);
-
-
+   
     return (
         <div className="container-2xl">
             <div className="flex flex-col w-full min-h-[calc(100vh-228px)] p-4 items-center justify-center">
@@ -81,6 +79,7 @@ const Page = () => {
                                     <th>DATE</th>
                                     <th>YEAR</th>
                                     <th>MONTH</th>
+                                    <th>TYPE</th>
                                     <th>REMARK NOTE</th>
                                     <th>AMOUNT</th>
 
@@ -100,19 +99,14 @@ const Page = () => {
                                             <td>{product?.date}</td>
                                             <td>{product?.year}</td>
                                             <td>{monthName}</td>
-                                            <td>{product?.note}</td>
+                                            <td className="capitalize">{product?.type}</td>
+                                            <td className="capitalize">{product?.note}</td>
                                             <td>{Number(product?.amount?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         </tr>
                                     );
                                 })}
                             </tbody>
-                            <tfoot>
-                                <tr className="font-semibold text-lg">
-                                    <td colSpan={4}></td>
-                                    <td>TOTAL</td>
-                                    <td>{Number(totalValue.toFixed(2)).toLocaleString('en-IN')}</td>
-                                </tr>
-                            </tfoot>
+                           
                         </table>
                     </div>
                 </div>

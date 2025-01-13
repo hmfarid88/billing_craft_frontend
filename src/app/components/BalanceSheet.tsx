@@ -65,7 +65,7 @@ const BalanceSheet = () => {
 
 
     return (
-        <div className='container min-h-screen'>
+        <div className="flex flex-col">
             <div className="flex justify-between pl-5 pr-5">
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>

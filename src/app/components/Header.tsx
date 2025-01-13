@@ -18,7 +18,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="flex navbar bg-base-100 sticky top-0 z-40">
+    <div className="flex flex-col md:flex-row navbar bg-base-100 sticky top-0 z-40">
       <div className="flex-1">
         <a className="btn btn-ghost uppercase text-xl"> {username ? username.username : 'Guest'}</a>
       </div>

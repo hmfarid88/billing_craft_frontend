@@ -3,70 +3,65 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcPrint } from "react-icons/fc";
-import { useSearchParams } from "next/navigation";
-
+import CurrentDate from "@/app/components/CurrentDate";
 interface Product {
-    category: string;
+    id: string;
     brand: string;
-    productName: string;
-    qty: number;
+    category: string;
+    color: string;
     pprice: number;
+    productName: string;
+    productno: string;
+    date: string;
+    time: string;
     sprice: number;
-    discount: number;
+    supplier: string;
+    supplierInvoice: string;
 
 }
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
-
-    const searchParams = useSearchParams();
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
+    const [filterCriteria, setFilterCriteria] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
     });
-
-   
-    const [totalExpense, setTotalExpense] = useState(0)
     useEffect(() => {
-        fetch(`${apiBaseUrl}/payment/getDatewiseExpenseSum?username=${username}&startDate=${startDate}&endDate=${endDate}`)
+        fetch(`${apiBaseUrl}/api/getReturnedStock?username=${username}`)
             .then(response => response.json())
             .then(data => {
-                setTotalExpense(data);
-
+                setAllProducts(data);
+                setFilteredProducts(data);
             })
             .catch(error => console.error('Error fetching products:', error));
-    }, [apiBaseUrl, username, startDate, endDate]);
+    }, [apiBaseUrl, username]);
 
-    const [soldProducts, setSoldProducts] = useState<Product[]>([]);
-    const [filterCriteria, setFilterCriteria] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+           
     useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getDatewiseProfitSale?username=${username}&startDate=${startDate}&endDate=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-                setSoldProducts(data);
-
-            })
-            .catch(error => console.error('Error fetching products:', error));
-    }, [apiBaseUrl, username, startDate, endDate]);
-
-    useEffect(() => {
-        const filtered = soldProducts.filter(product =>
+        const filtered = allProducts.filter(product =>
             (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.supplier?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.supplierInvoice?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
 
         );
         setFilteredProducts(filtered);
-    }, [filterCriteria, soldProducts]);
+    }, [filterCriteria, allProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
+
+    const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
     const totalPprice = filteredProducts.reduce((total, product) => {
         return total + product.pprice;
@@ -74,14 +69,6 @@ const Page = () => {
 
     const totalSprice = filteredProducts.reduce((total, product) => {
         return total + product.sprice;
-    }, 0);
-
-    const totalDiscount = filteredProducts.reduce((total, product) => {
-        return total + product.discount;
-    }, 0);
-
-    const totalQty = filteredProducts.reduce((total, product) => {
-        return total + product.qty;
     }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
@@ -95,56 +82,56 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
+
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">PROFIT / LOSS REPORT</h4>
-                <h4 className="pb-5">{startDate} TO {endDate}</h4>
-                <div className="flex flex-col">
-                    <table className="table table-sm">
+                <h4 className="font-bold">STOCK RETURNED</h4>
+                <h4 className="pb-5"><CurrentDate /></h4>
+                <div className="flex items-center justify-center">
+                    <table className="table table-xs">
                         <thead>
                             <tr>
                                 <th>SN</th>
                                 <th>CATEGORY</th>
                                 <th>BRAND</th>
-                                <th>PRODUCT NAME</th>
-                                <th>QTY</th>
-                                <th>PURCHASE PRICE</th>
-                                <th>SALE PRICE</th>
-                                <th>DISCOUNT</th>
-                                <th>PROFIT</th>
+                                <th>PRODUCT</th>
+                                <th>COLOR</th>
+                                <th>PRODUCT NO</th>
+                                <th>P PRICE</th>
+                                <th>S PRICE</th>
+                                <th>SUPPLIER</th>
+                                <th>S INVOICE</th>
+                                <th>RETURNED DATE</th>
+                                <th>RETURNED TIME</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
-                                    <th>{index + 1}</th>
-                                    <td className="capitalize">{product.category}</td>
-                                    <td className="capitalize">{product.brand}</td>
-                                    <td className="capitalize">{product.productName}</td>
-                                    <td>{product.qty}</td>
+                                    <td>{index + 1}</td>
+                                    <td>{product.category}</td>
+                                    <td>{product.brand}</td>
+                                    <td>{product.productName}</td>
+                                    <td>{product.color}</td>
+                                    <td>{product.productno}</td>
                                     <td>{product.pprice}</td>
                                     <td>{product.sprice}</td>
-                                    <td>{product.discount}</td>
-                                    <td>{product.sprice - product.pprice - product.discount}</td>
+                                    <td>{product.supplier}</td>
+                                    <td>{product.supplierInvoice}</td>
+                                    <td>{product.date}</td>
+                                    <td>{product.time}</td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="font-bold">
-                                <td colSpan={3}></td>
+                            <tr className="font-semibold text-lg">
+                                <td colSpan={4}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalDiscount.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number((totalSprice - totalPprice - totalDiscount).toFixed(2)).toLocaleString('en-IN')}</td>
                             </tr>
                         </tfoot>
                     </table>
-                    <div className="flex flex-col items-end text-xs font-semibold p-5 gap-2">
-                        <label>TOTAL EXPENSE : {Number(totalExpense.toFixed(2)).toLocaleString('en-IN')}</label>
-                        <label>NET PROFIT : {Number((totalSprice - totalPprice - totalDiscount - totalExpense).toFixed(2)).toLocaleString('en-IN')}</label>
-                       
-                    </div>
                 </div>
             </div>
         </div>

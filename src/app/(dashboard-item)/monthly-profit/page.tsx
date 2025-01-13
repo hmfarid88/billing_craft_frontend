@@ -40,10 +40,21 @@ const Page = () => {
 
     const [profitWithdraw, setProfitWithdraw] = useState(0)
     useEffect(() => {
-        fetch(`${apiBaseUrl}/profit/selected-month-sum?username=${username}&year=${year}&month=${month}`)
+        fetch(`${apiBaseUrl}/profit/selected-month-withdrawsum?username=${username}&year=${year}&month=${month}`)
             .then(response => response.json())
             .then(data => {
                 setProfitWithdraw(data);
+
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }, [apiBaseUrl, username, year, month]);
+
+    const [profitDeposit, setProfitDeposit] = useState(0)
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/profit/selected-month-depositsum?username=${username}&year=${year}&month=${month}`)
+            .then(response => response.json())
+            .then(data => {
+                setProfitDeposit(data);
 
             })
             .catch(error => console.error('Error fetching products:', error));
@@ -159,11 +170,12 @@ const Page = () => {
                             </tr>
                         </tfoot>
                     </table>
-                    <div className="flex flex-col items-end text-sm font-semibold p-5 gap-2">
+                    <div className="flex flex-col items-end text-xs font-semibold p-5 gap-2">
                         <label>TOTAL EXPENSE : {Number(totalExpense.toFixed(2)).toLocaleString('en-IN')}</label>
                         <label>NET PROFIT : {Number((totalSprice - totalPprice - totalDiscount - totalExpense).toFixed(2)).toLocaleString('en-IN')}</label>
+                        <label>PROFIT DEPOSIT : {Number(profitDeposit.toFixed(2)).toLocaleString('en-IN')}</label>
                         <label>PROFIT WITHDRAW : {Number(profitWithdraw.toFixed(2)).toLocaleString('en-IN')}</label>
-                        <label>PROFIT REMAINING : {Number((totalSprice - totalPprice - totalDiscount - totalExpense - profitWithdraw).toFixed(2)).toLocaleString('en-IN')}</label>
+                        <label>PROFIT REMAINING : {Number((totalSprice + profitDeposit - totalPprice - totalDiscount - totalExpense - profitWithdraw).toFixed(2)).toLocaleString('en-IN')}</label>
                     </div>
                 </div>
             </div>

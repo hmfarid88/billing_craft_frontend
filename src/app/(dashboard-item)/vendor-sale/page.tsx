@@ -18,7 +18,6 @@ const Page: React.FC = () => {
 
     const [productOption, setProductOption] = useState([]);
     const [vendorOption, setVendorOption] = useState([]);
-    const [selectedProid, setSelectedProid] = useState("");
     const [selectedProidOption, setSelectedProidOption] = useState(null);
 
     const uname = useAppSelector((state) => state.username.username);
@@ -57,40 +56,6 @@ const Page: React.FC = () => {
         dispatch(deleteProduct(id));
     };
 
-    // const handleProidSubmit = async (e: any) => {
-    //     e.preventDefault();
-    //     if (!selectedProid) {
-    //         toast.error("Select an item first.")
-    //         return;
-    //     }
-  
-    //     try {
-    //         const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedProid}`);
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! status: ${response.status}`);
-    //         }
-    //         const data = await response.json();
-
-    //         const productToVendor = {
-    //             id: uid(),
-    //             proId: data.proId,
-    //             brand: data.brand,
-    //             color: data.color,
-    //             productName: data.productName,
-    //             productno: data.productno,
-    //             pprice: data.pprice,
-    //             username: username
-    //         };
-    //         dispatch(addProducts(productToVendor));
-    //         setSelectedProid("");
-    //         setSelectedProidOption(null);
-    //         if (selectRef.current) {
-    //             selectRef.current.focus();
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching product:', error);
-    //     }
-    // };
     const productInfo = saleProducts.map(product => ({
         proId: product.proId,
         saleType: 'vendor',
@@ -186,16 +151,15 @@ const Page: React.FC = () => {
                         value={selectedProidOption}
                         onChange={async (selectedOption: any) => {
                             if (!selectedOption) return;
-                            setSelectedProid(selectedOption.value);
                             setSelectedProidOption(selectedOption);
-                    
+
                             try {
                                 const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedOption.value}`);
                                 if (!response.ok) {
                                     toast.error("Error fetching product data");
                                     return;
                                 }
-                    
+
                                 const data = await response.json();
                                 const productToVendor = {
                                     id: uid(),
@@ -207,21 +171,20 @@ const Page: React.FC = () => {
                                     pprice: data.pprice,
                                     username: username,
                                 };
-                    
+
                                 dispatch(addProducts(productToVendor));
-                                setSelectedProid("");
                                 setSelectedProidOption(null);
                                 if (selectRef.current) {
                                     selectRef.current.focus();
                                 }
                             } catch (error) {
                                 console.error('Error fetching product:', error);
-                             
+
                             }
                         }}
                         options={productOption}
                     />
-                    {/* <button onClick={handleProidSubmit} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button> */}
+
                 </div>
                 <div className="flex items-center justify-center w-full p-5">
                     <div className="overflow-x-auto max-h-96">

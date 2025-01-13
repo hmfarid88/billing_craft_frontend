@@ -25,11 +25,12 @@ const ProfitWithdraw = () => {
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
     const [amount, setAmount] = useState("");
+    const [type, setType] = useState("");
     const [note, setNote] = useState("");
 
     const handleProfitSubmit = async (e: any) => {
         e.preventDefault();
-        if (!month || !year || !amount) {
+        if (!month || !year || !type || !amount) {
             toast.warning("Item is empty !");
             return;
         }
@@ -40,7 +41,7 @@ const ProfitWithdraw = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ date, year, month, amount, note, username }),
+                body: JSON.stringify({ date, year, month, type, amount, note, username }),
             });
 
             if (response.ok) {
@@ -108,7 +109,16 @@ const ProfitWithdraw = () => {
                     <option value="12">DECEMBER</option>
                 </select>
             </label>
-
+            <label className="form-control w-full max-w-xs">
+                <div className="label">
+                    <span className="label-text-alt">PROFIT TYPE</span>
+                </div>
+                <select className='select select-bordered' onChange={(e: any) => { setType(e.target.value) }}>
+                    <option selected disabled>Select . . .</option>
+                    <option value="deposit">PROFIT DEPOSIT</option>
+                    <option value="withdraw">PROFIT WITHDRAW</option>
+                </select>
+            </label>
             <label className="form-control w-full max-w-xs">
                 <div className="label">
                     <span className="label-text-alt">NOTE</span>

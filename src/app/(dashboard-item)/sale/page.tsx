@@ -13,9 +13,10 @@ import { FaCcMastercard } from "react-icons/fa6";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { RxCrossCircled } from "react-icons/rx";
-import { HiCurrencyBangladeshi } from "react-icons/hi2";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { RiHandCoinLine } from "react-icons/ri";
+
+interface customer{customer:string; address:string}
 
 const Page: React.FC = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -28,7 +29,6 @@ const Page: React.FC = () => {
   const [total, setTotal] = useState(0);
 
   const [productOption, setProductOption] = useState([]);
-  const [selectedProid, setSelectedProid] = useState("");
   const [selectedProidOption, setSelectedProidOption] = useState(null);
 
   const uname = useAppSelector((state) => state.username.username);
@@ -64,18 +64,8 @@ const Page: React.FC = () => {
     setReturnAmount(returnAmountValue);
   };
   const selectRef = useRef<any>(null);
-  // const selectRef = useRef(null); // Reference for the select
-  const buttonRef = useRef<HTMLButtonElement>(null); // Reference for the button
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleOptionChange = (selectedOption: any) => {
-    setSelectedProid(selectedOption.value);
-    setSelectedProidOption(selectedOption);
-   
-    // Focus the button after selecting an option
-    if (buttonRef.current) {
-      buttonRef.current.focus();
-    }
-  };
   useEffect(() => {
     calculateTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,48 +91,7 @@ const Page: React.FC = () => {
     dispatch(updateOffer({ id, offer: offerValue }));
   };
 
-
-  // const handleProidSubmit = async (e:any) => {
-  //   e.preventDefault();
-  //   if (!selectedProid) {
-  //     toast.info("Valid product not found !")
-  //     return;
-  //   }
-  //   try {
-  //     const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedProid}`);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     if (data.proId && data.brand && data.color && data.productName && data.productno && data.sprice) {
-
-  //       const productToSale = {
-  //         id: uid(),
-  //         proId: data.proId,
-  //         brand: data.brand,
-  //         color: data.color,
-  //         productName: data.productName,
-  //         productno: data.productno,
-  //         sprice: data.sprice,
-  //         discount: 0,
-  //         offer: 0,
-  //         username: username
-  //       };
-  //       dispatch(addProducts(productToSale));
-  //       setSelectedProid("");
-  //       setSelectedProidOption(null);
-  //       if (selectRef.current) {
-  //         selectRef.current.focus();
-  //       }
-  //     } else {
-  //       toast.error("Incomplete data information !")
-  //     }
-
-  //   } catch (error) {
-  //     console.error('Error fetching product:', error);
-  //   }
-  // };
-
+ 
   const productInfo = saleProducts.map(product => ({
     sprice: product.sprice,
     discount: product.discount,
@@ -156,7 +105,7 @@ const Page: React.FC = () => {
   const handleFinalSubmit = async (e: any) => {
     e.preventDefault();
     if (!cname || !phoneNumber) {
-      toast.info("Customer & Phone Number IS Required !");
+      toast.info("Customer & Phone Number is Required !");
       return;
     }
     if (productInfo.length === 0) {
@@ -238,6 +187,33 @@ const Page: React.FC = () => {
       })
       .catch(error => console.error('Error fetching data:', error));
   }, [apiBaseUrl, username]);
+
+  useEffect(() => {
+    if (phoneNumber.trim().length === 11) { 
+      fetch(`${apiBaseUrl}/customer/customers?username=${username}&phoneNumber=${phoneNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+            setCname(data[0]?.customer || ""); 
+            setAddress(data[0]?.address || "");
+           
+          } else {
+            setCname(""); 
+            setAddress("");
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching customer info:", error);
+          setCname("");
+          setAddress("");
+        });
+    } else {
+      setCname("");
+      setAddress("");
+    }
+  }, [phoneNumber, apiBaseUrl, username]);
+  
+
   return (
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex flex-col">
@@ -247,7 +223,7 @@ const Page: React.FC = () => {
         <div className="flex flex-col w-full">
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>
         </div>
-        
+
         <div className="flex items-center justify-center">
           <Select
             className="text-black w-64 md:w-96 z-50"
@@ -255,48 +231,45 @@ const Page: React.FC = () => {
             autoFocus={true}
             value={selectedProidOption}
             options={productOption}
-            // onChange={handleOptionChange}
-
+           
             onChange={async (selectedOption: any) => {
               if (!selectedOption) return;
-              setSelectedProid(selectedOption.value);
               setSelectedProidOption(selectedOption);
-      
+
               try {
-                  const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedOption.value}`);
-                  if (!response.ok) {
-                      toast.error("Error fetching product data");
-                      return;
-                  }
-                  const data = await response.json();
-                  const productToSale = {
-                    id: uid(),
-                    proId: data.proId,
-                    brand: data.brand,
-                    color: data.color,
-                    productName: data.productName,
-                    productno: data.productno,
-                    sprice: data.sprice,
-                    discount: 0,
-                    offer: 0,
-                    username: username
-                  };
-      
-                  dispatch(addProducts(productToSale));
-                  setSelectedProid("");
-                  setSelectedProidOption(null);
-                  if (selectRef.current) {
-                      selectRef.current.focus();
-                  }
+                const response = await fetch(`${apiBaseUrl}/api/getSingleProduct?proId=${selectedOption.value}`);
+                if (!response.ok) {
+                  toast.error("Error fetching product data");
+                  return;
+                }
+                const data = await response.json();
+                const productToSale = {
+                  id: uid(),
+                  proId: data.proId,
+                  brand: data.brand,
+                  color: data.color,
+                  productName: data.productName,
+                  productno: data.productno,
+                  sprice: data.sprice,
+                  discount: 0,
+                  offer: 0,
+                  username: username
+                };
+
+                dispatch(addProducts(productToSale));
+                setSelectedProidOption(null);
+                if (selectRef.current) {
+                  selectRef.current.focus();
+                }
               } catch (error) {
-                  console.error('Error fetching product:', error);
-               
+                console.error('Error fetching product:', error);
+
               }
-          }}
+            }}
           />
-          {/* <button onClick={handleProidSubmit} ref={buttonRef} className='btn btn-outline btn-success btn-sm ml-2'>ADD</button> */}
+         
         </div>
-    
+
         <div className="flex items-center justify-center w-full p-5">
           <div className="overflow-x-auto max-h-96">
             <table className="table table-pin-rows">
@@ -394,7 +367,7 @@ const Page: React.FC = () => {
             <h1 className="font-bold text-sm">CUSTOMER INFORMATION</h1>
             <label className="input input-bordered flex items-center gap-2">
               <FcManager size={20} />
-              <input type="text" name="customer" className="grow" onChange={(e: any) => setCname(e.target.value)} placeholder="Customer Name" />
+              <input type="text" name="customer" className="grow" value={cname} onChange={(e: any) => setCname(e.target.value)} placeholder="Customer Name" />
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <FcPhone size={20} />
@@ -402,7 +375,7 @@ const Page: React.FC = () => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <FcViewDetails size={20} />
-              <input type="text" name="address" className="grow" onChange={(e: any) => setAddress(e.target.value)} placeholder="Address" />
+              <input type="text" name="address" className="grow" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Address" />
             </label>
           </div>
         </div>
@@ -415,7 +388,7 @@ const Page: React.FC = () => {
               <input type="number" className="grow" value={vatAmount.toFixed(2)} readOnly placeholder="Vat" />
             </label>
             <label className="input input-bordered flex items-center gap-2">
-            <div className="text-lg">{currency}</div>
+              <div className="text-lg">{currency}</div>
               <span className="text-sm">TOTAL</span>
               <input type="number" className="grow" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
@@ -430,7 +403,7 @@ const Page: React.FC = () => {
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">EXCHANGE INFORMATION</h1>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
-            <div className="text-lg">{currency}</div>
+              <div className="text-lg">{currency}</div>
               <input type="text" className="grow" value={Number((total + vatAmount).toFixed(2)).toLocaleString('en-IN')} placeholder="Total Amount" readOnly />
             </label>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">

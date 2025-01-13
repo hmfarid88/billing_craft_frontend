@@ -53,6 +53,7 @@ export const Sidebar = () => {
                                 <li><Link href="/stockreport">STOCK SUMMARY</Link></li>
                                 <li><Link href="/stock-details">STOCK DETAILS</Link></li>
                                 <li><Link href="/product-entry">ENTRY REPORT</Link></li>
+                                <li><Link href="/stock-returned">STOCK RETURNED</Link></li>
                                 <li><Link href="/pricedrop-list">PRICE-DROP LIST</Link></li>
                             </ul>
                         </details>
