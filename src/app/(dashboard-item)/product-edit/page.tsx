@@ -68,14 +68,14 @@ const Page = () => {
             },
             body: JSON.stringify(editableProduct),
         })
-            .then(response => {
+            .then(async response => {
                 setIsSaving(false);
+                const data = await response.json();
+
                 if (response.ok) {
-                    toast.info("Product updated successfully!");
-                } else if (response.status === 404) {
-                    toast.warning("Product not found.");
+                    toast.info(data.message || "Product updated successfully!");
                 } else {
-                    toast.warning("Failed to update product.");
+                    toast.warning(data.message || "Failed to update product.");
                 }
             })
             .catch(error => {
@@ -161,6 +161,17 @@ const Page = () => {
                                                 className="input input-sm max-w-xs w-full input-bordered"
                                                 value={editableProduct.productName}
                                                 onChange={(e) => handleInputChange('productName', e.target.value)}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>PRODUCT NO</th>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="input input-sm max-w-xs w-full input-bordered"
+                                                value={editableProduct.productno}
+                                                onChange={(e) => handleInputChange('productno', e.target.value)}
                                             />
                                         </td>
                                     </tr>

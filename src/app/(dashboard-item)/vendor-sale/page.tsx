@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store";
 import { addProducts, deleteAllProducts, deleteProduct } from "@/app/store/vendorSaleSlice";
 import Select from "react-select";
 import { uid } from 'uid';
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { RxCrossCircled } from "react-icons/rx";
 
 
@@ -91,12 +91,11 @@ const Page: React.FC = () => {
                 },
                 body: JSON.stringify(salesRequest),
             });
-
+           
             if (!response.ok) {
-                toast.error("Product sale not submitted !");
+             toast.error("Vendor sale not submitted !");
                 return;
             }
-
 
             dispatch(deleteAllProducts(username));
             router.push(`/invoice?cid=${cid}`);
@@ -237,7 +236,6 @@ const Page: React.FC = () => {
                 </div>
             </div>
 
-            <ToastContainer autoClose={1000} theme="dark" />
         </div>
     )
 }
