@@ -37,7 +37,7 @@ const Page = () => {
     return (
         <div className="container min-h-screen">
             <div className="flex w-full items-center justify-center">
-              <div className="tabs tabs-bordered w-full p-3 items-center justify-center">
+                <div className="tabs tabs-bordered w-full p-3 items-center justify-center">
                     {/* Tab 1: SETTINGS */}
                     <input type="radio" id="settings-tab" name="my_tabs_2" className="hidden peer/settings" defaultChecked />
                     <label htmlFor="settings-tab" className="tab flex items-center gap-2 cursor-pointer">

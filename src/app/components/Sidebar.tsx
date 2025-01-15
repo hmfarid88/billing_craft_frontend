@@ -18,6 +18,7 @@ import Invoice from './Invoice';
 import FindProduct from './FindProduct';
 import PrevInvoice from './PrevInvoice';
 import Admin from './Admin';
+import Profit from './Profit';
 
 export const Sidebar = () => {
     return (
@@ -119,7 +120,14 @@ export const Sidebar = () => {
                     <li><details>
                         <summary><MdOutlineInterests size={20} />PROFIT REPORT</summary>
                         <ul>
-                            <li> <Link href="/profit-report">PROFIT / LOSS</Link></li>
+                            <li>
+                                <details>
+                                    <summary>PROFIT / LOSS</summary>
+                                    <ul>
+                                        <li><Profit /></li>
+                                    </ul>
+                                </details>
+                            </li>
                             <li> <Link href="/profit-withdraws">PROFIT WITHDRAW</Link></li>
                         </ul>
                     </details>

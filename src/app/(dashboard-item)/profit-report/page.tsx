@@ -6,7 +6,7 @@ import { FcPrint } from "react-icons/fc";
 import DateToDate from "@/app/components/DateToDate";
 import CurrentMonthYear from "@/app/components/CurrentMonthYear";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Product {
     category: string;
@@ -18,6 +18,7 @@ interface Product {
     discount: number;
 
 }
+
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
@@ -114,6 +115,22 @@ const Page = () => {
     const totalQty = filteredProducts.reduce((total, product) => {
         return total + product.qty;
     }, 0);
+
+    const searchParams = useSearchParams();
+    const access = searchParams.get('access');
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
+    useEffect(() => {
+        setIsAuthorized(access === "granted");
+    }, [access]);
+
+    if (!isAuthorized) {
+        return (
+            <div className="flex items-center justify-center min-h-[calc(100vh-228px)]">
+                <p className='text-red-500 uppercase font-semibold'>Unauthorized access !!!</p>
+            </div>
+        )
+    }
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-between pl-5 pr-5 pt-5">
