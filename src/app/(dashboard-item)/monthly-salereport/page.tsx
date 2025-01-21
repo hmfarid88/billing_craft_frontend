@@ -10,6 +10,7 @@ interface Product {
     cname: string;
     phoneNumber: string;
     address: string;
+    soldby: string;
     category: string;
     brand: string;
     productName: string;
@@ -48,6 +49,7 @@ const Page = () => {
         const filtered = soldProducts.filter(product =>
             (product.cname?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.phoneNumber?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
+            (product.soldby?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
             (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
@@ -77,7 +79,7 @@ const Page = () => {
     }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
-            <div className="flex justify-between pl-5 pr-5 pt-5">
+            <div className="flex justify-center p-5">
                 <DateToDate routePath="/datewise-salereport" />
             </div>
             <div className="flex justify-between pl-5 pr-5 pt-5">
@@ -101,6 +103,7 @@ const Page = () => {
                                 <th>SALE TIME</th>
                                 <th>INVOICE NO</th>
                                 <th>CUSTOMER INFO</th>
+                                <th>SOLD BY</th>
                                 <th>PRODUCT</th>
                                 <th>PRODUCT NO</th>
                                 <th>SALE PRICE</th>
@@ -117,6 +120,7 @@ const Page = () => {
                                     <td>{product.time}</td>
                                     <td className="uppercase">{product.cid}</td>
                                     <td className="capitalize">{product.cname}, {product.phoneNumber} {product.address}</td>
+                                    <td className="capitalize">{product.soldby}</td>
                                     <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
                                     <td>{product.productno}</td>
                                     <td>{product.sprice}</td>
@@ -128,7 +132,7 @@ const Page = () => {
                         </tbody>
                         <tfoot>
                             <tr className="font-semibold text-lg">
-                                <td colSpan={5}></td>
+                                <td colSpan={6}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>

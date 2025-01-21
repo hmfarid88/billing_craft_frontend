@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from "@/app/store";
-import { addProducts, deleteAllProducts, deleteProduct } from "@/app/store/vendorSaleSlice";
+import { addProducts, deleteAllProducts, deleteProduct, selectTotalQuantity } from "@/app/store/vendorSaleSlice";
 import Select from "react-select";
 import { uid } from 'uid';
 import { toast } from "react-toastify";
@@ -23,6 +23,7 @@ const Page: React.FC = () => {
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
     const saleProducts = useAppSelector((state) => state.vendorSale.products);
+    const totalQuantity = useAppSelector(selectTotalQuantity);
     const dispatch = useAppDispatch();
 
     const [vendor, setVendor] = useState("");
@@ -142,7 +143,7 @@ const Page: React.FC = () => {
                 <div className="flex flex-col w-full">
                     <div className="divider divider-accent tracking-widest font-bold p-5">VENDOR SALE AREA</div>
                 </div>
-                <div className="flex items-center justify-center z-10">
+                <div className="flex gap-2 items-center justify-center z-10">
                     <Select
                         className="text-black w-64 md:w-96"
                         ref={selectRef}
@@ -183,7 +184,15 @@ const Page: React.FC = () => {
                         }}
                         options={productOption}
                     />
-
+<div className="flex">
+            <div className="avatar-group -space-x-6 rtl:space-x-reverse">
+              <div className="avatar placeholder">
+                <div className="bg-neutral text-neutral-content w-12">
+                  <span>{totalQuantity}</span>
+                </div>
+              </div>
+            </div>
+          </div>
                 </div>
                 <div className="flex items-center justify-center w-full p-5">
                     <div className="overflow-x-auto max-h-96">

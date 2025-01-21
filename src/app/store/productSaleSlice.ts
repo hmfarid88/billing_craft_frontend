@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import swal from 'sweetalert';
 
 
@@ -69,6 +69,11 @@ export const productSaleSlice = createSlice({
     }
 
 })
+export const selectTotalQuantity = createSelector(
+    (state: { productTosale: ProductSaleState }) => state.productTosale.products,
+    (products) => products.reduce((total, product) => total + 1, 0)
+);
+
 export const { addProducts, updateSprice, updateDiscount, updateOffer, deleteProduct, deleteAllProducts } = productSaleSlice.actions;
 
 export default productSaleSlice.reducer;

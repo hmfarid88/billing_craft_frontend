@@ -33,6 +33,7 @@ const Invoice = () => {
         cname: string,
         phoneNumber: string,
         address: string,
+        soldby: string,
         brand: string,
         productName: string,
         productno: string,
@@ -190,6 +191,7 @@ const Invoice = () => {
                             <h4 className='font-semibold text-xs md:text-md uppercase'>Invoice No : {invoiceData[0]?.cid}</h4>
                             <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.date.toLocaleString()}</h4>
                             <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Time : {invoiceData[0]?.time.toLocaleString()}</h4>
+                           {invoiceData[0]?.soldby? ( <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Sold By : {invoiceData[0]?.soldby} </h4>) : null}
                         </div>
                     </div>
                     <div className="w-full pt-2">

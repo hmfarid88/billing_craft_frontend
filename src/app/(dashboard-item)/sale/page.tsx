@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from "@/app/store";
-import { addProducts, updateSprice, updateDiscount, updateOffer, deleteAllProducts, deleteProduct } from "@/app/store/productSaleSlice";
+import { addProducts, updateSprice, updateDiscount, updateOffer, deleteAllProducts, deleteProduct, selectTotalQuantity } from "@/app/store/productSaleSlice";
 import Select from "react-select";
 import { uid } from 'uid';
 import { toast, ToastContainer } from "react-toastify";
@@ -16,7 +16,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { RiHandCoinLine } from "react-icons/ri";
 
-interface customer{customer:string; address:string}
+interface customer { customer: string; address: string }
 
 const Page: React.FC = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -34,11 +34,13 @@ const Page: React.FC = () => {
   const uname = useAppSelector((state) => state.username.username);
   const username = uname ? uname.username : 'Guest';
   const saleProducts = useAppSelector((state) => state.productTosale.products);
+  const totalQuantity = useAppSelector(selectTotalQuantity);
   const dispatch = useAppDispatch();
 
   const [cname, setCname] = useState("");
   const [phoneNumber, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [soldby, setSoldby] = useState("");
   const [cardPay, setCard] = useState(0);
   const [vat, setVat] = useState<number>(0)
   const vatAmount = (total * vat) / 100;
@@ -91,7 +93,7 @@ const Page: React.FC = () => {
     dispatch(updateOffer({ id, offer: offerValue }));
   };
 
- 
+
   const productInfo = saleProducts.map(product => ({
     sprice: product.sprice,
     discount: product.discount,
@@ -115,7 +117,7 @@ const Page: React.FC = () => {
 
     const salesRequest = {
       customer: {
-        cid, cname, phoneNumber, address, cardPay, vatAmount, received, username
+        cid, cname, phoneNumber, address, soldby, cardPay, vatAmount, received, username
       },
       salesItems: productInfo,
     };
@@ -138,6 +140,7 @@ const Page: React.FC = () => {
       setPhone("");
       setCard(0);
       setAddress("");
+      setSoldby("");
       setReceived('');
 
       dispatch(deleteAllProducts(username));
@@ -189,16 +192,16 @@ const Page: React.FC = () => {
   }, [apiBaseUrl, username]);
 
   useEffect(() => {
-    if (phoneNumber.trim().length === 11) { 
+    if (phoneNumber.trim().length === 11) {
       fetch(`${apiBaseUrl}/customer/customers?username=${username}&phoneNumber=${phoneNumber}`)
         .then(response => response.json())
         .then(data => {
-            if (data.length > 0) {
-            setCname(data[0]?.customer || ""); 
+          if (data.length > 0) {
+            setCname(data[0]?.customer || "");
             setAddress(data[0]?.address || "");
-           
+
           } else {
-            setCname(""); 
+            setCname("");
             setAddress("");
           }
         })
@@ -212,7 +215,7 @@ const Page: React.FC = () => {
       setAddress("");
     }
   }, [phoneNumber, apiBaseUrl, username]);
-  
+
 
   return (
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
@@ -224,14 +227,14 @@ const Page: React.FC = () => {
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex items-center gap-2 justify-center">
           <Select
             className="text-black w-64 md:w-96 z-50"
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}
             options={productOption}
-           
+
             onChange={async (selectedOption: any) => {
               if (!selectedOption) return;
               setSelectedProidOption(selectedOption);
@@ -267,11 +270,20 @@ const Page: React.FC = () => {
               }
             }}
           />
-         
+          <div className="flex">
+            <div className="avatar-group -space-x-6 rtl:space-x-reverse">
+              <div className="avatar placeholder">
+                <div className="bg-neutral text-neutral-content w-12">
+                  <span>{totalQuantity}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center justify-center w-full p-5">
           <div className="overflow-x-auto max-h-96">
+
             <table className="table table-pin-rows">
               <thead>
                 <tr>
@@ -361,10 +373,10 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row justify-center items-center">
+      <div className="flex flex-col md:flex-row justify-between">
         <div className="flex w-full justify-center p-5">
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
-            <h1 className="font-bold text-sm">CUSTOMER INFORMATION</h1>
+            <h1 className="font-bold text-sm">CUSTOMER INFO</h1>
             <label className="input input-bordered flex items-center gap-2">
               <FcManager size={20} />
               <input type="text" name="customer" className="grow" value={cname} onChange={(e: any) => setCname(e.target.value)} placeholder="Customer Name" />
@@ -375,49 +387,50 @@ const Page: React.FC = () => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <FcViewDetails size={20} />
-              <input type="text" name="address" className="grow" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Address" />
+              <input type="text" name="address" className="grow w-[100px]" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Address" />
+              |<input type="text" name="soldby" className="grow w-[100px]" onChange={(e: any) => setSoldby(e.target.value)} value={soldby} placeholder="Sold by" />
             </label>
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
-            <h1 className="font-bold text-sm">PAYMENT INFORMATION</h1>
+            <h1 className="font-bold text-sm">PRICE INFO</h1>
             <label className="input input-bordered flex items-center gap-2">
               <HiOutlineReceiptTax size={20} />
               <span className="text-sm">VAT</span>
-              <input type="number" className="grow" value={vatAmount.toFixed(2)} readOnly placeholder="Vat" />
+              <input type="number" className="grow w-[150px]" value={vatAmount.toFixed(2)} readOnly placeholder="Vat" />
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <div className="text-lg">{currency}</div>
               <span className="text-sm">TOTAL</span>
-              <input type="number" className="grow" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
+              <input type="number" className="grow w-[150px]" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <FaCcMastercard size={20} />
-              <input type="number" className="grow" onChange={(e: any) => setCard(e.target.value)} placeholder="Card Payment" />
+              <input type="number" className="grow w-[150px]" onChange={(e: any) => setCard(e.target.value)} placeholder="Card Payment" />
             </label>
 
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
-            <h1 className="font-bold text-sm">EXCHANGE INFORMATION</h1>
+            <h1 className="font-bold text-sm">PAYMENT INFO</h1>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
               <div className="text-lg">{currency}</div>
-              <input type="text" className="grow" value={Number((total + vatAmount).toFixed(2)).toLocaleString('en-IN')} placeholder="Total Amount" readOnly />
+              <input type="text" className="grow w-[150px]" value={Number((total + vatAmount).toFixed(2)).toLocaleString('en-IN')} placeholder="Total Amount" readOnly />
             </label>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
               <FaHandHoldingMedical size={20} />
-              <input type="number" className="grow" value={received} onChange={handleReceivedChange} placeholder="Received Amount" />
+              <input type="number" className="grow w-[150px]" value={received} onChange={handleReceivedChange} placeholder="Received" />
             </label>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
               <RiHandCoinLine size={20} />
-              <input type="text" className="grow" value={returnAmount.toFixed(2)} placeholder="Return Amount" readOnly />
+              <input type="text" className="grow w-[150px]" value={returnAmount.toFixed(2)} placeholder="Return" readOnly />
             </label>
           </div>
         </div>
         <div className="flex w-full justify-center p-2">
-          <div className="card shadow shadow-slate-500 max-w-lg items-center justify-center gap-3 p-2">
+          <div className="card items-center justify-center gap-3 p-2">
             <h1 className="tracking-widest font-bold">SUBMIT</h1>
             <button onClick={handleFinalSubmit} disabled={pending} className="btn btn-success btn-circle font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : <MdOutlineNavigateNext size={36} />}</button>
           </div>
