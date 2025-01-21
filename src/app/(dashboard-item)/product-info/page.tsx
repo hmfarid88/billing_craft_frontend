@@ -89,7 +89,7 @@ const Page = () => {
                                             <tr><td>Invoice</td><td>{product.invoice}</td></tr>
                                             <tr><td>Customer</td><td>{product.cName} {product.phoneNumber}</td></tr>
                                             <tr><td>Sale Date</td><td>{product.saleDate}</td></tr>
-                                            <tr><td>Sale Time</td><td>{product.saleDate}</td></tr>
+                                            <tr><td>Sale Time</td><td>{product.saleTime}</td></tr>
                                         </>
                                     )}
                                 </tbody>

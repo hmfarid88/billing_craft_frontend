@@ -55,6 +55,7 @@ export const selectTotalQuantity = createSelector(
     (state: { products: ProductState }) => state.products.products,
     (products) => products.reduce((total, product) => total + 1, 0)
 );
+
 export const { addProducts, deleteProduct, deleteAllProducts } = productSlice.actions;
 
 export default productSlice.reducer;
