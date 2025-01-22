@@ -85,8 +85,8 @@ const Page = () => {
       <div className="flex justify-between pl-5 pr-5">
         <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
       </div>
-      <div className="w-full card">
-        <div ref={contentToPrint} className="flex flex-col w-full items-center justify-center pt-5">
+      <div className="w-full card  border">
+        <div ref={contentToPrint} className="flex flex-col w-full items-center justify-center pt-5 pb-5">
           <div className="flex flex-col items-center justify-center">
             <h4 className='font-bold'>CASH BOOK</h4>
             <h4 className='font-semibold'>{date}</h4>

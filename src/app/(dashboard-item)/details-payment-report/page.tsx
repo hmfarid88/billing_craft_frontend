@@ -105,7 +105,7 @@ const Page = () => {
                                 ))}
                             </tbody>
                             <tfoot>
-                                <tr className="font-semibold text-lg">
+                                <tr className="font-bold text-sm">
                                     <td colSpan={4}></td>
                                     <td>TOTAL</td>
                                     <td>{Number((totalPayment - totalReceive).toFixed(2)).toLocaleString('en-IN')}</td>

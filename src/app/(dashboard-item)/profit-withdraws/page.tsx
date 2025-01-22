@@ -72,7 +72,7 @@ const Page = () => {
                         <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PROFIT WITHDRAW REPORT</h4>
                             <h4><CurrentDate /></h4>
                         </div>
-                        <table className="table">
+                        <table className="table table-sm">
                             <thead>
                                 <tr>
                                     <th>SN</th>

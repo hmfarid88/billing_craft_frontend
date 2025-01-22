@@ -76,7 +76,7 @@ const Page = () => {
                         <div className="flex flex-col items-center pb-5"><h4 className="font-bold">EXPENSE REPORT</h4>
                             <h4>{startDate} TO {endDate}</h4>
                         </div>
-                        <table className="table text-center">
+                        <table className="table table-sm">
                             <thead>
                                 <tr>
                                     <th>SN</th>
@@ -99,7 +99,7 @@ const Page = () => {
                                 ))}
                             </tbody>
                             <tfoot>
-                                <tr className="font-semibold text-lg">
+                                <tr className="font-bold text-sm">
                                     <td colSpan={3}></td>
                                     <td>TOTAL</td>
                                     <td>{Number(totalValue.toFixed(2)).toLocaleString('en-IN')}</td>

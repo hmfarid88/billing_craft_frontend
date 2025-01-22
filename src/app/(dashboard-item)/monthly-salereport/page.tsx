@@ -95,7 +95,7 @@ const Page = () => {
                 <h4 className="font-bold">SALE REPORT</h4>
                 <h4 className="pb-5"><CurrentMonthYear /></h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-xs">
+                    <table className="table table-sm">
                         <thead>
                             <tr>
                                 <th>SN</th>
@@ -131,7 +131,7 @@ const Page = () => {
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="font-semibold text-lg">
+                            <tr className="font-bold text-sm">
                                 <td colSpan={6}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
