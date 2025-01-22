@@ -167,7 +167,7 @@ const Invoice = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div className="flex justify-center mb-5">
-                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-5 border">
+                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border">
                     <div className="flex w-full justify-between">
                         <h1><FcDataSheet size={50} /></h1>
                         <h1 className='tracking-widest font-bold text-sm md:text-lg'>INVOICE</h1>
@@ -260,10 +260,10 @@ const Invoice = () => {
                         </div>
                     </div>
                     <div className="flex items-end justify-end capitalize pt-2"><p className='font-semibold text-sm'>(In Words : {totalInWords})</p></div>
-                    <div className="flex flex-col pt-5 capitalize">
+                    <div className="flex flex-col pt-5 text-xs font-bold uppercase">
                         {allNotes?.map((item: any, index) => (
                             <tr key={index}>
-                                <td><p className='flex gap-2 text-left'> <FcAdvertising size={20} /> {item.note}</p></td>
+                                <td><p className='flex gap-2 text-left'> <FcAdvertising size={18} /> {item.note}</p></td>
                             </tr>
                         ))}
                     </div>

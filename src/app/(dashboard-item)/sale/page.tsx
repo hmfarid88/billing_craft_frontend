@@ -16,7 +16,6 @@ import { RxCrossCircled } from "react-icons/rx";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { RiHandCoinLine } from "react-icons/ri";
 
-interface customer { customer: string; address: string }
 
 const Page: React.FC = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -24,6 +23,7 @@ const Page: React.FC = () => {
   const [date, setDate] = useState('');
   const [pending, setPending] = useState(false);
   const [disValue, setDisValue] = useState("");
+  const [disPercent, setDisPercent] = useState<number>(0);
   const [sprice, setSprice] = useState<{ [key: string]: string | number }>({});
   const [offerValue, setOfferValue] = useState("");
   const [total, setTotal] = useState(0);
@@ -66,8 +66,7 @@ const Page: React.FC = () => {
     setReturnAmount(returnAmountValue);
   };
   const selectRef = useRef<any>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
+  
   useEffect(() => {
     calculateTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +88,13 @@ const Page: React.FC = () => {
   const handleUpdateDiscount = (id: any) => {
     dispatch(updateDiscount({ id, discount: disValue }));
   };
+  
+  const handlePercentDiscount = (id: any) => {
+    const sprice = saleProducts.find((product) => product.id === id)?.sprice || 0;
+    const discount = (sprice * disPercent) / 100;
+    dispatch(updateDiscount({ id, discount }));
+  };
+
   const handleUpdateOffer = (id: any) => {
     dispatch(updateOffer({ id, offer: offerValue }));
   };
@@ -291,7 +297,8 @@ const Page: React.FC = () => {
                   <th>DESCRIPTION</th>
                   <th>PRODUCT NO</th>
                   <th>VALUE</th>
-                  <th>OWN DISCOUNT</th>
+                  <th>DISCOUNT</th>
+                  <th>(%) DISCOUNT</th>
                   <th>COMPANY OFFER</th>
                   <th>SUB TOTAL</th>
                   <th>ACTION</th>
@@ -304,7 +311,7 @@ const Page: React.FC = () => {
                     <td>{p.brand}, {p.productName} {p.color}</td>
                     <td>{p.productno}</td>
                     <td>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col items-center gap-2">
                         <input
                           type="number"
                           name="sprice"
@@ -316,7 +323,7 @@ const Page: React.FC = () => {
                               [p.id]: updatedValue === "" ? "" : Number(updatedValue),
                             }));
                           }}
-                          className="bg-base-100 w-20 input input-xs input-bordered"
+                          className="bg-base-100 w-20 input input-xs input-bordered border-slate-700"
                         />
                         <button
                           onClick={() => {
@@ -332,14 +339,21 @@ const Page: React.FC = () => {
                       </div>
                     </td>
 
-                    <td><div className="flex flex-col gap-2">
-                      <input type="number" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered" />
+                    <td><div className="flex flex-col items-center gap-2">
+                      <input type="number" step="any" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
                       <button onClick={() => {
                         handleUpdateDiscount(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
                       </button></div>
                     </td>
-                    <td><div className="flex flex-col gap-2"><input type="number" name="offer" placeholder="0.00" onChange={(e: any) => setOfferValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered" />
+                    <td><div className="flex flex-col items-center gap-2">
+                      <input type="number" name="percent" step="any" placeholder="0.00" onChange={(e) => setDisPercent(Number(e.target.value))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
+                      <button onClick={() => {
+                        handlePercentDiscount(p.id);
+                      }} className="btn btn-xs btn-outline w-20"> Apply
+                      </button></div>
+                    </td>
+                    <td><div className="flex flex-col items-center gap-2"><input type="number" name="offer" placeholder="0.00" onChange={(e: any) => setOfferValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
                       <button onClick={() => {
                         handleUpdateOffer(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
