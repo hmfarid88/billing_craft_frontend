@@ -14,13 +14,7 @@ const nextConfig = {
           allowedOrigins: ['http://localhost:8080'],
         },
       },
-    //   async redirects() {
-    //     return [{
-    //         source: '/',
-    //         destination: '/login',
-    //         permanent: true
-    //     }]
-    // }
+   
 };
 
 export default nextConfig;

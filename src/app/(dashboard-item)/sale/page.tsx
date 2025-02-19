@@ -66,7 +66,7 @@ const Page: React.FC = () => {
     setReturnAmount(returnAmountValue);
   };
   const selectRef = useRef<any>(null);
-  
+
   useEffect(() => {
     calculateTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +88,7 @@ const Page: React.FC = () => {
   const handleUpdateDiscount = (id: any) => {
     dispatch(updateDiscount({ id, discount: disValue }));
   };
-  
+
   const handlePercentDiscount = (id: any) => {
     const sprice = saleProducts.find((product) => product.id === id)?.sprice || 0;
     const discount = (sprice * disPercent) / 100;
@@ -311,21 +311,22 @@ const Page: React.FC = () => {
                     <td>{p.brand}, {p.productName} {p.color}</td>
                     <td>{p.productno}</td>
                     <td>
-                      <div className="flex flex-col items-center gap-2">
+                      {/* <div className="flex flex-col items-center gap-2"> */}
                         <input
                           type="number"
                           name="sprice"
                           value={sprice[p.id] !== undefined ? sprice[p.id] : p.sprice}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const updatedValue = e.target.value;
-                            setSprice((prev: any) => ({
-                              ...prev,
-                              [p.id]: updatedValue === "" ? "" : Number(updatedValue),
-                            }));
-                          }}
+                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          //   const updatedValue = e.target.value;
+                          //   setSprice((prev: any) => ({
+                          //     ...prev,
+                          //     [p.id]: updatedValue === "" ? "" : Number(updatedValue),
+                          //   }));
+                          // }}
+                          onChange={(e) => dispatch(updateSprice({ id: p.id, sprice: parseFloat(e.target.value) || 0 }))}
                           className="bg-base-100 w-20 input input-xs input-bordered border-slate-700"
                         />
-                        <button
+                        {/* <button
                           onClick={() => {
                             const updatedValue = sprice[p.id] !== undefined ? sprice[p.id] : p.sprice;
                             if (updatedValue !== "") {
@@ -335,30 +336,39 @@ const Page: React.FC = () => {
                           className="btn btn-xs btn-outline w-20"
                         >
                           Apply
-                        </button>
-                      </div>
+                        </button> */}
+                      {/* </div> */}
                     </td>
 
-                    <td><div className="flex flex-col items-center gap-2">
-                      <input type="number" step="any" name="discount" placeholder="0.00" onChange={(e: any) => setDisValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      <button onClick={() => {
+                    <td>
+                      {/* <div className="flex flex-col items-center gap-2"> */}
+                      <input type="number" step="any" name="discount" value={p.discount} onChange={(e) => dispatch(updateDiscount({ id: p.id, discount: parseFloat(e.target.value) || 0 }))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
+                      {/* <button onClick={() => {
                         handleUpdateDiscount(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button></div>
+                      </button> */}
+                      {/* </div> */}
                     </td>
-                    <td><div className="flex flex-col items-center gap-2">
-                      <input type="number" name="percent" step="any" placeholder="0.00" onChange={(e) => setDisPercent(Number(e.target.value))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      <button onClick={() => {
+                    <td>
+                      {/* <div className="flex flex-col items-center gap-2"> */}
+                      <input type="number" name="percent" step="any" placeholder="0.00" onChange={(e) => {
+                        const disPercent = parseFloat(e.target.value) || 0;
+                        dispatch(updateDiscount({ id: p.id, discount: (p.sprice * disPercent) / 100 }));
+                      }} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
+                      {/* <button onClick={() => {
                         handlePercentDiscount(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button></div>
+                      </button> */}
+                      {/* </div> */}
                     </td>
-                    <td><div className="flex flex-col items-center gap-2"><input type="number" name="offer" placeholder="0.00" onChange={(e: any) => setOfferValue(e.target.value)} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      <button onClick={() => {
+                    <td>
+                      {/* <div className="flex flex-col items-center gap-2"> */}
+                        <input type="number" name="offer" value={p.offer} onChange={(e) => dispatch(updateOffer({ id: p.id, offer: parseFloat(e.target.value) || 0 }))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
+                      {/* <button onClick={() => {
                         handleUpdateOffer(p.id);
                       }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button>
-                    </div>
+                      </button> */}
+                    {/* </div> */}
                     </td>
                     <td>{(p.sprice - p.discount - p.offer).toLocaleString('en-IN')}</td>
                     <td>

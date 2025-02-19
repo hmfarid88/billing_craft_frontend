@@ -27,7 +27,7 @@ const Page = () => {
     const productno = searchParams.get('productno');
 
     const [editableProduct, setEditableProduct] = useState<Product | null>(null);
-    const [loading, setLoading] = useState(true); // For tracking loading state
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         setLoading(true);
