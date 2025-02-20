@@ -41,21 +41,24 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
-           
-    useEffect(() => {
-        const filtered = allProducts.filter(product =>
-            (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.supplier?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.supplierInvoice?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
-
-        );
-        setFilteredProducts(filtered);
-    }, [filterCriteria, allProducts]);
+     useEffect(() => {
+            const searchWords = filterCriteria.toLowerCase().split(" ");
+          
+            const filtered = allProducts.filter(product =>
+              searchWords.every(word =>
+                (product.category?.toLowerCase().includes(word) || '') ||
+                (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.date?.toLowerCase().includes(word) || '') ||
+                (product.color?.toLowerCase().includes(word) || '') ||
+                (product.productno?.toLowerCase().includes(word) || '') ||
+                (product.supplier?.toLowerCase().includes(word) || '') ||
+                (product.supplierInvoice?.toLowerCase().includes(word) || '') ||
+                (product.productName?.toLowerCase().includes(word) || '')
+              )
+            );
+          
+            setFilteredProducts(filtered);
+          }, [filterCriteria, allProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);

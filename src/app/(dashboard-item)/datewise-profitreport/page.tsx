@@ -53,17 +53,20 @@ const Page = () => {
             })
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username, startDate, endDate]);
-
-    useEffect(() => {
-        const filtered = soldProducts.filter(product =>
-            (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
-
-        );
-        setFilteredProducts(filtered);
-    }, [filterCriteria, soldProducts]);
-
+ useEffect(() => {
+    const searchWords = filterCriteria.toLowerCase().split(" ");
+  
+    const filtered = soldProducts.filter(product =>
+      searchWords.every(word =>
+        (product.category?.toLowerCase().includes(word) || '') ||
+        (product.brand?.toLowerCase().includes(word) || '') ||
+        (product.productName?.toLowerCase().includes(word) || '')
+      )
+    );
+  
+    setFilteredProducts(filtered);
+  }, [filterCriteria, soldProducts]);
+   
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };

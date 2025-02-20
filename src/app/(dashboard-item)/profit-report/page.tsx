@@ -87,12 +87,16 @@ const Page = () => {
     }, [apiBaseUrl, username]);
 
     useEffect(() => {
-        const filtered = soldProducts.filter(product =>
-            (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
+        const searchWords = filterCriteria.toLowerCase().split(" ");
 
+        const filtered = soldProducts.filter(product =>
+            searchWords.every(word =>
+                (product.category?.toLowerCase().includes(word) || '') ||
+                (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.productName?.toLowerCase().includes(word) || '')
+            )
         );
+
         setFilteredProducts(filtered);
     }, [filterCriteria, soldProducts]);
 

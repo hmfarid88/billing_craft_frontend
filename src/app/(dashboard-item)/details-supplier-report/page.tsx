@@ -13,6 +13,7 @@ type Product = {
     svalue: number;
     payment: number;
     receive: number;
+    note: string;
 
 };
 
@@ -34,7 +35,7 @@ const Page = () => {
     const [allProducts, setAllProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        fetch(`${apiBaseUrl}/payment/getSupplierBalance-details?username=${username}&supplierName=${supplierName}`)
+        fetch(`${apiBaseUrl}/payment/getSupplierBalance-details?username=${encodeURIComponent(username)}&supplierName=${encodeURIComponent(supplierName ?? "")}`)
             .then(response => response.json())
             .then(data => {
                 setAllProducts(data);
@@ -44,15 +45,21 @@ const Page = () => {
     }, [apiBaseUrl, username, supplierName]);
 
 
-    useEffect(() => {
-        const filtered = allProducts.filter(product =>
-            (product.date.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.invoice.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
+  useEffect(() => {
+    const searchWords = filterCriteria.toLowerCase().split(" ");
+  
+    const filtered = allProducts.filter(product =>
+      searchWords.every(word =>
+        (product.date?.toLowerCase().includes(word) || '') ||
+        (product.invoice?.toLowerCase().includes(word) || '') ||
+        (product.note?.toLowerCase().includes(word) || '')
+      )
+    );
+  
+    setFilteredProducts(filtered);
+  }, [filterCriteria, allProducts]);
 
-        );
-        setFilteredProducts(filtered);
-    }, [filterCriteria, allProducts]);
-
+   
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
@@ -74,7 +81,9 @@ const Page = () => {
                 </div>
                 <div className="overflow-x-auto items-center justify-center">
                     <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4><CurrentDate /></div>
+                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
+                        <h4>Supplier: {supplierName}</h4>
+                        <CurrentDate /></div>
                         <table className="table table-sm">
                             <thead>
                                 <tr>
@@ -83,6 +92,7 @@ const Page = () => {
                                     <th>INVOICE NO</th>
                                     <th>PURCHASE VALUE</th>
                                     <th>SALE VALUE</th>
+                                    <th>NOTE</th>
                                     <th>PAYMENT</th>
                                     <th>RECEIVE</th>
                                     <th>BALANCE</th>
@@ -102,6 +112,7 @@ const Page = () => {
                                             <td>{product.invoice}</td>
                                             <td>{Number(product.pvalue.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(product.svalue.toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td className="capitalize">{product?.note}</td>
                                             <td>{Number(product.payment.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(product.receive.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(cumulativeBalance.toFixed(2)).toLocaleString('en-IN')}</td>

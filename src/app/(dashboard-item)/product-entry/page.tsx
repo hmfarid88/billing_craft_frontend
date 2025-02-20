@@ -42,21 +42,6 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
-    // useEffect(() => {
-    //     const filtered = soldProducts.filter(product =>
-    //         (product.supplier?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.supplierInvoice?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-    //         (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
-
-    //     );
-    //     setFilteredProducts(filtered);
-    // }, [filterCriteria, soldProducts]);
-
      useEffect(() => {
             const searchWords = filterCriteria.toLowerCase().split(" ");
           

@@ -17,6 +17,7 @@ interface Product {
     color: string;
     cid: string;
     pprice: number;
+    sprice: number;
     date: string;
     time: string;
 }
@@ -42,28 +43,37 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
-    useEffect(() => {
-        const filtered = soldProducts.filter(product =>
-            (product.cname?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.phoneNumber?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.category?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.brand?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.date?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.color?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productno?.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.productName?.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
-
-        );
-        setFilteredProducts(filtered);
-    }, [filterCriteria, soldProducts]);
+   
+      useEffect(() => {
+                 const searchWords = filterCriteria.toLowerCase().split(" ");
+             
+                 const filtered = soldProducts.filter(product =>
+                   searchWords.every(word =>
+                     (product.category?.toLowerCase().includes(word) || '') ||
+                     (product.brand?.toLowerCase().includes(word) || '') ||
+                     (product.date?.toLowerCase().includes(word) || '') ||
+                     (product.color?.toLowerCase().includes(word) || '') ||
+                     (product.productno?.toLowerCase().includes(word) || '') ||
+                     (product.cname?.toLowerCase().includes(word) || '') ||
+                     (product.phoneNumber?.toLowerCase().includes(word) || '') ||
+                     (product.productName?.toLowerCase().includes(word) || '')
+                   )
+                 );
+               
+                 setFilteredProducts(filtered);
+               }, [filterCriteria, soldProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
     };
     const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
-    const totalSprice = filteredProducts.reduce((total, product) => {
+    const totalPprice = filteredProducts.reduce((total, product) => {
         return total + product.pprice;
+    }, 0);
+
+    const totalSprice = filteredProducts.reduce((total, product) => {
+        return total + product.sprice;
     }, 0);
 
 
@@ -95,7 +105,8 @@ const Page = () => {
                                 <th>CUSTOMER INFO</th>
                                 <th>PRODUCT</th>
                                 <th>PRODUCT NO</th>
-                                <th>PRICE</th>
+                                <th>RP VALUE</th>
+                                <th>MRP VALUE</th>
 
                             </tr>
                         </thead>
@@ -110,6 +121,7 @@ const Page = () => {
                                     <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
                                     <td>{product.productno}</td>
                                     <td>{product.pprice}</td>
+                                    <td>{product.sprice}</td>
 
                                 </tr>
                             ))}
@@ -119,6 +131,7 @@ const Page = () => {
                                 <td colSpan={5}></td>
                                 <td>TOTAL</td>
                                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
                                 <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
 
                             </tr>

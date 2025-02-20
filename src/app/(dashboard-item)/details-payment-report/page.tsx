@@ -44,13 +44,17 @@ const Page = () => {
 
 
     useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+      
         const filtered = allProducts.filter(product =>
-            (product.date.toLowerCase().includes(filterCriteria.toLowerCase()) || '') ||
-            (product.note.toLowerCase().includes(filterCriteria.toLowerCase()) || '')
-
+          searchWords.every(word =>
+            (product.date?.toLowerCase().includes(word) || '') ||
+            (product.note?.toLowerCase().includes(word) || '')
+          )
         );
+      
         setFilteredProducts(filtered);
-    }, [filterCriteria, allProducts]);
+      }, [filterCriteria, allProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -84,7 +88,7 @@ const Page = () => {
                                 <tr>
                                     <th>SN</th>
                                     <th>DATE</th>
-                                    <th>DEBTOR/CREDITOR NOTE</th>
+                                    <th>DBT / CRT NOTE</th>
                                     <th>PAYMENT</th>
                                     <th>RECEIVE</th>
                                     <th>BALANCE</th>
