@@ -25,7 +25,7 @@ const Page = () => {
     content: () => contentToPrint.current,
   });
   const handlePaymentsDetails=(paymentName:string)=>{
-    router.push(`/details-payment-report?paymentName=${encodeURIComponent(paymentName)}`);
+    router.push(`/details-payment-report?paymentName=${paymentName}`);
   }
 
   const [filterCriteria, setFilterCriteria] = useState('');
