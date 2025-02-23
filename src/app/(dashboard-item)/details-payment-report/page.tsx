@@ -60,10 +60,10 @@ const Page = () => {
         setFilterCriteria(e.target.value);
     };
     const totalPayment = filteredProducts.reduce((total, product) => {
-        return total + product.payment;
+        return total + product?.payment;
     }, 0);
     const totalReceive = filteredProducts.reduce((total, product) => {
-        return total + product.receive;
+        return total + product?.receive;
     }, 0);
 
 
@@ -99,8 +99,8 @@ const Page = () => {
                                 {filteredProducts?.map((product, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{product.date}</td>
-                                        <td>{product.note}</td>
+                                        <td>{product?.date}</td>
+                                        <td>{product?.note}</td>
                                         <td>{Number((product?.payment)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number((product?.receive)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number((product?.balance)?.toFixed(2)).toLocaleString('en-IN')}</td>
