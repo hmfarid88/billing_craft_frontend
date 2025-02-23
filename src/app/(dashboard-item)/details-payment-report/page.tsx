@@ -11,8 +11,7 @@ type Product = {
     note: string;
     payment: number;
     receive: number;
-    balance: number;
-
+  
 };
 
 const Page = () => {
@@ -33,7 +32,7 @@ const Page = () => {
     const [allProducts, setAllProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        fetch(`${apiBaseUrl}/payment/getPaymentRecord-details?username=${username}&paymentName=${paymentName}`)
+        fetch(`${apiBaseUrl}/payment/getPaymentRecord-details?username=${encodeURIComponent(username)}&paymentName=${encodeURIComponent(paymentName ?? "")}`)
             .then(response => response.json())
             .then(data => {
                 setAllProducts(data);
@@ -60,13 +59,13 @@ const Page = () => {
         setFilterCriteria(e.target.value);
     };
     const totalPayment = filteredProducts.reduce((total, product) => {
-        return total + product?.payment;
+        return total + product.payment;
     }, 0);
     const totalReceive = filteredProducts.reduce((total, product) => {
-        return total + product?.receive;
+        return total + product.receive;
     }, 0);
 
-
+    let cumulativeBalance = 0;
     return (
         <div className="container-2xl">
             <div className="flex flex-col w-full  min-h-[calc(100vh-228px)] items-center justify-center p-4">
@@ -88,7 +87,7 @@ const Page = () => {
                                 <tr>
                                     <th>SN</th>
                                     <th>DATE</th>
-                                    <th>DBT / CRT NOTE</th>
+                                    <th>NOTE</th>
                                     <th>PAYMENT</th>
                                     <th>RECEIVE</th>
                                     <th>BALANCE</th>
@@ -96,17 +95,22 @@ const Page = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredProducts?.map((product, index) => (
+                            {filteredProducts?.map((product, index) => {
+                                    const currentBalance = product.payment - product.receive;
+                                    cumulativeBalance += currentBalance;
+
+                                    return (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{product?.date}</td>
-                                        <td>{product?.note}</td>
+                                        <td className="capitalize">{product?.note}</td>
                                         <td>{Number((product?.payment)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number((product?.receive)?.toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number((product?.balance)?.toFixed(2)).toLocaleString('en-IN')}</td>
+                                        <td>{Number(cumulativeBalance.toFixed(2)).toLocaleString('en-IN')}</td>
 
                                     </tr>
-                                ))}
+                                      );
+                                    })}
                             </tbody>
                             <tfoot>
                                 <tr className="font-bold text-sm">
