@@ -311,64 +311,26 @@ const Page: React.FC = () => {
                     <td>{p.brand}, {p.productName} {p.color}</td>
                     <td>{p.productno}</td>
                     <td>
-                      {/* <div className="flex flex-col items-center gap-2"> */}
-                        <input
-                          type="number"
-                          name="sprice"
-                          value={sprice[p.id] !== undefined ? sprice[p.id] : p.sprice}
-                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          //   const updatedValue = e.target.value;
-                          //   setSprice((prev: any) => ({
-                          //     ...prev,
-                          //     [p.id]: updatedValue === "" ? "" : Number(updatedValue),
-                          //   }));
-                          // }}
-                          onChange={(e) => dispatch(updateSprice({ id: p.id, sprice: parseFloat(e.target.value) || 0 }))}
-                          className="bg-base-100 w-20 input input-xs input-bordered border-slate-700"
-                        />
-                        {/* <button
-                          onClick={() => {
-                            const updatedValue = sprice[p.id] !== undefined ? sprice[p.id] : p.sprice;
-                            if (updatedValue !== "") {
-                              dispatch(updateSprice({ id: p.id, sprice: Number(updatedValue) }));
-                            }
-                          }}
-                          className="btn btn-xs btn-outline w-20"
-                        >
-                          Apply
-                        </button> */}
-                      {/* </div> */}
+                      <input
+                        type="number"
+                        name="sprice"
+                        value={sprice[p.id] !== undefined ? sprice[p.id] : p.sprice}
+                        onChange={(e) => dispatch(updateSprice({ id: p.id, sprice: parseFloat(e.target.value) || 0 }))}
+                        className="bg-base-100 w-20 input input-xs input-bordered border-slate-700"
+                      />
                     </td>
 
                     <td>
-                      {/* <div className="flex flex-col items-center gap-2"> */}
                       <input type="number" step="any" name="discount" value={p.discount} onChange={(e) => dispatch(updateDiscount({ id: p.id, discount: parseFloat(e.target.value) || 0 }))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      {/* <button onClick={() => {
-                        handleUpdateDiscount(p.id);
-                      }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button> */}
-                      {/* </div> */}
                     </td>
                     <td>
-                      {/* <div className="flex flex-col items-center gap-2"> */}
                       <input type="number" name="percent" step="any" placeholder="0.00" onChange={(e) => {
                         const disPercent = parseFloat(e.target.value) || 0;
                         dispatch(updateDiscount({ id: p.id, discount: (p.sprice * disPercent) / 100 }));
                       }} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      {/* <button onClick={() => {
-                        handlePercentDiscount(p.id);
-                      }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button> */}
-                      {/* </div> */}
                     </td>
                     <td>
-                      {/* <div className="flex flex-col items-center gap-2"> */}
-                        <input type="number" name="offer" value={p.offer} onChange={(e) => dispatch(updateOffer({ id: p.id, offer: parseFloat(e.target.value) || 0 }))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
-                      {/* <button onClick={() => {
-                        handleUpdateOffer(p.id);
-                      }} className="btn btn-xs btn-outline w-20"> Apply
-                      </button> */}
-                    {/* </div> */}
+                      <input type="number" name="offer" value={p.offer} onChange={(e) => dispatch(updateOffer({ id: p.id, offer: parseFloat(e.target.value) || 0 }))} className="bg-base-100 w-20 input input-xs input-bordered border-slate-700" />
                     </td>
                     <td>{(p.sprice - p.discount - p.offer).toLocaleString('en-IN')}</td>
                     <td>

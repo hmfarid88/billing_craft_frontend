@@ -103,8 +103,8 @@ const Page = () => {
                                 <th>S PRICE</th>
                                 <th>SUPPLIER</th>
                                 <th>S INVOICE</th>
-                                <th>RETURNED DATE</th>
-                                <th>RETURNED TIME</th>
+                                <th>R DATE</th>
+                                <th>R TIME</th>
                             </tr>
                         </thead>
                         <tbody>
