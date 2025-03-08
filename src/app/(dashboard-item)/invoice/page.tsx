@@ -57,6 +57,11 @@ const Invoice = () => {
         address: string,
         email: string
     }
+    useEffect(() => {
+        if (invoiceData) {
+            handlePrint();
+        }
+    }, [invoiceData]);
     const [shopInfo, setShopInfo] = useState<shopData>();
     useEffect(() => {
         fetch(`${apiBaseUrl}/shop/getShopInfo?username=${username}`)
@@ -167,37 +172,37 @@ const Invoice = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div className="flex justify-center mb-5">
-                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border">
+                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border font-black">
                     <div className="flex w-full justify-between">
                         <h1><FcDataSheet size={50} /></h1>
                         <h1 className='tracking-widest font-bold text-sm md:text-lg'>INVOICE</h1>
                     </div>
-                    <div className="flex flex-col w-full justify-end items-end">
-                        <h1 className='uppercase font-bold text-sm md:text-md'>{shopInfo?.shopName}</h1>
+                    <div className="flex flex-col w-full justify-end items-end font-black">
+                        <h1 className='uppercase text-sm md:text-md'>{shopInfo?.shopName}</h1>
                         <h4 className='flex font-sans text-xs md:text-md'><IoLocationOutline className='mt-0.5 mr-1' /> {shopInfo?.address}</h4>
                         <h4 className='flex font-sans text-xs md:text-md'><FaPhoneVolume className='mt-0.5 mr-1' /> {shopInfo?.phoneNumber}</h4>
                         <h4 className='flex font-sans text-xs md:text-md'><AiOutlineMail className='mt-0.5 mr-1' /> {shopInfo?.email}</h4>
                     </div>
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full font-black">
                         <div className="divider divider-accent tracking-widest text-xs font-semibold mt-0 mb-1">INFORMATION</div>
                     </div>
                     <div className="flex w-full justify-between">
                         <div className="flex flex-col">
-                            <h2 className='uppercase font-bold text-xs md:text-md'>{invoiceData[0]?.cname}</h2>
+                            <h2 className='uppercase text-xs md:text-md'>{invoiceData[0]?.cname}</h2>
                             <h4 className='flex text-xs md:text-md pt-1'>{invoiceData[0]?.phoneNumber}</h4>
                             <h4 className='capitalize text-xs md:text-md pt-1'>{invoiceData[0]?.address}</h4>
                         </div>
                         <div className="flex flex-col items-end">
-                            <h4 className='font-semibold text-xs md:text-md uppercase'>Invoice No : {invoiceData[0]?.cid}</h4>
-                            <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.date.toLocaleString()}</h4>
-                            <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Time : {invoiceData[0]?.time.toLocaleString()}</h4>
+                            <h4 className='text-xs md:text-md uppercase'>Invoice No : {invoiceData[0]?.cid}</h4>
+                            <h4 className='text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.date.toLocaleString()}</h4>
+                            <h4 className='text-xs md:text-md uppercase pt-1'>Time : {invoiceData[0]?.time.toLocaleString()}</h4>
                            {invoiceData[0]?.soldby? ( <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Sold By : {invoiceData[0]?.soldby} </h4>) : null}
                         </div>
                     </div>
                     <div className="w-full pt-2">
                         <table className="table table-sm">
                             <thead>
-                                <tr className='border-b-base-content text-xs md:text-md font-bold'>
+                                <tr className='border-b-base-content text-xs md:text-md font-black'>
                                     <th className='text-left p-0'>PRODUCT</th>
                                     <th>QTY</th>
                                     <th>PRICE</th>
@@ -219,48 +224,48 @@ const Invoice = () => {
                     <div className="flex flex-col w-full">
                         <div className="divider mt-0 mb-0"></div>
                     </div>
-                    <div className="flex w-full gap-5 justify-end">
+                    <div className="flex w-full gap-5 justify-end font-black">
                         <div className="flex flex-col items-end">
-                            <p className='uppercase font-semibold text-xs md:text-md'>SUB TOTAL :</p>
-                            <p className='uppercase font-semibold text-xs md:text-md'>DISCOUNT :</p>
-                            <p className='uppercase font-semibold text-xs md:text-md'>OFFER :</p>
-                            <p className='uppercase font-semibold text-xs md:text-md'>VAT :</p>
+                            <p className='uppercase  text-xs md:text-md'>SUB TOTAL :</p>
+                            <p className='uppercase  text-xs md:text-md'>DISCOUNT :</p>
+                            <p className='uppercase  text-xs md:text-md'>OFFER :</p>
+                            <p className='uppercase  text-xs md:text-md'>VAT :</p>
                         </div>
                         <div className="flex flex-col items-end">
-                            <p className='font-semibold text-xs md:text-md'>{currency} {subtotal?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{currency} {discount?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{currency} {offer?.toLocaleString('en-IN')}</p>
-                            <p className='font-semibold text-xs md:text-md'>{currency} {vat?.toLocaleString('en-IN')}</p>
+                            <p className='text-xs md:text-md'>{currency} {subtotal?.toLocaleString('en-IN')}</p>
+                            <p className='text-xs md:text-md'>{currency} {discount?.toLocaleString('en-IN')}</p>
+                            <p className='text-xs md:text-md'>{currency} {offer?.toLocaleString('en-IN')}</p>
+                            <p className='text-xs md:text-md'>{currency} {vat?.toLocaleString('en-IN')}</p>
                         </div>
                     </div>
-                    <div className="flex w-full justify-between">
-                        <div className="font-semibold tracking-widest text-xs mt-1 mb-0">SIGNATURE -------------</div>
+                    <div className="flex w-full justify-between font-black">
+                        <div className="tracking-widest text-xs mt-1 mb-0">SIGNATURE -------------</div>
                         <div className="mt-0 mb-0">----------------------</div>
                     </div>
                     <div className="flex w-full justify-end">
                         <div className="flex w-1/2 gap-5 justify-end">
                            <div className="flex flex-col items-end">
-                                <p className='uppercase font-semibold text-xs md:text-md'>TOTAL :</p>
-                                <p className='uppercase font-semibold text-xs md:text-md'>CARD PAY :</p>
-                                <p className='uppercase font-semibold text-xs md:text-md'>RECEIVED :</p>
+                                <p className='uppercase text-xs md:text-md'>TOTAL :</p>
+                                <p className='uppercase text-xs md:text-md'>CARD PAY :</p>
+                                <p className='uppercase text-xs md:text-md'>RECEIVED :</p>
                                 {received ? (
-                                    <p className='uppercase font-semibold text-xs md:text-md'>RETURNED :</p>
+                                    <p className='uppercase text-xs md:text-md'>RETURNED :</p>
                                 ) : null}
                             </div>
                             <div className="flex flex-col items-end">
-                                <p className='font-semibold text-xs md:text-md'>{currency} {total.toLocaleString('en-IN')}</p>
-                                <p className='font-semibold text-xs md:text-md'>{currency} {card?.toLocaleString('en-IN')}</p>
-                                <p className='font-semibold text-xs md:text-md'>{currency} {received?.toLocaleString('en-IN') || 0}</p>
+                                <p className='text-xs md:text-md'>{currency} {total.toLocaleString('en-IN')}</p>
+                                <p className='text-xs md:text-md'>{currency} {card?.toLocaleString('en-IN')}</p>
+                                <p className='text-xs md:text-md'>{currency} {received?.toLocaleString('en-IN') || 0}</p>
                                 {received ?(
-                                    <p className='font-semibold text-xs md:text-md'>{currency} {(received - (total - card)).toLocaleString('en-IN')}</p>
+                                    <p className='text-xs md:text-md'>{currency} {(received - (total - card)).toLocaleString('en-IN')}</p>
                                 ) : null}
                                  
                             </div>
                             
                         </div>
                     </div>
-                    <div className="flex items-end justify-end capitalize pt-2"><p className='font-semibold text-sm'>(In Words : {totalInWords})</p></div>
-                    <div className="flex flex-col pt-5 text-xs font-bold uppercase">
+                    <div className="flex items-end justify-end capitalize pt-2"><p className='font-black text-sm'>(In Words : {totalInWords})</p></div>
+                    <div className="flex flex-col pt-5 text-xs font-black uppercase">
                         {allNotes?.map((item: any, index) => (
                             <tr key={index}>
                                 <td><p className='flex gap-2 text-left'> <FcAdvertising size={18} /> {item.note}</p></td>
