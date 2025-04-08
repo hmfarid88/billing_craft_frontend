@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../store';
 
@@ -20,6 +21,7 @@ const HomeSummary = () => {
   const [stockValue, setProductStock] = useState<number>(0);
   const [saleQty, setSaleQty] = useState<number>(0);
   const [saleValue, setSaleValue] = useState<number>(0);
+  const [saleAndVat, setSaleAndVat] = useState<number>(0);
   const [monthlyTotalQty, setMonthlySaleQty] = useState<number>(0);
   const [monthlyTotalValue, setMonthlySaleValue] = useState<number>(0);
   const [payValue, setPayValue] = useState<number>(0);
@@ -72,6 +74,18 @@ interface Currency{currency:string}
       })
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
+
+   useEffect(() => {
+      fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}`)
+        .then(response => response.json())
+        .then(data => {
+          const saleValue = data.reduce((total: any, product: { value: any; }) => {
+            return total + product.value;
+          }, 0);
+          setSaleAndVat(saleValue);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }, [apiBaseUrl, username]);
 
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getMonthlyProductSale?username=${username}`)
@@ -168,7 +182,7 @@ interface Currency{currency:string}
           ) : item.title === "Cash Balance" ? (
             <div className='flex flex-col items-center justify-center gap-5'>
               <p>{item.title}</p>
-              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number((((netSumAmount + saleValue + recvValue) - payValue)).toFixed(2)).toLocaleString('en-IN')}</p>
+              <p className='flex text-lg font-bold gap-2'><p className='text-lg'>{currency}</p> {Number((((netSumAmount + saleAndVat + recvValue) - payValue)).toFixed(2)).toLocaleString('en-IN')}</p>
             </div>
           ) : (
             <p>{item.title}</p>

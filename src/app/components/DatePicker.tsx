@@ -1,6 +1,5 @@
 "use client"
 import { useState } from 'react';
-import DatePicker from 'react-date-picker';
 import Input from 'react-date-picker';
 import { FcCalendar } from "react-icons/fc";
 

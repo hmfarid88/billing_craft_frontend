@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 import Areachart from "@/app/components/Areachart";
 import Barchart from "@/app/components/Barchart";
 import Linechart from "@/app/components/Linechart";

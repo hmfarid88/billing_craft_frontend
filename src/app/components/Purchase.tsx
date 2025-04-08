@@ -423,6 +423,20 @@ const Purchase = () => {
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username, colorItem, colorDel]);
 
+  useEffect(() => {
+    if (brand && productName) {
+      fetch(`${apiBaseUrl}/api/product/last-entry?username=${username}&brand=${brand}&productName=${productName}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data) {
+            setPprice(data.purchasePrice);
+            setRsale(data.salePrice);
+          }
+        })
+        .catch((err) => console.error("Failed to fetch last product data", err));
+    }
+  }, [apiBaseUrl, username, brand, productName]);
+  
   const [bulkQty, setBulkQty] = useState(false);
   const [bulkQuantity, setBulkQuantity] = useState(0);
   const generateProductNo = () => {
@@ -536,14 +550,14 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">PURCHASE PRICE</span>
             </div>
-            <input type="number" step="any" name="pprice" onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="number" step="any" name="pprice" value={pprice} onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" />
           </label>
 
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text-alt">SALE PRICE</span>
             </div>
-            <input type="number" step="any" name="rsale" onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
+            <input type="number" step="any" name="rsale" value={sprice} onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" />
           </label>
           <label className="form-control w-full max-w-xs">
             <div className="label">

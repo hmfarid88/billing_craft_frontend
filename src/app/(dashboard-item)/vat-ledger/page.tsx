@@ -4,22 +4,13 @@ import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcPrint } from "react-icons/fc";
 import CurrentDate from "@/app/components/CurrentDate";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 interface Product {
-    id: string;
-    brand: string;
-    category: string;
-    color: string;
-    pprice: number;
-    productName: string;
-    productno: string;
+    cid: string;
+    cname: string;
+    phoneNumber: string;
+    vatAmount: number;
     date: string;
-    time: string;
-    sprice: number;
-    supplier: string;
-    supplierInvoice: string;
-
+ 
 }
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -28,14 +19,13 @@ const Page = () => {
     const [allProducts, setAllProducts] = useState<Product[]>([]);
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [date, setDate] = useState('')
-    const router = useRouter();
+
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
     });
     useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getProductStock?username=${username}`)
+        fetch(`${apiBaseUrl}/api/vatAmount?username=${username}`)
             .then(response => response.json())
             .then(data => {
                 setAllProducts(data);
@@ -44,30 +34,15 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        if (!date) {
-            toast.warning("Date is required !");
-            return;
-        }
-
-        router.push(`/previous-stock?date=${date}`);
-        setDate("");
-
-    };
     useEffect(() => {
         const searchWords = filterCriteria.toLowerCase().split(" ");
 
         const filtered = allProducts.filter(product =>
             searchWords.every(word =>
-                (product.category?.toLowerCase().includes(word) || '') ||
-                (product.brand?.toLowerCase().includes(word) || '') ||
-                (product.date?.toLowerCase().includes(word) || '') ||
-                (product.color?.toLowerCase().includes(word) || '') ||
-                (product.productno?.toLowerCase().includes(word) || '') ||
-                (product.supplier?.toLowerCase().includes(word) || '') ||
-                (product.supplierInvoice?.toLowerCase().includes(word) || '') ||
-                (product.productName?.toLowerCase().includes(word) || '')
+                (product.cid?.toLowerCase().includes(word) || '') ||
+                (product.cname?.toLowerCase().includes(word) || '') ||
+                (product.phoneNumber?.toLowerCase().includes(word) || '')
+               
             )
         );
 
@@ -78,14 +53,9 @@ const Page = () => {
         setFilterCriteria(e.target.value);
     };
 
-    const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
-
-    const totalPprice = filteredProducts.reduce((total, product) => {
-        return total + product.pprice;
-    }, 0);
-
-    const totalSprice = filteredProducts.reduce((total, product) => {
-        return total + product.sprice;
+  
+    const totalVat = filteredProducts.reduce((total, product) => {
+        return total + product.vatAmount;
     }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
@@ -99,49 +69,32 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div className="flex flex-col gap-2 p-5">
-                <span className="font-semibold text-sm">PREVIOUSR STOCK</span>
-                <label className="flex gap-2">
-                    <input type="date" onChange={(e: any) => setDate(e.target.value)} className="input input-success input-sm" />
-                    <input type="button" value="GO" className="btn btn-sm btn-success" onClick={handleSubmit} />
-                </label>
-            </div>
+
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">STOCK DETAILS</h4>
+                <h4 className="font-bold">VAT DETAILS</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
                 <div className="flex items-center justify-center">
                     <table className="table table-sm">
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>CATEGORY</th>
-                                <th>BRAND</th>
-                                <th>PRODUCT</th>
-                                <th>COLOR</th>
-                                <th>PRODUCT NO</th>
-                                <th>P PRICE</th>
-                                <th>S PRICE</th>
-                                <th>SUPPLIER</th>
-                                <th>S INVOICE</th>
-                                <th>STOCK DATE</th>
-                                <th>STOCK TIME</th>
+                                <th>DATE</th>
+                                <th>INVOICE NO</th>
+                                <th>CUSTOMER</th>
+                                <th>MOBILE NO</th>
+                                <th>VAT AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{product.category}</td>
-                                    <td>{product.brand}</td>
-                                    <td>{product.productName}</td>
-                                    <td>{product.color}</td>
-                                    <td>{product.productno}</td>
-                                    <td>{product.pprice}</td>
-                                    <td>{product.sprice}</td>
-                                    <td>{product.supplier}</td>
-                                    <td>{product.supplierInvoice}</td>
                                     <td>{product.date}</td>
-                                    <td>{product.time}</td>
+                                    <td className="uppercase">{product.cid}</td>
+                                    <td className="uppercase">{product.cname}</td>
+                                    <td>{product.phoneNumber}</td>
+                                    <td>{product.vatAmount}</td>
+                                  
                                 </tr>
                             ))}
                         </tbody>
@@ -149,9 +102,8 @@ const Page = () => {
                             <tr className="font-bold text-sm">
                                 <td colSpan={4}></td>
                                 <td>TOTAL</td>
-                                <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
+                                <td>{Number(totalVat.toFixed(2)).toLocaleString('en-IN')}</td>
+                             
                             </tr>
                         </tfoot>
                     </table>

@@ -75,6 +75,7 @@ export const Sidebar = () => {
                             <ul>
                                 <li><Link href="/expense-report"> EXPENSE REPORT</Link></li>
                                 <li><Link href="/payment-report"> PAYMENT REPORT</Link></li>
+                                <li><Link href="/vat-ledger"> VAT REPORT</Link></li>
                             </ul>
                         </details>
                     </li>

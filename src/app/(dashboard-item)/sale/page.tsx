@@ -391,10 +391,10 @@ const Page: React.FC = () => {
               <span className="text-sm">TOTAL</span>
               <input type="number" className="grow w-[150px]" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
-            <label className="input input-bordered flex items-center gap-2">
+            {/* <label className="input input-bordered flex items-center gap-2">
               <FaCcMastercard size={20} />
               <input type="number" className="grow w-[150px]" onChange={(e: any) => setCard(e.target.value)} placeholder="Card Payment" />
-            </label>
+            </label> */}
 
           </div>
         </div>
