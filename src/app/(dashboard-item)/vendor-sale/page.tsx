@@ -7,6 +7,7 @@ import Select from "react-select";
 import { uid } from 'uid';
 import { toast } from "react-toastify";
 import { RxCrossCircled } from "react-icons/rx";
+import { json } from "stream/consumers";
 
 
 const Page: React.FC = () => {
@@ -92,9 +93,9 @@ const Page: React.FC = () => {
                 },
                 body: JSON.stringify(salesRequest),
             });
-           
+
             if (!response.ok) {
-             toast.error("Vendor sale not submitted !");
+                toast.error("Vendor sale not submitted !");
                 return;
             }
 
@@ -184,15 +185,15 @@ const Page: React.FC = () => {
                         }}
                         options={productOption}
                     />
-<div className="flex">
-            <div className="avatar-group -space-x-6 rtl:space-x-reverse">
-              <div className="avatar placeholder">
-                <div className="bg-neutral text-neutral-content w-12">
-                  <span>{totalQuantity}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <div className="flex">
+                        <div className="avatar-group -space-x-6 rtl:space-x-reverse">
+                            <div className="avatar placeholder">
+                                <div className="bg-neutral text-neutral-content w-12">
+                                    <span>{totalQuantity}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex items-center justify-center w-full p-5">
                     <div className="overflow-x-auto max-h-96">
