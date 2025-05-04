@@ -7,6 +7,7 @@ import { FcAutomatic } from "react-icons/fc";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 
 interface Product {
   category: string;
@@ -57,6 +58,21 @@ const Page = () => {
   const handlePrint = useReactToPrint({
     content: () => contentToPrint.current,
   });
+  const options = updateable?.map(product => ({
+    value: {
+      supplier: product.supplier,
+      productName: product.productName,
+      pprice: product.pprice,
+    },
+    label: `${product.supplier}, ${product.productName}, ${product.pprice} (${product.qty})`
+  }));
+
+  const handleChange = (selectedOption: any) => {
+    const { supplier, productName, pprice } = selectedOption.value;
+    setSupplier(supplier);
+    setProductName(productName);
+    setPprice(pprice);
+  };
 
   const handlePriceup = async (e: any) => {
     e.preventDefault();
@@ -66,7 +82,7 @@ const Page = () => {
     }
     setPending(true);
     try {
-      const response = await fetch(`${apiBaseUrl}/api/update-priceup?username=${username}&supplier=${supplier}&productName=${productName}&pprice=${pprice}&newSprice=${newSprice}`, {
+      const response = await fetch(`${apiBaseUrl}/api/update-priceup?username=${encodeURIComponent(username)}&supplier=${encodeURIComponent(supplier)}&productName=${encodeURIComponent(productName)}&pprice=${pprice}&newSprice=${newSprice}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +111,7 @@ const Page = () => {
     }
     setPending(true);
     try {
-      const response = await fetch(`${apiBaseUrl}/api/update-pricedrop?username=${username}&supplier=${supplier}&productName=${productName}&pprice=${pprice}&newPprice=${newPprice}&newSprice=${newSprice}&save=${selectedValue}`, {
+      const response = await fetch(`${apiBaseUrl}/api/update-pricedrop?username=${encodeURIComponent(username)}&supplier=${encodeURIComponent(supplier)}&productName=${encodeURIComponent(productName)}&pprice=${pprice}&newPprice=${newPprice}&newSprice=${newSprice}&save=${selectedValue}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +154,7 @@ const Page = () => {
 
   useEffect(() => {
     const searchWords = filterCriteria.toLowerCase().split(" ");
-  
+
     const filtered = allProducts.filter(product =>
       searchWords.every(word =>
         (product.category?.toLowerCase().includes(word) || '') ||
@@ -146,10 +162,10 @@ const Page = () => {
         (product.productName?.toLowerCase().includes(word) || '')
       )
     );
-  
+
     setFilteredProducts(filtered);
   }, [filterCriteria, allProducts]);
-  
+
 
   const handleFilterChange = (e: any) => {
     setFilterCriteria(e.target.value);
@@ -240,17 +256,8 @@ const Page = () => {
               <div className="label">
                 <span className="label-text-alt">PICK PRODUCT</span>
               </div>
-              <select className='select select-bordered' onChange={(e) => {
-                const [supplier, productName, pprice] = e.target.value.split("||");
-                setProductName(productName);
-                setSupplier(supplier);
-                setPprice(parseFloat(pprice));
-              }} >
-                <option selected disabled>Select . . .</option>
-                {updateable?.map((product, index) => (
-                  <option key={index} value={`${product.supplier}||${product.productName}||${product.pprice}`}>{product.supplier}, {product.productName}, {product.pprice} ({product.qty}) </option>
-                ))};
-              </select>
+             
+              <Select  className="text-black" options={options} onChange={handleChange} placeholder="Select . . ." />
             </label>
             <label className="form-control w-full max-w-xs">
               <div className="label">
