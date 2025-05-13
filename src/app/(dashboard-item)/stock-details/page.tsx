@@ -90,28 +90,26 @@ const Page = () => {
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
 
-            <div className="flex justify-between pl-5 pr-5 pt-5">
+            <div className="flex justify-between p-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">
                     <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 opacity-70">
                         <path fillRule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clipRule="evenodd" />
                     </svg>
                 </label>
+                <label className="flex gap-2">
+                    <input type="date" onChange={(e: any) => setDate(e.target.value)} className="input input-success" />
+                    <input type="button" value="GO" className="btn btn-success" onClick={handleSubmit} />
+                </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div className="flex flex-col gap-2 p-5">
-                <span className="font-semibold text-sm">PREVIOUSR STOCK</span>
-                <label className="flex gap-2">
-                    <input type="date" onChange={(e: any) => setDate(e.target.value)} className="input input-success input-sm" />
-                    <input type="button" value="GO" className="btn btn-sm btn-success" onClick={handleSubmit} />
-                </label>
-            </div>
+           
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
                 <h4 className="font-bold">STOCK DETAILS</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
-                        <thead>
+                    <table className="table table-xs">
+                    <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>CATEGORY</th>
@@ -136,10 +134,10 @@ const Page = () => {
                                     <td>{product.productName}</td>
                                     <td>{product.color}</td>
                                     <td>{product.productno}</td>
-                                    <td>{product.pprice}</td>
-                                    <td>{product.sprice}</td>
+                                    <td>{Number((product.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((product.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
                                     <td>{product.supplier}</td>
-                                    <td>{product.supplierInvoice}</td>
+                                    <td className="uppercase">{product.supplierInvoice}</td>
                                     <td>{product.date}</td>
                                     <td>{product.time}</td>
                                 </tr>

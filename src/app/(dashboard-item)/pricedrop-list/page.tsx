@@ -85,7 +85,7 @@ const Page = () => {
                 <h4 className="pb-5"><CurrentDate /></h4>
                 <div className="flex items-center justify-center">
                     <table className="table table-sm capitalize">
-                        <thead>
+                        <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>DATE</th>

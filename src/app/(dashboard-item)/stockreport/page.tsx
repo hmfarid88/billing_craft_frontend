@@ -15,6 +15,7 @@ interface Product {
   productName: string;
   countBeforeToday: number;
   countToday: number;
+  soldToday: number;
 }
 interface Updateable {
   supplier: string;
@@ -142,6 +143,7 @@ const Page = () => {
       })
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
+  
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/productStockSummary?username=${username}`)
       .then(response => response.json())
@@ -179,6 +181,11 @@ const Page = () => {
     return total + product.countToday;
   }, 0);
 
+
+   const totalSold = filteredProducts.reduce((total, product) => {
+    return total + product.soldToday;
+  }, 0);
+
   return (
     <div className="container-2xl min-h-[calc(100vh-228px)]">
       <div className="flex pt-2 pl-5"><a href="#my_modal_stock" className="btn btn-square btn-ghost"><FcAutomatic size={32} /></a></div>
@@ -197,7 +204,7 @@ const Page = () => {
         <h4 className="pb-5"><CurrentDate /></h4>
         <div className="flex items-center justify-center">
           <table className="table table-sm">
-            <thead>
+            <thead className="sticky top-16 bg-base-100">
               <tr>
                 <th>SN</th>
                 <th>CATEGORY</th>
@@ -205,6 +212,7 @@ const Page = () => {
                 <th>PRODUCT</th>
                 <th>PREVIOUS</th>
                 <th>TODAY</th>
+                <th>SOLD</th>
                 <th>PRESENT</th>
               </tr>
             </thead>
@@ -215,10 +223,11 @@ const Page = () => {
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>{product.productName}</td>
-                  <td>{product.countBeforeToday}</td>
+                  <td>{product.countBeforeToday + product.countToday}</td>
                   <td>{product.countToday}</td>
-                  <td className={product.countBeforeToday + product.countToday < 3 ? "text-red-500 font-bold" : ""}>
-                    {product.countBeforeToday + product.countToday}
+                  <td>{product.soldToday}</td>
+                  <td className={product.countBeforeToday + product.countToday - product.soldToday < 3 ? "text-red-500 font-bold" : ""}>
+                    {product.countBeforeToday + product.countToday - product.soldToday}
                   </td>
                 </tr>
               ))}
@@ -229,7 +238,8 @@ const Page = () => {
                 <td>TOTAL</td>
                 <td>{Number(totalPreQty.toFixed(2)).toLocaleString('en-IN')}</td>
                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
-                <td>{Number((totalPreQty + totalQty).toFixed(2)).toLocaleString('en-IN')}</td>
+                <td>{Number(totalSold.toFixed(2)).toLocaleString('en-IN')}</td>
+                <td>{Number((totalPreQty + totalQty - totalSold).toFixed(2)).toLocaleString('en-IN')}</td>
               </tr>
             </tfoot>
           </table>

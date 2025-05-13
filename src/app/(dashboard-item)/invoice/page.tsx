@@ -172,10 +172,10 @@ const Invoice = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div className="flex justify-center mb-5">
-                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border font-bold">
+                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border font-semibold">
                     <div className="flex w-full justify-between">
                         <h1><FcDataSheet size={50} /></h1>
-                        <h1 className='tracking-widest text-sm md:text-lg'>INVOICE</h1>
+                        <h1 className='tracking-widest text-sm md:text-lg font-bold'>INVOICE</h1>
                     </div>
                     <div className="flex flex-col w-full justify-end items-end">
                         <h1 className='uppercase text-sm md:text-md'>{shopInfo?.shopName}</h1>
@@ -202,14 +202,14 @@ const Invoice = () => {
                     <div className="w-full pt-2">
                         <table className="table table-sm">
                             <thead>
-                                <tr className='border-b-base-content text-xs md:text-md'>
+                                <tr className='border-b-base-content text-xs md:text-sm'>
                                     <th className='text-left p-0'>PRODUCT</th>
                                     <th>QTY</th>
                                     <th>PRICE</th>
                                     <th className='text-right p-0'>TOTAL</th>
                                 </tr>
                             </thead>
-                            <tbody className='text-xs md:text-md capitalize'>
+                            <tbody className='text-xs capitalize'>
                                 {invoiceData?.map((products, index) => (
                                     <tr key={index}>
                                         <td className='text-left p-0'>{products.brand} {products.productName} {products.color} {products.productno}</td>
@@ -239,7 +239,7 @@ const Invoice = () => {
                         </div>
                     </div>
                     <div className="flex w-full justify-between">
-                        <div className="tracking-widest text-xs mt-1 mb-0">SIGNATURE -------------</div>
+                        <div className="tracking-widest text-xs mt-1 mb-0">Signature -------------</div>
                         <div className="mt-0 mb-0">--------------------</div>
                     </div>
                     <div className="flex w-full justify-end">
@@ -265,7 +265,7 @@ const Invoice = () => {
                         </div>
                     </div>
                     <div className="flex items-end justify-end capitalize pt-2"><p className='text-sm'>(In Words : {totalInWords})</p></div>
-                    <div className="flex flex-col pt-5 text-xs uppercase">
+                    <div className="flex flex-col pt-5 text-xs capitalize">
                         {allNotes?.map((item: any, index) => (
                             <tr key={index}>
                                 <td><p className='flex gap-2 text-left'> <FcAdvertising size={18} /> {item.note}</p></td>

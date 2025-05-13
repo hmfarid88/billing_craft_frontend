@@ -134,7 +134,7 @@ const Page = () => {
                 <h4 className="pb-5">{getMonthName(month)} {year}</h4>
                 <div className="flex flex-col">
                     <table className="table table-sm">
-                        <thead>
+                        <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>CATEGORY</th>

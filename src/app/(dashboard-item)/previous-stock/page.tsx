@@ -88,11 +88,11 @@ const Page = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
-                <h4 className="font-bold">PRODUCT STOCK REPORT</h4>
+                <h4 className="font-bold">PRODUCT STOCK</h4>
                 <h4 className="pb-5">{date}</h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
-                        <thead>
+                    <table className="table table-xs">
+                        <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>ENTRY DATE</th>
@@ -111,7 +111,7 @@ const Page = () => {
                         <tbody>
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
-                                    <th>{index + 1}</th>
+                                    <td>{index + 1}</td>
                                     <td>{product.date}</td>
                                     <td>{product.time}</td>
                                     <td className="uppercase">{product.supplierInvoice}</td>
@@ -121,8 +121,8 @@ const Page = () => {
                                     <td className="capitalize">{product.productName}</td>
                                     <td className="capitalize">{product.color}</td>
                                     <td>{product.productno}</td>
-                                    <td>{product.pprice}</td>
-                                    <td>{product.sprice}</td>
+                                    <td>{Number((product.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((product.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -65,7 +65,7 @@ const Page = () => {
                             <p className="text-accent">No invoice information available with this number.</p>
                         ) : (
                             <table className="table table-sm table-zebra">
-                                <thead>
+                                <thead className="sticky top-16 bg-base-100">
                                     <tr>
                                         <th>SN</th>
                                         <th>CUSTOMER</th>
