@@ -235,7 +235,7 @@ const Page: React.FC = () => {
 
         <div className="flex items-center gap-2 justify-center">
           <Select
-            className="text-black w-64 md:w-96 z-50"
+            className="text-black w-64 md:w-96 z-10"
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}

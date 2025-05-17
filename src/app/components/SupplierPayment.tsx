@@ -30,7 +30,7 @@ const SupplierPayment = () => {
   }, []);
   const handleSupplierPayment = async (e: any) => {
     e.preventDefault();
-    if (!supplierName || !paymentType || !supplierAmount ) {
+    if (!supplierName || !paymentType || !supplierAmount) {
       toast.warning("Item is empty !");
       return;
     }
@@ -70,58 +70,60 @@ const SupplierPayment = () => {
   }, [apiBaseUrl, username]);
 
   return (
-    <div className='flex flex-col gap-3 items-center justify-center'>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">DATE</span>
-        </div>
-        <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
-      </label>
+    <div className="flex items-center justify-center">
+      <div className='flex flex-col gap-3'>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">DATE</span>
+          </div>
+          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
+        </label>
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">SUPPLIER NAME</span>
-        </div>
-        <select className='select select-bordered' onChange={(e: any) => { setSupplierName(e.target.value) }}>
-          <option selected disabled>Select . . .</option>
-          {supplierOption?.map((name: any, index) => (
-            <option key={index} value={name.supplierItem}>
-              {name.supplierItem}
-            </option>
-          ))}
-        </select>
-       
-      </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">SUPPLIER NAME</span>
+          </div>
+          <select className='select select-bordered' onChange={(e: any) => { setSupplierName(e.target.value) }}>
+            <option selected disabled>Select . . .</option>
+            {supplierOption?.map((name: any, index) => (
+              <option key={index} value={name.supplierItem}>
+                {name.supplierItem}
+              </option>
+            ))}
+          </select>
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">TRANSACTION TYPE</span>
-        </div>
-        <select className='select select-bordered' onChange={(e: any) => { setPaymentType(e.target.value) }}>
-          <option selected disabled>Select . . .</option>
-          <option value="payment">PAYMENT</option>
-          <option value="receive">RECEIVE</option>
-        </select>
-      </label>
+        </label>
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">NOTE</span>
-        </div>
-        <input type="text" value={supplierNote} onChange={(e) => setSupplierNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-      </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">TRANSACTION TYPE</span>
+          </div>
+          <select className='select select-bordered' onChange={(e: any) => { setPaymentType(e.target.value) }}>
+            <option selected disabled>Select . . .</option>
+            <option value="payment">PAYMENT</option>
+            <option value="receive">RECEIVE</option>
+          </select>
+        </label>
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">AMOUNT</span>
-        </div>
-        <input type="number" value={supplierAmount} onChange={(e) => setSupplierAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-      </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">NOTE</span>
+          </div>
+          <input type="text" value={supplierNote} onChange={(e) => setSupplierNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+        </label>
 
-      <label className="form-control w-full max-w-xs">
-        <button onClick={handleSupplierPayment} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
-      </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">AMOUNT</span>
+          </div>
+          <input type="number" value={supplierAmount} onChange={(e) => setSupplierAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+        </label>
 
+        <label className="form-control w-full max-w-xs">
+          <button onClick={handleSupplierPayment} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
+        </label>
+
+      </div>
     </div>
   )
 }

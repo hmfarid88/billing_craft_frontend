@@ -57,49 +57,50 @@ const Expense = () => {
     }
   };
   return (
-    <div className='flex flex-col gap-3 items-center justify-center'>
-
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">DATE</span>
-        </div>
-        <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
-      </label>
-
-
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">EXPENSE NAME</span>
-        </div>
-        <select className='select select-bordered' onChange={(e: any) => { setExpenseName(e.target.value) }}>
-          <option selected disabled>Select . . .</option>
-          <option value="Office Cost">Office Cost</option>
-          <option value="Employee Salary">Employee Salary</option>
-          <option value="Shop Rent">Shop Rent</option>
-          <option value="Others">Others</option>
-        </select>
-
-      </label>
-
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">EXPENSE NOTE</span>
-        </div>
-        <input type="text" name='note' autoComplete='note' value={expenseNote} onChange={(e) => setExpenseNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-      </label>
-
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text-alt">EXPENSE AMOUNT</span>
-        </div>
-        <input type="number" value={expensAmount} onChange={(e) => setExpenseAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-      </label>
+    <div className="flex items-center justify-center">
+      <div className='flex flex-col gap-3'>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">DATE</span>
+          </div>
+          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
+        </label>
 
 
-      <label className="form-control w-full max-w-xs">
-        <button onClick={handleExpenseSubmit} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
-      </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">EXPENSE NAME</span>
+          </div>
+          <select className='select select-bordered' onChange={(e: any) => { setExpenseName(e.target.value) }}>
+            <option selected disabled>Select . . .</option>
+            <option value="Office Cost">Office Cost</option>
+            <option value="Employee Salary">Employee Salary</option>
+            <option value="Shop Rent">Shop Rent</option>
+            <option value="Others">Others</option>
+          </select>
 
+        </label>
+
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">EXPENSE NOTE</span>
+          </div>
+          <input type="text" name='note' autoComplete='note' value={expenseNote} onChange={(e) => setExpenseNote(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+        </label>
+
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text-alt">EXPENSE AMOUNT</span>
+          </div>
+          <input type="number" value={expensAmount} onChange={(e) => setExpenseAmount(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+        </label>
+
+
+        <label className="form-control w-full max-w-xs">
+          <button onClick={handleExpenseSubmit} className="btn btn-success btn-outline max-w-xs" disabled={pending} >{pending ? "Submitting..." : "SUBMIT"}</button>
+        </label>
+
+      </div>
     </div>
   )
 }

@@ -143,7 +143,7 @@ const Page = () => {
       })
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
-  
+
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/productStockSummary?username=${username}`)
       .then(response => response.json())
@@ -182,7 +182,7 @@ const Page = () => {
   }, 0);
 
 
-   const totalSold = filteredProducts.reduce((total, product) => {
+  const totalSold = filteredProducts.reduce((total, product) => {
     return total + product.soldToday;
   }, 0);
 
@@ -243,6 +243,7 @@ const Page = () => {
               </tr>
             </tfoot>
           </table>
+
         </div>
       </div>
       <div className="modal sm:modal-middle" role="dialog" id="my_modal_stock">
@@ -266,8 +267,8 @@ const Page = () => {
               <div className="label">
                 <span className="label-text-alt">PICK PRODUCT</span>
               </div>
-             
-              <Select  className="text-black" options={options} onChange={handleChange} placeholder="Select . . ." />
+
+              <Select className="text-black" options={options} onChange={handleChange} placeholder="Select . . ." />
             </label>
             <label className="form-control w-full max-w-xs">
               <div className="label">
