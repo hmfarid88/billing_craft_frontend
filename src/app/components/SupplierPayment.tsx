@@ -1,10 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { DatePicker } from 'react-date-picker';
 import { toast } from "react-toastify";
-import { FcCalendar } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
-import Select from "react-select";
 
 
 const SupplierPayment = () => {

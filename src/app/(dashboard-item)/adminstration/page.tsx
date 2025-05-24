@@ -2,15 +2,19 @@
 import AdminChange from '@/app/components/AdminChange'
 import BalanceSheet from '@/app/components/BalanceSheet'
 import Currency from '@/app/components/Currency'
+import ExpenseEdit from '@/app/components/ExpenseEdit'
 import InvoiceNote from '@/app/components/InvoiceNote'
+import OfficePayEdit from '@/app/components/OfficePayEdit'
 import PurchaseReturn from '@/app/components/PurchaseReturn'
 import SaleReturn from '@/app/components/SaleReturn'
 import ShopInfo from '@/app/components/ShopInfo'
 import SmsSetting from '@/app/components/SmsSetting'
+import SupplierPayEdit from '@/app/components/SupplierPayEdit'
 import UserChange from '@/app/components/UserChange'
 import VatInfo from '@/app/components/VatInfo'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { CgEditExposure } from 'react-icons/cg'
 import { FaBalanceScale } from 'react-icons/fa'
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlinePassword } from 'react-icons/md'
@@ -146,6 +150,38 @@ const Page = () => {
                                 <div className="collapse-title text-sm font-medium">USER PASSWORD</div>
                                 <div className="collapse-content">
                                     <UserChange />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="radio" id="payment-tab" name="my_tabs_2" className="hidden peer/payment" />
+                    <label htmlFor="payment-tab" className="tab flex items-center gap-2 cursor-pointer">
+                        <CgEditExposure size={20} /> PAYMENT
+                    </label>
+                    <div className="hidden peer-checked/payment:block tab-content bg-base-100 border p-6 rounded-box">
+                        <div className="flex flex-col gap-3">
+                            <div className="collapse collapse-arrow bg-base-200">
+                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="checkbox" className="peer" />
+                                <div className="collapse-title text-sm font-medium">EXPENSE</div>
+                                <div className="collapse-content">
+                                    <ExpenseEdit />
+                                </div>
+                            </div>
+                            <div className="collapse collapse-arrow bg-base-200">
+                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="checkbox" className="peer" />
+                                <div className="collapse-title text-sm font-medium">OFFICE PAYMENT</div>
+                                <div className="collapse-content">
+                                    <OfficePayEdit />
+                                </div>
+                            </div>
+                            <div className="collapse collapse-arrow bg-base-200">
+                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="checkbox" className="peer" />
+                                <div className="collapse-title text-sm font-medium">SUPPLIER PAYMENT</div>
+                                <div className="collapse-content">
+                                    <SupplierPayEdit />
                                 </div>
                             </div>
                         </div>
