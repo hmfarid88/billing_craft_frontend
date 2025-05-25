@@ -121,15 +121,7 @@ export const Sidebar = () => {
                     <li><details>
                         <summary><MdOutlineInterests size={20} />PROFIT REPORT</summary>
                         <ul>
-                            <li>
-                                <details>
-                                    <summary>PROFIT / LOSS</summary>
-                                    <ul>
-                                        <li><Profit /></li>
-                                    </ul>
-                                </details>
-                            </li>
-                            <li> <Link href="/profit-withdraws">PROFIT WITHDRAW</Link></li>
+                           <li><Profit /></li>
                         </ul>
                     </details>
                     </li>

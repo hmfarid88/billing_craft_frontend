@@ -9,7 +9,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { FcManager } from "react-icons/fc";
 import { FcPhone } from "react-icons/fc";
 import { FcViewDetails } from "react-icons/fc";
-import { FaCcMastercard } from "react-icons/fa6";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { RxCrossCircled } from "react-icons/rx";
@@ -391,11 +390,7 @@ const Page: React.FC = () => {
               <span className="text-sm">TOTAL</span>
               <input type="number" className="grow w-[150px]" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
-            {/* <label className="input input-bordered flex items-center gap-2">
-              <FaCcMastercard size={20} />
-              <input type="number" className="grow w-[150px]" onChange={(e: any) => setCard(e.target.value)} placeholder="Card Payment" />
-            </label> */}
-
+           
           </div>
         </div>
         <div className="flex w-full justify-center p-5">

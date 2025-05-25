@@ -7,6 +7,8 @@ import DateToDate from "@/app/components/DateToDate";
 import CurrentMonthYear from "@/app/components/CurrentMonthYear";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { GiReceiveMoney } from "react-icons/gi";
 
 interface Product {
     category: string;
@@ -139,6 +141,7 @@ const Page = () => {
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <DateToDate routePath="/datewise-profitreport" />
+                <Link className="mt-8" href="/profit-withdraws"><button className="btn btn-info"><GiReceiveMoney  size={30} />Profit Withdraws</button></Link>
                 <div className="flex gap-2">
                     <label className="form-control max-w-xs">
                         <div className="label">
