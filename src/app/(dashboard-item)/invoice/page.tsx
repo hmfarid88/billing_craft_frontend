@@ -103,55 +103,55 @@ const Invoice = () => {
 
     useEffect(() => {
         if (invoiceData[0]?.saleId) {
-          const saleId = invoiceData[0].saleId;
-          
-          // Fetch previous invoice
-          fetch(`${apiBaseUrl}/api/getPreviousInvoice?username=${username}&saleId=${saleId}`)
-            .then((response) => response.json())
-            .then((data) =>setPrevInvoice(data.cid))
-            .catch((error) => console.error("Error fetching previous invoice:", error));
-           
-          // Fetch next invoice
-          fetch(`${apiBaseUrl}/api/getNextInvoice?username=${username}&saleId=${saleId}`)
-            .then((response) => response.json())
-            .then((data) => setNextInvoice(data.cid))
-            .catch((error) => console.error("Error fetching next invoice:", error));
-        }
-      }, [apiBaseUrl, username, invoiceData]);
-     
-        const handleNavigation = (type: string) => {
-          if (type === "prev" && prevInvoice.length > 0) {
-          const newCid = prevInvoice;
-          if (newCid) {
-            router.push(`/invoice?cid=${newCid}`);
-          } else {
-            console.error("No valid invoice found !");
-          }
-        } else if (type === "next" && nextInvoice.length > 0) {
-          const newCid = nextInvoice;
-          if (newCid) {
-            router.push(`/invoice?cid=${newCid}`);
-          } else {
-            console.error("No valid invoice found !");
-          }
-        } else {
-          console.error("No data found !");
-        }
-      };
+            const saleId = invoiceData[0].saleId;
 
-      const [currency, setCurrency] = useState<string>('');
-      useEffect(() => {
-        fetch(`${apiBaseUrl}/api/getCurrency?username=${username}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.currency === 'BDT' || !data.currency) {
-              setCurrency('৳');
+            // Fetch previous invoice
+            fetch(`${apiBaseUrl}/api/getPreviousInvoice?username=${username}&saleId=${saleId}`)
+                .then((response) => response.json())
+                .then((data) => setPrevInvoice(data.cid))
+                .catch((error) => console.error("Error fetching previous invoice:", error));
+
+            // Fetch next invoice
+            fetch(`${apiBaseUrl}/api/getNextInvoice?username=${username}&saleId=${saleId}`)
+                .then((response) => response.json())
+                .then((data) => setNextInvoice(data.cid))
+                .catch((error) => console.error("Error fetching next invoice:", error));
+        }
+    }, [apiBaseUrl, username, invoiceData]);
+
+    const handleNavigation = (type: string) => {
+        if (type === "prev" && prevInvoice.length > 0) {
+            const newCid = prevInvoice;
+            if (newCid) {
+                router.push(`/invoice?cid=${newCid}`);
             } else {
-              setCurrency(data.currency);
+                console.error("No valid invoice found !");
             }
-          })
-          .catch(error => console.error('Error fetching data:', error));
-      }, [apiBaseUrl, username]);
+        } else if (type === "next" && nextInvoice.length > 0) {
+            const newCid = nextInvoice;
+            if (newCid) {
+                router.push(`/invoice?cid=${newCid}`);
+            } else {
+                console.error("No valid invoice found !");
+            }
+        } else {
+            console.error("No data found !");
+        }
+    };
+
+    const [currency, setCurrency] = useState<string>('');
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/api/getCurrency?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.currency === 'BDT' || !data.currency) {
+                    setCurrency('৳');
+                } else {
+                    setCurrency(data.currency);
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }, [apiBaseUrl, username]);
 
     const subtotal = invoiceData.reduce((acc, item) => acc + item.sprice, 0);
     const discount = invoiceData.reduce((acc, item) => acc + item.discount, 0);
@@ -161,8 +161,8 @@ const Invoice = () => {
     const received = invoiceData.reduce((acc, item) => item.received, 0);
     const total = (subtotal + vat) - discount - offer;
     const totalInWords = toWords(total);
-    
-          if (!invoiceData) {
+
+    if (!invoiceData) {
         return <div><Loading /></div>;
     }
     return (
@@ -196,7 +196,7 @@ const Invoice = () => {
                             <h4 className='text-xs md:text-md uppercase'>Invoice No : {invoiceData[0]?.cid}</h4>
                             <h4 className='text-xs md:text-md uppercase pt-1'>Date : {invoiceData[0]?.date.toLocaleString()}</h4>
                             <h4 className='text-xs md:text-md uppercase pt-1'>Time : {invoiceData[0]?.time.toLocaleString()}</h4>
-                           {invoiceData[0]?.soldby? ( <h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Sold By : {invoiceData[0]?.soldby} </h4>) : null}
+                            {invoiceData[0]?.soldby ? (<h4 className='font-semibold text-xs md:text-md uppercase pt-1'>Sold By : {invoiceData[0]?.soldby} </h4>) : null}
                         </div>
                     </div>
                     <div className="w-full pt-2">
@@ -213,12 +213,21 @@ const Invoice = () => {
                                 {invoiceData?.map((products, index) => (
                                     <tr key={index}>
                                         <td className='text-left p-0'>{products.brand} {products.productName} {products.color} {products.productno}</td>
-                                        <th>1</th>
+                                        <td>1</td>
                                         <td>{products.sprice.toLocaleString('en-IN')}</td>
                                         <td className='text-right p-0'>{products.sprice.toLocaleString('en-IN')}</td>
                                     </tr>
                                 ))}
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td className='text-left p-0'>TOTAL</td>
+                                    <td>{invoiceData?.length}</td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                     <div className="flex flex-col w-full">
@@ -244,7 +253,7 @@ const Invoice = () => {
                     </div>
                     <div className="flex w-full justify-end">
                         <div className="flex w-1/2 gap-5 justify-end">
-                           <div className="flex flex-col items-end">
+                            <div className="flex flex-col items-end">
                                 <p className='uppercase text-xs md:text-md'>TOTAL :</p>
                                 <p className='uppercase text-xs md:text-md'>CARD PAY :</p>
                                 <p className='uppercase text-xs md:text-md'>RECEIVED :</p>
@@ -256,12 +265,12 @@ const Invoice = () => {
                                 <p className='text-xs md:text-md'>{currency} {total.toLocaleString('en-IN')}</p>
                                 <p className='text-xs md:text-md'>{currency} {card?.toLocaleString('en-IN')}</p>
                                 <p className='text-xs md:text-md'>{currency} {received?.toLocaleString('en-IN') || 0}</p>
-                                {received ?(
+                                {received ? (
                                     <p className='text-xs md:text-md'>{currency} {(received - (total - card)).toLocaleString('en-IN')}</p>
                                 ) : null}
-                                 
+
                             </div>
-                            
+
                         </div>
                     </div>
                     <div className="flex items-end justify-end capitalize pt-2"><p className='text-sm'>(In Words : {totalInWords})</p></div>

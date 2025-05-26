@@ -5,6 +5,7 @@ import Currency from '@/app/components/Currency'
 import ExpenseEdit from '@/app/components/ExpenseEdit'
 import InvoiceNote from '@/app/components/InvoiceNote'
 import OfficePayEdit from '@/app/components/OfficePayEdit'
+import ProductEdit from '@/app/components/ProductEdit'
 import PurchaseReturn from '@/app/components/PurchaseReturn'
 import SaleReturn from '@/app/components/SaleReturn'
 import ShopInfo from '@/app/components/ShopInfo'
@@ -113,6 +114,14 @@ const Page = () => {
                                 <div className="collapse-title text-sm font-medium">SALE RETURN</div>
                                 <div className="collapse-content">
                                     <SaleReturn />
+                                </div>
+                            </div>
+                            <div className="collapse collapse-arrow bg-base-200">
+                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="checkbox" className="peer" />
+                                <div className="collapse-title text-sm font-medium">PRODUCT EDIT</div>
+                                <div className="collapse-content">
+                                    <ProductEdit />
                                 </div>
                             </div>
                         </div>
