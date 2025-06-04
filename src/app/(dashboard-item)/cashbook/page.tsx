@@ -62,13 +62,13 @@ const Page = () => {
 
   const [saledata, setSaleData] = useState<Sale[]>([]);
   useEffect(() => {
-    fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}`)
+    fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}&date=${date}`)
       .then(response => response.json())
       .then(data => {
         setSaleData(data);
       })
       .catch(error => console.error('Error fetching data:', error));
-  }, [apiBaseUrl, username]);
+  }, [apiBaseUrl, username, date]);
 
   const totalDebit = () => {
     return receives.reduce((debit, receive) => debit + (receive.amount), 0);
