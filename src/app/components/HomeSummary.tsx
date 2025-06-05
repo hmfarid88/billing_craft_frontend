@@ -76,7 +76,7 @@ interface Currency{currency:string}
   }, [apiBaseUrl, username]);
 
    useEffect(() => {
-      fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}`)
+      fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}&date=${date}`)
         .then(response => response.json())
         .then(data => {
           const saleValue = data.reduce((total: any, product: { value: any; }) => {
@@ -85,7 +85,7 @@ interface Currency{currency:string}
           setSaleAndVat(saleValue);
         })
         .catch(error => console.error('Error fetching data:', error));
-    }, [apiBaseUrl, username]);
+    }, [apiBaseUrl, username, date]);
 
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getMonthlyProductSale?username=${username}`)
