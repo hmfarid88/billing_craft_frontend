@@ -2,7 +2,9 @@ import Expense from '@/app/components/Expense'
 import OfficeCost from '@/app/components/OfficeCost'
 import ProfitWithdraw from '@/app/components/ProfitWithdraw'
 import SupplierPayment from '@/app/components/SupplierPayment'
+import { ToastContainer } from 'react-toastify'
 import React from 'react'
+
 
 const page = () => {
   return (
@@ -13,11 +15,11 @@ const page = () => {
           <div role="tabpanel" className="tab-content p-10">
             <Expense />
           </div>
-          <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="OFFICE TRANSACTION" />
+          <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="OFFICE PAYMENT" />
           <div role="tabpanel" className="tab-content p-10">
             <OfficeCost />
           </div>
-          <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="SUPPLIER TRANSACTION" />
+          <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="SUPPLIER PAYMENT" />
           <div role="tabpanel" className="tab-content p-10">
             <SupplierPayment />
           </div>
@@ -26,6 +28,7 @@ const page = () => {
             <ProfitWithdraw />
           </div>
         </div>
+        <ToastContainer theme='dark' autoClose={1000} />
       </div>
     </div>
   )

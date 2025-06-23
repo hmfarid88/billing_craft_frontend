@@ -42,7 +42,7 @@ const BarcodeGenerator: React.FC = () => {
             <div className="flex justify-between w-full p-5">
                 <div className="flex gap-3">
                     <input
-                        className="input input-bordered w-full max-w-xs"
+                        className="input input-bordered border-slate-400 w-full max-w-xs"
                         type="number"
                         value={qty}
                         onChange={(e) => setQty(e.target.value)}
