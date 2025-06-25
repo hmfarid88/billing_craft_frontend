@@ -13,6 +13,7 @@ interface Product {
   category: string;
   brand: string;
   productName: string;
+  color: string;
   countBeforeToday: number;
   countToday: number;
   soldToday: number;
@@ -154,6 +155,7 @@ const Page = () => {
       searchWords.every(word =>
         (product.category?.toLowerCase().includes(word) || '') ||
         (product.brand?.toLowerCase().includes(word) || '') ||
+        (product.color?.toLowerCase().includes(word) || '') ||
         (product.productName?.toLowerCase().includes(word) || '')
       )
     );
@@ -203,6 +205,7 @@ const Page = () => {
                 <th>CATEGORY</th>
                 <th>BRAND</th>
                 <th>PRODUCT</th>
+                <th>COLOR</th>
                 <th>PREVIOUS</th>
                 <th>TODAY</th>
                 <th>SOLD</th>
@@ -216,6 +219,7 @@ const Page = () => {
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>{product.productName}</td>
+                  <td>{product.color}</td>
                   <td>{product.countBeforeToday + product.countToday}</td>
                   <td>{product.countToday}</td>
                   <td>{product.soldToday}</td>
@@ -227,7 +231,7 @@ const Page = () => {
             </tbody>
             <tfoot>
               <tr className="font-bold text-sm">
-                <td colSpan={3}></td>
+                <td colSpan={4}></td>
                 <td>TOTAL</td>
                 <td>{Number(totalPreQty.toFixed(2)).toLocaleString('en-IN')}</td>
                 <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
