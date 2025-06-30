@@ -7,7 +7,7 @@ import { RiSecurePaymentLine } from 'react-icons/ri';
 import { GoDatabase } from 'react-icons/go';
 import { TbReportSearch } from 'react-icons/tb';
 import { VscRepo } from 'react-icons/vsc';
-import { GrUserAdmin } from 'react-icons/gr';
+import { GrTransaction, GrUserAdmin } from 'react-icons/gr';
 import { BsDatabaseAdd } from 'react-icons/bs';
 import { PiUserListBold } from "react-icons/pi";
 import { AiOutlineFileSearch } from "react-icons/ai";
@@ -74,12 +74,13 @@ export const Sidebar = () => {
                             <summary><MdOutlinePayments size={20} /> PAYMENT REPORT</summary>
                             <ul>
                                 <li><Link href="/expense-report"> EXPENSE REPORT</Link></li>
-                                <li><Link href="/payment-report"> OFFICE PAYMENT</Link></li>
+                                <li><Link href="/payrecv-report"> OFFICE PAYMENT</Link></li>
                                 <li><Link href="/vat-ledger"> VAT REPORT</Link></li>
                             </ul>
                         </details>
                     </li>
-                    <li><Link href="/supplier-report"><PiUserListBold size={20} /> SUPPLIER REPORT</Link></li>
+                    <li><Link href="/payment-report"><GrTransaction size={20} /> PAY-RECV LEDGER</Link></li>
+                    <li><Link href="/supplier-report"><PiUserListBold size={20} /> SUPPLIER LEDGER</Link></li>
                     <li>
                         <details>
                             <summary><a className='flex gap-2'><VscRepo size={20} /> CASH BOOK </a></summary>

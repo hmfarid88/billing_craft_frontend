@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
-import { FcPrint } from "react-icons/fc";
+import { FcCalendar, FcPrint } from "react-icons/fc";
 import DateToDate from "@/app/components/DateToDate";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -90,7 +90,8 @@ const Page = () => {
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-center gap-5 p-5">
-                <DateToDate routePath="/datewise-salereport" /><Link href="/monthly-salereport"><button className="btn btn-sm btn-link">This Month Sale</button></Link>
+                <DateToDate routePath="/datewise-salereport" />
+                 <Link className="mt-8" href="/monthly-salereport"><button className="btn btn-info"><FcCalendar size={30} />Monthly Sale</button></Link>
             </div>
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">

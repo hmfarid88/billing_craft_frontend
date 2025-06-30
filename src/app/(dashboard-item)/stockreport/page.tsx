@@ -549,7 +549,7 @@ const Page = () => {
                 {showByColor && <th>COLOR</th>}
                 <th>PREVIOUS</th>
                 <th>TODAY</th>
-                <th>SOLD</th>
+                <th>SOLD / RETURN</th>
                 <th>PRESENT</th>
               </tr>
             </thead>

@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 type Product = {
     date: string;
     invoice: string;
+    qty: number;
     pvalue: number;
     svalue: number;
     payment: number;
@@ -81,7 +82,7 @@ const Page = () => {
                 </div>
                 <div className="overflow-x-auto items-center justify-center">
                     <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
+                        <div className="flex flex-col items-center justify-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
                         <h4>Supplier: {supplierName}</h4>
                         <CurrentDate /></div>
                         <table className="table table-sm">
@@ -90,6 +91,7 @@ const Page = () => {
                                     <th>SN</th>
                                     <th>DATE</th>
                                     <th>INVOICE NO</th>
+                                    <th>QTY</th>
                                     <th>PURCHASE VALUE</th>
                                     <th>SALE VALUE</th>
                                     <th>NOTE</th>
@@ -110,9 +112,10 @@ const Page = () => {
                                             <td>{index + 1}</td>
                                             <td>{product.date}</td>
                                             <td>{product.invoice}</td>
+                                            <td>{product.qty}</td>
                                             <td>{Number(product.pvalue.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(product.svalue.toFixed(2)).toLocaleString('en-IN')}</td>
-                                            <td className="capitalize">{product?.note}</td>
+                                            <td className="capitalize max-w-[150px] break-words">{product?.note}</td>
                                             <td>{Number(product.payment.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(product.receive.toFixed(2)).toLocaleString('en-IN')}</td>
                                             <td>{Number(cumulativeBalance.toFixed(2)).toLocaleString('en-IN')}</td>
