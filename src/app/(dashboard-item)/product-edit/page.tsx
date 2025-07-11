@@ -27,7 +27,7 @@ const Page = () => {
     const productno = searchParams.get('productno');
 
     const [editableProduct, setEditableProduct] = useState<Product | null>(null);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLoading(true);
@@ -35,7 +35,7 @@ const Page = () => {
             .then(response => response.json())
             .then(data => {
                 setEditableProduct(data[0] || null);
-                setLoading(false); 
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching products:', error);
@@ -60,7 +60,7 @@ const Page = () => {
             return;
         }
         setIsSaving(true);
-    
+
         fetch(`${apiBaseUrl}/api/products/update/${editableProduct.proId}`, {
             method: "PUT",
             headers: {
@@ -84,7 +84,7 @@ const Page = () => {
                 setIsSaving(false);
             });
     };
-    
+
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex flex-col p-2 items-center justify-center">
@@ -213,7 +213,11 @@ const Page = () => {
                         </div>
                         <button
                             className="btn btn-primary mt-4"
-                            onClick={handleSave}
+                            onClick={(e) => {
+                                if (window.confirm("Are you sure you want to save this item?")) {
+                                    handleSave();
+                                }
+                            }}
                             disabled={isSaving} >
                             {isSaving ? "Saving..." : "Save"}
                         </button>

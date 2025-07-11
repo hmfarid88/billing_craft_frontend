@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
-import { useAppSelector } from "@/app/store";
 import { useRouter } from 'next/navigation';
 
 const ProductEdit = () => {
