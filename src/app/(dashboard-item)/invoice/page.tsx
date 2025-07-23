@@ -42,6 +42,7 @@ const Invoice = () => {
         date: string,
         time: string,
         pprice: number,
+        rsprice: number,
         sprice: number,
         discount: number,
         offer: number,
@@ -57,11 +58,12 @@ const Invoice = () => {
         address: string,
         email: string
     }
-    useEffect(() => {
-        if (invoiceData) {
-            handlePrint();
-        }
-    }, [invoiceData]);
+    // useEffect(() => {
+    //     if (invoiceData) {
+    //         handlePrint();
+    //     }
+    // }, [invoiceData]);
+
     const [shopInfo, setShopInfo] = useState<shopData>();
     useEffect(() => {
         fetch(`${apiBaseUrl}/shop/getShopInfo?username=${username}`)
@@ -82,6 +84,17 @@ const Invoice = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
+    const [discountStatus, setStatus] = useState();
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/discount/status?username=${username}`)
+            .then((res) => res.json())
+            .then((data) => {
+                setStatus(data.status);
+             
+            })
+            .catch((err) => console.error("Error fetching status:", err));
+    }, [apiBaseUrl, username]);
+
     useEffect(() => {
         if (username && cid) {
             fetch(`${apiBaseUrl}/api/getInvoiceData?username=${username}&cid=${cid}`)
@@ -91,13 +104,17 @@ const Invoice = () => {
                         if (item.saleType === 'vendor') {
                             return { ...item, sprice: item.pprice };
                         }
+                        if (item.saleType === 'customer' && discountStatus === 'HIDE') {
+                            return { ...item, sprice: item.rsprice };
+                        }
                         return item;
                     });
                     setInvoiceData(updatedData);
                 })
                 .catch(error => console.error('Error fetching invoice data:', error));
         }
-    }, [apiBaseUrl, username, cid]);
+    }, [apiBaseUrl, username, cid, discountStatus]);
+
     const isVendorSale = invoiceData.some(item => item.saleType === 'vendor');
     const saleLink = isVendorSale ? "/vendor-sale" : "/sale";
 

@@ -24,10 +24,10 @@ export default function Home() {
             <div><Barchart /></div>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center">
+        {/* <div className="flex flex-col items-center justify-center">
           <div className="p-5 uppercase text-sm font-semibold"><h4>Last 12 Month Profit-Loss Analysis</h4></div>
           <div><Linechart /></div>
-        </div>
+        </div> */}
       </div>
     </main>
   );

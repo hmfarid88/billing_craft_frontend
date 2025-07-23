@@ -2,6 +2,7 @@
 import AdminChange from '@/app/components/AdminChange'
 import BalanceSheet from '@/app/components/BalanceSheet'
 import Currency from '@/app/components/Currency'
+import DiscountHide from '@/app/components/DiscountHide'
 import ExpenseEdit from '@/app/components/ExpenseEdit'
 import InvoiceNote from '@/app/components/InvoiceNote'
 import OfficePayEdit from '@/app/components/OfficePayEdit'
@@ -53,7 +54,7 @@ const Page = () => {
                             <div className="collapse collapse-arrow bg-base-200">
                                 {/* <input type="radio" name="my-accordion-2" /> */}
                                 <input type="checkbox" className="peer" />
-                                <div className="collapse-title text-sm font-medium">SHOP SETTING</div>
+                                <div className="collapse-title text-sm font-medium">SHOP ADDRESS</div>
                                 <div className="collapse-content">
                                     <ShopInfo />
                                 </div>
@@ -88,6 +89,14 @@ const Page = () => {
                                 <div className="collapse-title text-sm font-medium">SMS SETTING</div>
                                 <div className="collapse-content">
                                     <SmsSetting />
+                                </div>
+                            </div>
+                            <div className="collapse collapse-arrow bg-base-200">
+                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="checkbox" className="peer" />
+                                <div className="collapse-title text-sm font-medium">DISCOUNT SETTING</div>
+                                <div className="collapse-content">
+                                    <DiscountHide />
                                 </div>
                             </div>
                         </div>
