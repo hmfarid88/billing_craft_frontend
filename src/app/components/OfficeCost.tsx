@@ -89,14 +89,12 @@ const OfficeCost = () => {
   };
   const [paymentPersonOption, setPaymentPersonOption] = useState([]);
   useEffect(() => {
-
     fetch(`${apiBaseUrl}/payment/getPaymentPerson?username=${username}`)
       .then(response => response.json())
       .then(data => {
         setPaymentPersonOption(data);
       })
       .catch(error => console.error('Error fetching products:', error));
-
   }, [paymentPerson, apiBaseUrl, username]);
 
   return (

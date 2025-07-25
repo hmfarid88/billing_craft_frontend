@@ -37,6 +37,10 @@ const Page: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const [cname, setCname] = useState("");
+  const [dueName, setDueName] = useState("");
+  const [dueAmount, setDueAmount] = useState("");
+  const [walletName, setWalletName] = useState("");
+  const [walletAmount, setWalletAmount] = useState("");
   const [phoneNumber, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [soldby, setSoldby] = useState("");
@@ -45,6 +49,7 @@ const Page: React.FC = () => {
   const vatAmount = (total * vat) / 100;
   const [received, setReceived] = useState('');
   const [returnAmount, setReturnAmount] = useState(0);
+  const [due, setDue] = useState(false);
 
   const cid = uid();
   const [maxDate, setMaxDate] = useState("");
@@ -61,7 +66,7 @@ const Page: React.FC = () => {
   const handleReceivedChange = (e: any) => {
     const receivedValue = e.target.value;
     setReceived(receivedValue);
-    const returnAmountValue = receivedValue - (Number(total) + Number(vatAmount) - Number(cardPay));
+    const returnAmountValue = receivedValue - (Number(total) + Number(vatAmount) - Number(walletAmount));
     setReturnAmount(returnAmountValue);
   };
   const selectRef = useRef<any>(null);
@@ -109,30 +114,163 @@ const Page: React.FC = () => {
     saleType: 'customer',
     username: username
   }));
+  //   const handleFinalSubmit = async (e: any) => {
+  //     e.preventDefault();
+  //     if (!cname || !phoneNumber) {
+  //       toast.info("Customer & phone number empty!");
+  //       return;
+  //     }
+  //     if (productInfo.length === 0) {
+  //       toast.error("Your product list is empty!");
+  //       return;
+  //     }
+  //     if (walletName && !walletAmount) {
+  //       toast.info("Please fill wallet amount");
+  //       return;
+  //     }
+  //     if (!walletName && walletAmount) {
+  //       toast.info("Please select wallet name");
+  //       return;
+  //     }
+  //     if (Number(walletAmount) <= 0) {
+  //   toast.info("Wallet amount must be greater than zero");
+  //   return;
+  // }
+  //     if (walletName && walletAmount) {
+  //       try {
+  //         const response = await fetch(`${apiBaseUrl}/payment/walletPayment`, {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({ date, paymentName: walletName, paymentType: "payment", paymentNote: "pos transaction", amount: walletAmount, username }),
+  //         });
+
+  //         if (!response.ok) {
+  //           const data = await response.json();
+  //           toast.error(data.message);
+  //           return;
+  //         }
+  //       } catch (error) {
+  //         toast.error("Invalid transaction !")
+  //       }
+  //     }
+  //     const salesRequest = {
+  //       customer: {
+  //         cid, cname, phoneNumber, address, soldby, cardPay: walletAmount, vatAmount, received, username
+  //       },
+  //       salesItems: productInfo,
+  //     };
+  //     setPending(true);
+  //     try {
+  //       const response = await fetch(`${apiBaseUrl}/sales/productSale`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify(salesRequest),
+  //       });
+
+  //       if (!response.ok) {
+  //         toast.error("Product sale not submitted !");
+  //         return;
+  //       }
+
+  //       setCname("");
+  //       setPhone("");
+  //       setCard(0);
+  //       setAddress("");
+  //       setSoldby("");
+  //       setReceived('');
+
+  //       dispatch(deleteAllProducts(username));
+  //       router.push(`/invoice?cid=${cid}`);
+
+  //     } catch (error: any) {
+  //       toast.error("An error occurred: " + error.message);
+  //     } finally {
+  //       setPending(false);
+  //     }
+  //   };
   const handleFinalSubmit = async (e: any) => {
     e.preventDefault();
+
+    // ✅ Prevent multiple submissions
+    if (pending) return;
+    setPending(true);
+
+    // ✅ Basic validations
     if (!cname || !phoneNumber) {
-      toast.info("Customer & Phone Number is Required !");
-      return;
-    }
-    if (productInfo.length === 0) {
-      toast.error("Your product list is empty!");
+      toast.info("Customer & phone number empty!");
+      setPending(false);
       return;
     }
 
+    if (productInfo.length === 0) {
+      toast.error("Your product list is empty!");
+      setPending(false);
+      return;
+    }
+
+    if (walletName && !walletAmount) {
+      toast.info("Please fill wallet amount");
+      setPending(false);
+      return;
+    }
+
+    if (!walletName && walletAmount) {
+      toast.info("Please select wallet name");
+      setPending(false);
+      return;
+    }
+
+    if (walletAmount && Number(walletAmount) <= 0) {
+      toast.info("Wallet amount must be greater than zero");
+      setPending(false);
+      return;
+    }
+
+    // ✅ Wallet payment first if needed
+    if (walletName && walletAmount) {
+      try {
+        const response = await fetch(`${apiBaseUrl}/payment/walletPayment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date,
+            paymentName: walletName,
+            paymentType: "payment",
+            paymentNote: "pos transaction",
+            amount: walletAmount,
+            username
+          }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          toast.error(data.message);
+          setPending(false); 
+          return;
+        }
+      } catch (error) {
+        toast.error("Invalid transaction !");
+        setPending(false); 
+        return;
+      }
+    }
+
+    // ✅ Final sales submission
     const salesRequest = {
       customer: {
-        cid, cname, phoneNumber, address, soldby, cardPay, vatAmount, received, username
+        cid, cname, phoneNumber, address, soldby, cardPay: walletAmount, vatAmount, received, username
       },
       salesItems: productInfo,
     };
-    setPending(true);
+
     try {
       const response = await fetch(`${apiBaseUrl}/sales/productSale`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(salesRequest),
       });
 
@@ -141,13 +279,13 @@ const Page: React.FC = () => {
         return;
       }
 
+      // ✅ Reset state after successful sale
       setCname("");
       setPhone("");
       setCard(0);
       setAddress("");
       setSoldby("");
       setReceived('');
-
       dispatch(deleteAllProducts(username));
       router.push(`/invoice?cid=${cid}`);
 
@@ -157,6 +295,131 @@ const Page: React.FC = () => {
       setPending(false);
     }
   };
+
+  const handleDueSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (pending) return;
+    setPending(true);
+
+    // 1. Basic validations
+    if (!dueName || !dueAmount) {
+      toast.info("No customer selected or due amount missing!");
+      return;
+    }
+
+    if (productInfo.length === 0) {
+      toast.error("Your product list is empty!");
+      return;
+    }
+ if (walletName && !walletAmount) {
+      toast.info("Please fill wallet amount");
+      setPending(false);
+      return;
+    }
+
+    if (!walletName && walletAmount) {
+      toast.info("Please select wallet name");
+      setPending(false);
+      return;
+    }
+
+    if (walletAmount && Number(walletAmount) <= 0) {
+      toast.info("Wallet amount must be greater than zero");
+      setPending(false);
+      return;
+    }
+
+    // ✅ Wallet payment first if needed
+    if (walletName && walletAmount) {
+      try {
+        const response = await fetch(`${apiBaseUrl}/payment/walletPayment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date,
+            paymentName: walletName,
+            paymentType: "payment",
+            paymentNote: "pos transaction",
+            amount: walletAmount,
+            username
+          }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          toast.error(data.message);
+          setPending(false); 
+          return;
+        }
+      } catch (error) {
+        toast.error("Invalid transaction !");
+        setPending(false); 
+        return;
+      }
+    }
+    // 2. Constructing payloads
+    const salesRequest = {
+      customer: {
+        cid,
+        cname: dueName, 
+        phoneNumber,
+        address,
+        soldby,
+        cardPay:walletAmount,
+        vatAmount,
+        received,
+        username,
+      },
+      salesItems: productInfo,
+    };
+
+    const paymentRequest = {
+      date,
+      paymentName: dueName,
+      paymentType: "payment",
+      paymentNote: "Due Sale",
+      amount: dueAmount,
+      username,
+    };
+
+    setPending(true);
+    try {
+      // 3. Submit product sale
+      const response = await fetch(`${apiBaseUrl}/sales/productSale`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(salesRequest),
+      });
+
+      if (!response.ok) {
+        toast.error("Product sale not submitted!");
+        return;
+      }
+
+      // 4. Submit due payment record
+      const response2 = await fetch(`${apiBaseUrl}/payment/paymentRecord`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentRequest),
+      });
+
+      if (!response2.ok) {
+        toast.error("Due payment not recorded!");
+        return;
+      }
+
+      // 5. Success actions
+      dispatch(deleteAllProducts(username));
+      router.push(`/invoice?cid=${cid}`);
+
+    } catch (error: any) {
+      toast.error("An error occurred: " + error.message);
+    } finally {
+      setPending(false);
+    }
+  };
+
 
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getProductStock?username=${username}`)
@@ -221,7 +484,25 @@ const Page: React.FC = () => {
     }
   }, [phoneNumber, apiBaseUrl, username]);
 
+  const [paymentPersonOption, setPaymentPersonOption] = useState([]);
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/payment/getPaymentPerson?username=${username}`)
+      .then(response => response.json())
+      .then(data => {
+        setPaymentPersonOption(data);
+      })
+      .catch(error => console.error('Error fetching products:', error));
+  }, [apiBaseUrl, username]);
 
+  const [walletPersonOption, setWalletPersonOption] = useState([]);
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/payment/getWalletName?username=${username}`)
+      .then(response => response.json())
+      .then(data => {
+        setWalletPersonOption(data);
+      })
+      .catch(error => console.error('Error fetching products:', error));
+  }, [apiBaseUrl, username]);
   return (
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex flex-col">
@@ -362,23 +643,47 @@ const Page: React.FC = () => {
         <div className="flex w-full justify-center p-5">
           <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
             <h1 className="font-bold text-sm">CUSTOMER INFO</h1>
-            <label className="input input-bordered flex items-center gap-2">
-              <FcManager size={20} />
-              <input type="text" name="customer" className="grow" value={cname} onChange={(e: any) => setCname(e.target.value)} placeholder="Customer Name" />
-            </label>
-            <label className="input input-bordered flex items-center gap-2">
-              <FcPhone size={20} />
-              <input type="text" name="phone" className="grow" maxLength={11} onChange={(e: any) => setPhone(e.target.value.replace(/\D/g, ""))} value={phoneNumber} placeholder="Mobile Number" />
-            </label>
-            <label className="input input-bordered flex items-center gap-2">
-              <FcViewDetails size={20} />
-              <input type="text" name="address" className="grow w-[100px]" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Address" />
-              |<input type="text" name="soldby" className="grow w-[100px]" onChange={(e: any) => setSoldby(e.target.value)} value={soldby} placeholder="Sold by" />
-            </label>
+            <div className="flex justify-end gap-2">
+              <span className="label-text-alt">DUE</span>
+              <input type="checkbox" className="checkbox checkbox-success w-[20px] h-[20px]" checked={due}
+                onChange={(e) => setDue(e.target.checked)} />
+            </div>
+
+            {due && (
+              <div className="flex flex-col gap-2">
+                <span className="label-text-alt">DUE PERSON</span>
+                <select className='select select-bordered w-[250px]' onChange={(e: any) => setDueName(e.target.value)}>
+                  <option selected disabled>Select . . .</option>
+                  {paymentPersonOption?.map((name: any, index) => (
+                    <option key={index} value={name.paymentPerson}>
+                      {name.paymentPerson}
+                    </option>
+                  ))}
+                </select>
+                <input type="number" name="due" className="input input-md input-bordered" value={dueAmount} onChange={(e: any) => setDueAmount(e.target.value)} placeholder="Due amount" />
+              </div>
+            )}
+            {!due && (
+              <div className="flex flex-col gap-2">
+                <label className="input input-bordered flex items-center gap-2">
+                  <FcManager size={20} />
+                  <input type="text" name="customer" className="grow" value={cname} onChange={(e: any) => setCname(e.target.value)} placeholder="Customer Name" />
+                </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  <FcPhone size={20} />
+                  <input type="text" name="phone" className="grow" maxLength={11} onChange={(e: any) => setPhone(e.target.value.replace(/\D/g, ""))} value={phoneNumber} placeholder="Mobile Number" />
+                </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  <FcViewDetails size={20} />
+                  <input type="text" name="address" className="grow w-[100px]" onChange={(e: any) => setAddress(e.target.value)} value={address} placeholder="Address" />
+                  |<input type="text" name="soldby" className="grow w-[100px]" onChange={(e: any) => setSoldby(e.target.value)} value={soldby} placeholder="Sold by" />
+                </label>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
+          <div className="card shadow shadow-slate-500 max-w-lg gap-2 p-2">
             <h1 className="font-bold text-sm">PRICE INFO</h1>
             <label className="input input-bordered flex items-center gap-2">
               <HiOutlineReceiptTax size={20} />
@@ -390,11 +695,23 @@ const Page: React.FC = () => {
               <span className="text-sm">TOTAL</span>
               <input type="number" className="grow w-[150px]" value={(total + vatAmount).toFixed(2)} readOnly placeholder="Total" />
             </label>
-           
+            <select className='select select-bordered' onChange={(e: any) => { setWalletName(e.target.value) }}>
+              <option selected disabled>Wallet . . .</option>
+              {walletPersonOption?.map((name: any, index) => (
+                <option key={index} value={name.walletName}>
+                  {name.walletName} ({name.rate} %)
+                </option>
+              ))}
+            </select>
+            <label className="input input-bordered flex items-center gap-2">
+              <div className="text-lg">{currency}</div>
+              <input type="number" className="grow w-[150px]" value={walletAmount} onChange={(e) => setWalletAmount(e.target.value)} placeholder="Wallet Amount" />
+            </label>
+
           </div>
         </div>
         <div className="flex w-full justify-center p-5">
-          <div className="card shadow shadow-slate-500 max-w-lg gap-3 p-2">
+          <div className="card shadow shadow-slate-500 max-w-lg gap-2 p-2">
             <h1 className="font-bold text-sm">PAYMENT INFO</h1>
             <label className="input input-bordered flex w-full max-w-xs items-center gap-2">
               <div className="text-lg">{currency}</div>
@@ -413,7 +730,7 @@ const Page: React.FC = () => {
         <div className="flex w-full justify-center p-2">
           <div className="card items-center justify-center gap-3 p-2">
             <h1 className="tracking-widest font-bold">SUBMIT</h1>
-            <button onClick={handleFinalSubmit} disabled={pending} className="btn btn-success btn-circle font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : <MdOutlineNavigateNext size={36} />}</button>
+            <button onClick={due ? handleDueSubmit : handleFinalSubmit} disabled={pending} className="btn btn-success btn-circle font-bold">{pending ? <span className="loading loading-ring loading-md text-accent"></span> : <MdOutlineNavigateNext size={36} />}</button>
           </div>
         </div>
       </div>

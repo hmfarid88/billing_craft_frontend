@@ -4,6 +4,7 @@ import ProfitWithdraw from '@/app/components/ProfitWithdraw'
 import SupplierPayment from '@/app/components/SupplierPayment'
 import { ToastContainer } from 'react-toastify'
 import React from 'react'
+import WalletPayment from '@/app/components/WalletPayment'
 
 
 const page = () => {
@@ -22,6 +23,10 @@ const page = () => {
           <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="SUPPLIER PAYMENT" />
           <div role="tabpanel" className="tab-content p-10">
             <SupplierPayment />
+          </div>
+          <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="WALLET PAYMENT" />
+          <div role="tabpanel" className="tab-content p-10">
+            <WalletPayment />
           </div>
           <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="PROFIT WITHDRAW" />
           <div role="tabpanel" className="tab-content p-10">

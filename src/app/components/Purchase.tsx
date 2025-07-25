@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store";
 import { addProducts, deleteAllProducts, deleteProduct, selectTotalQuantity } from "@/app/store/productSlice";
 import { toast } from 'react-toastify';
 import { FcPlus } from "react-icons/fc";
+import swal from 'sweetalert';
 
 const Purchase = () => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -442,32 +443,101 @@ const Purchase = () => {
   const generateProductNo = () => {
     return (Math.floor(100000000000000 + Math.random() * 900000000000000)).toString();
   };
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    if (bulkQty && bulkQuantity > 0) {
-      const products = Array.from({ length: bulkQuantity }).map(() => ({
-        id: uid(),
-        username,
-        category,
-        brand,
-        productName,
-        pprice,
-        sprice,
-        color,
-        supplier,
-        supplierInvoice,
-        date,
-        productno: generateProductNo(),
-      }));
-      products.forEach((product) => dispatch(addProducts(product)));
-      setBulkQuantity(0);
-    } else {
-      const product = { id: uid(), username, category, brand, productName, pprice, sprice, color, supplier, supplierInvoice, date, productno }
-      dispatch(addProducts(product));
-      setPno("");
-      document.getElementById('pno')?.focus();
+  // const handleSubmit = (e: any) => {
+  //   e.preventDefault();
+  //   if (bulkQty && bulkQuantity > 0) {
+  //     const products = Array.from({ length: bulkQuantity }).map(() => ({
+  //       id: uid(),
+  //       username,
+  //       category,
+  //       brand,
+  //       productName,
+  //       pprice,
+  //       sprice,
+  //       color,
+  //       supplier,
+  //       supplierInvoice,
+  //       date,
+  //       productno: generateProductNo(),
+  //     }));
+  //     products.forEach((product) => dispatch(addProducts(product)));
+  //     setBulkQuantity(0);
+  //   } else {
+  //     const product = { id: uid(), username, category, brand, productName, pprice, sprice, color, supplier, supplierInvoice, date, productno }
+  //     dispatch(addProducts(product));
+  //     setPno("");
+  //     document.getElementById('pno')?.focus();
+  //   }
+  // }
+
+  const handleSubmit = async (e: any) => {
+  e.preventDefault();
+
+  const checkProductExists = async (productno: string) => {
+    const res = await fetch(`${apiBaseUrl}/api/product-stock/check?username=${username}&productno=${productno}`);
+    const data = await res.json();
+    return data.exists;
+  };
+
+  if (bulkQty && bulkQuantity > 0) {
+    const products: any[] = [];
+
+    for (let i = 0; i < bulkQuantity; i++) {
+      const newProductNo = generateProductNo();
+      const exists = await checkProductExists(newProductNo);
+
+      if (!exists) {
+        products.push({
+          id: uid(),
+          username,
+          category,
+          brand,
+          productName,
+          pprice,
+          sprice,
+          color,
+          supplier,
+          supplierInvoice,
+          date,
+          productno: newProductNo,
+        });
+      }
     }
+
+    if (products.length < bulkQuantity) {
+      swal('Warning', 'Some product already exist in the database and were skipped.', 'warning');
+    }
+
+    products.forEach((product) => dispatch(addProducts(product)));
+    setBulkQuantity(0);
+  } else {
+    const exists = await checkProductExists(productno);
+    if (exists) {
+      swal('Error', 'This product already exists in the stock.', 'error');
+      return;
+    }
+
+    const product = {
+      id: uid(),
+      username,
+      category,
+      brand,
+      productName,
+      pprice,
+      sprice,
+      color,
+      supplier,
+      supplierInvoice,
+      date,
+      productno,
+    };
+
+    dispatch(addProducts(product));
+    setPno("");
+    document.getElementById('pno')?.focus();
   }
+};
+
 
   const products = useAppSelector((state) => state.products.products);
   const viewdispatch = useAppDispatch();

@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from 'react-to-print';
-import { FcPrint, FcPlus, FcDataSheet, FcAdvertising } from "react-icons/fc";
+import { FcPrint, FcPlus, FcAdvertising } from "react-icons/fc";
 import Link from 'next/link';
 import Loading from '@/app/loading';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,6 +11,7 @@ import { FaPhoneVolume } from 'react-icons/fa';
 import { AiOutlineMail } from 'react-icons/ai';
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { toWords } from 'number-to-words';
+import Logo from '@/app/components/Logo';
 
 
 const Invoice = () => {
@@ -90,7 +91,7 @@ const Invoice = () => {
             .then((res) => res.json())
             .then((data) => {
                 setStatus(data.status);
-             
+
             })
             .catch((err) => console.error("Error fetching status:", err));
     }, [apiBaseUrl, username]);
@@ -191,7 +192,7 @@ const Invoice = () => {
             <div className="flex justify-center mb-5">
                 <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border font-semibold">
                     <div className="flex w-full justify-between">
-                        <h1><FcDataSheet size={50} /></h1>
+                        <Logo />
                         <h1 className='tracking-widest text-sm md:text-lg font-bold'>INVOICE</h1>
                     </div>
                     <div className="flex flex-col w-full justify-end items-end">
