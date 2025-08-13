@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className="container mx-auto">
+      <div className="container mx-auto min-h-screen">
         <div className="flex flex-col md:flex-row  gap-5 p-4 items-center justify-center">
           <HomeSummary />
         </div>

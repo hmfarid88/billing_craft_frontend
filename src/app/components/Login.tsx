@@ -29,10 +29,18 @@ const Login = () => {
         setPending(true);
 
         try {
-            const response = await fetch(`${apiBaseUrl}/auth/userLogin?username=${username}&password=${password}`);
+            const response = await fetch(`${apiBaseUrl}/auth/userLogin?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
             const data = await response.json();
             if (!response.ok) {
-                toast.info(data.message);
+                if (response.status === 403 && data.redirectTo === "/payment-due") {
+                    // Store username and due amount for payment page
+                    localStorage.setItem("dueUser", username);
+                    localStorage.setItem("dueAmount", data.dueAmount);
+                    toast.error(data.message);
+                    router.push("/payment-due");
+                    return;
+                }
+                toast.error(data.message);
                 return;
             } else {
                 const status: string = data.status;
@@ -48,7 +56,7 @@ const Login = () => {
                     } else if (data.roles === 'ROLE_ADMIN') {
                         router.push("/admin-dashboard");
                     }
-                    toast.success("Congrats, login successful!");
+                    toast.success("Congrats, login successful.");
                 }
             }
 
