@@ -81,11 +81,11 @@ const Page = () => {
     const totalQty = new Set(filteredProducts.map(product => product.productno)).size;
 
     const totalPprice = filteredProducts.reduce((total, product) => {
-        return total + product.pprice;
+        return total + product?.pprice;
     }, 0);
 
     const totalSprice = filteredProducts.reduce((total, product) => {
-        return total + product.sprice;
+        return total + product?.sprice;
     }, 0);
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
@@ -134,8 +134,8 @@ const Page = () => {
                                     <td>{product.productName}</td>
                                     <td>{product.color}</td>
                                     <td>{product.productno}</td>
-                                    <td>{Number((product.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
-                                    <td>{Number((product.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((product?.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((product?.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
                                     <td>{product.supplier}</td>
                                     <td className="uppercase">{product.supplierInvoice}</td>
                                     <td>{product.date}</td>
