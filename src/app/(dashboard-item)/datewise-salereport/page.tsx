@@ -4,7 +4,7 @@ import { useAppSelector } from "@/app/store";
 import { useReactToPrint } from "react-to-print";
 import { FcCalendar, FcPrint } from "react-icons/fc";
 import DateToDate from "@/app/components/DateToDate";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 interface Product {
@@ -28,7 +28,7 @@ const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
-
+    const router = useRouter();
     const searchParams = useSearchParams();
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
@@ -49,27 +49,29 @@ const Page = () => {
             })
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username, startDate, endDate]);
+    const findInvoice = (cid: string) => {
+        router.push(`/invoice?cid=${cid}`);
+    };
 
-  
-     useEffect(() => {
-                const searchWords = filterCriteria.toLowerCase().split(" ");
-            
-                const filtered = soldProducts.filter(product =>
-                  searchWords.every(word =>
-                    (product.category?.toLowerCase().includes(word) || '') ||
-                    (product.brand?.toLowerCase().includes(word) || '') ||
-                    (product.date?.toLowerCase().includes(word) || '') ||
-                    (product.color?.toLowerCase().includes(word) || '') ||
-                    (product.productno?.toLowerCase().includes(word) || '') ||
-                    (product.cname?.toLowerCase().includes(word) || '') ||
-                    (product.soldby?.toLowerCase().includes(word) || '') ||
-                    (product.phoneNumber?.toLowerCase().includes(word) || '') ||
-                    (product.productName?.toLowerCase().includes(word) || '')
-                  )
-                );
-              
-                setFilteredProducts(filtered);
-              }, [filterCriteria, soldProducts]);
+    useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+
+        const filtered = soldProducts.filter(product =>
+            searchWords.every(word =>
+                (product.category?.toLowerCase().includes(word) || '') ||
+                (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.date?.toLowerCase().includes(word) || '') ||
+                (product.color?.toLowerCase().includes(word) || '') ||
+                (product.productno?.toLowerCase().includes(word) || '') ||
+                (product.cname?.toLowerCase().includes(word) || '') ||
+                (product.soldby?.toLowerCase().includes(word) || '') ||
+                (product.phoneNumber?.toLowerCase().includes(word) || '') ||
+                (product.productName?.toLowerCase().includes(word) || '')
+            )
+        );
+
+        setFilteredProducts(filtered);
+    }, [filterCriteria, soldProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -91,7 +93,7 @@ const Page = () => {
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex justify-center gap-5 p-5">
                 <DateToDate routePath="/datewise-salereport" />
-                 <Link className="mt-8" href="/monthly-salereport"><button className="btn btn-info"><FcCalendar size={30} />Monthly Sale</button></Link>
+                <Link className="mt-8" href="/monthly-salereport"><button className="btn btn-info"><FcCalendar size={30} />Monthly Sale</button></Link>
             </div>
             <div className="flex justify-between pl-5 pr-5 pt-5">
                 <label className="input input-bordered flex max-w-xs  items-center gap-2">
@@ -129,7 +131,7 @@ const Page = () => {
                                     <th>{index + 1}</th>
                                     <td>{product.date}</td>
                                     <td>{product.time}</td>
-                                    <td className="uppercase">{product.cid}</td>
+                                    <td className="uppercase"><button onClick={() => findInvoice(product.cid)} className="btn btn-link uppercase">{product.cid}</button></td>
                                     <td className="capitalize">{product.cname}, {product.phoneNumber} {product.address}</td>
                                     <td className="capitalize">{product.soldby}</td>
                                     <td className="capitalize">{product.category}, {product.brand}, {product.productName}</td>
