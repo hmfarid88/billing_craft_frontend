@@ -122,7 +122,7 @@ const Page = () => {
                     {receives?.map((receive, index) => (
                       <tr key={index}>
                         <td>{receive.date}</td>
-                        <td className='capitalize'>{receive.name}</td>
+                        <td className='capitalize'>{receive.name}({receive.note})</td>
                         <td>{(receive.amount ?? 0).toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
@@ -156,7 +156,7 @@ const Page = () => {
                     {payments.map((payment, index) => (
                       <tr key={index}>
                         <td>{payment.date}</td>
-                        <td className='capitalize'>{payment.name}</td>
+                        <td className='capitalize'>{payment.name}({payment.note})</td>
                         <td>{(payment.amount ?? 0).toLocaleString('en-IN')}</td>
                       </tr>
                     ))}

@@ -620,14 +620,14 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">PURCHASE PRICE</span>
             </div>
-            <input type="number" step="any" name="pprice" value={pprice} onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" />
+            <input type="number" step="any" name="pprice" value={pprice} onChange={(e: any) => setPprice(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
 
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text-alt">SALE PRICE</span>
             </div>
-            <input type="number" step="any" name="rsale" value={sprice} onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" />
+            <input type="number" step="any" name="rsale" value={sprice} onChange={(e: any) => setRsale(e.target.value)} placeholder="Type here" className="input input-bordered rounded-md w-full max-w-xs h-[40px] bg-white text-black" required />
           </label>
           <label className="form-control w-full max-w-xs">
             <div className="label">
