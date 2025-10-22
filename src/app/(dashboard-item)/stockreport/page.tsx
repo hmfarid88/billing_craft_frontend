@@ -355,6 +355,7 @@ interface Product {
   brand: string;
   productName: string;
   color: string;
+  pprice: number;
   countBeforeToday: number;
   countToday: number;
   soldToday: number;
@@ -385,7 +386,7 @@ const Page = () => {
   const [showByColor, setShowByColor] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
 
-  
+
   const contentToPrint = useRef(null);
 
   const handlePrint = useReactToPrint({
@@ -500,7 +501,7 @@ const Page = () => {
     filteredProducts.reduce((acc, product) => {
       const key = `${product.category}|${product.brand}|${product.productName}`;
       if (!acc[key]) {
-        acc[key] = { ...product, color: '' }; // Remove color in group view
+        acc[key] = { ...product, color: '' };
       } else {
         acc[key].countBeforeToday += product.countBeforeToday;
         acc[key].countToday += product.countToday;
@@ -515,6 +516,7 @@ const Page = () => {
   const totalPreQty = displayProducts.reduce((total, product) => total + product.countBeforeToday, 0);
   const totalQty = displayProducts.reduce((total, product) => total + product.countToday, 0);
   const totalSold = displayProducts.reduce((total, product) => total + product.soldToday, 0);
+  const totalpprice = displayProducts.reduce((total, product) => total + product.pprice * ((product.countBeforeToday + product.countToday) - product.soldToday), 0);
 
   return (
     <div className="container-2xl min-h-[calc(100vh-228px)]">
@@ -551,6 +553,7 @@ const Page = () => {
                 <th>TODAY</th>
                 <th>SOLD / RETURN</th>
                 <th>PRESENT</th>
+                <th>STOCK VALUE</th>
               </tr>
             </thead>
             <tbody>
@@ -563,10 +566,11 @@ const Page = () => {
                     <td>{product.brand}</td>
                     <td>{product.productName}</td>
                     {showByColor && <td>{product.color}</td>}
-                    <td>{product.countBeforeToday + product.countToday}</td>
+                    <td>{product.countBeforeToday}</td>
                     <td>{product.countToday}</td>
                     <td>{product.soldToday}</td>
                     <td className={present < 3 ? "text-red-500 font-bold" : ""}>{present}</td>
+                    <td>{product.pprice * present}</td>
                   </tr>
                 );
               })}
@@ -579,6 +583,7 @@ const Page = () => {
                 <td>{totalQty.toLocaleString('en-IN')}</td>
                 <td>{totalSold.toLocaleString('en-IN')}</td>
                 <td>{(totalPreQty + totalQty - totalSold).toLocaleString('en-IN')}</td>
+                <td>{(totalpprice).toLocaleString('en-IN')}</td>
               </tr>
             </tfoot>
           </table>
