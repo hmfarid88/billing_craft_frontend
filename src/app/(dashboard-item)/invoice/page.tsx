@@ -190,7 +190,7 @@ const Invoice = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
             <div className="flex justify-center mb-5">
-                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border border-black text-black font-semibold">
+                <div ref={contentToPrint} className="flex-1 max-w-[794px] h-auto p-4 border border-black text-black font-semibold font-serif">
                     <div className="flex w-full justify-between">
                         <Logo />
                         <h1 className='tracking-widest text-sm md:text-lg font-bold'>INVOICE</h1>
@@ -248,7 +248,7 @@ const Invoice = () => {
                             </tfoot>
                         </table>
                     </div>
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full text-black">
                         <div className="divider mt-0 mb-0"></div>
                     </div>
                     <div className="flex w-full gap-5 justify-end">
