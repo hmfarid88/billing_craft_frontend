@@ -556,9 +556,32 @@ const Page = () => {
                 <th>STOCK VALUE</th>
               </tr>
             </thead>
+            {/* <tbody>
+              {displayProducts.map((product, index) => {
+                const present = product.countBeforeToday + product.countToday - product.soldToday;
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{product.category}</td>
+                    <td>{product.brand}</td>
+                    <td>{product.productName}</td>
+                    {showByColor && <td>{product.color}</td>}
+                    <td>{product.countBeforeToday}</td>
+                    <td>{product.countToday}</td>
+                    <td>{product.soldToday}</td>
+                    <td className={present < 3 ? "text-red-500 font-bold" : ""}>{present}</td>
+                    <td>{product.pprice * present}</td>
+                  </tr>
+                );
+              })}
+            </tbody> */}
             <tbody>
               {displayProducts.map((product, index) => {
                 const present = product.countBeforeToday + product.countToday - product.soldToday;
+
+                // ✅ Skip row if present is 0
+                if (present === 0) return null;
+
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
