@@ -7,7 +7,6 @@ import Select from "react-select";
 import { uid } from 'uid';
 import { toast } from "react-toastify";
 import { RxCrossCircled } from "react-icons/rx";
-import { json } from "stream/consumers";
 
 
 const Page: React.FC = () => {
@@ -30,16 +29,26 @@ const Page: React.FC = () => {
     const [vendor, setVendor] = useState("");
     const cid = uid();
     const selectRef = useRef<any>(null);
-    const [maxDate, setMaxDate] = useState("");
-    useEffect(() => {
+
+    const [minDate, setMinDate] = useState('');
+      const [maxDate, setMaxDate] = useState('');
+    
+      useEffect(() => {
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        setMaxDate(formattedDate);
-        setDate(formattedDate);
-    }, []);
+    
+        const formattedMaxDate = `${year}-${month}-${day}`;
+        const formattedMinDate = `${year}-${month}-01`; // First day of current month
+    
+        setMaxDate(formattedMaxDate);
+        setMinDate(formattedMinDate);
+    
+        // Optionally set default date = today
+        setDate(formattedMaxDate);
+      }, []);
+    
 
     useEffect(() => {
         calculateTotal();
@@ -139,7 +148,7 @@ const Page: React.FC = () => {
         <div className='container-2xl min-h-[calc(100vh-228px)]'>
             <div className="flex flex-col">
                 <div className="flex pt-5 px-10 pb-0">
-                    <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-ghost" />
+                    <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate} max={maxDate} value={date} className="input input-ghost" />
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="divider divider-accent tracking-widest font-bold p-5">VENDOR SALE AREA</div>

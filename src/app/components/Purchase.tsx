@@ -33,17 +33,25 @@ const Purchase = () => {
   const [productOption, setProductOption] = useState([]);
   const [colorOption, setColorOption] = useState([]);
   const [supplierOption, setSupplierOption] = useState([]);
-  const [maxDate, setMaxDate] = useState('');
-
-  useEffect(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-    setMaxDate(formattedDate);
-    setDate(formattedDate);
-  }, []);
+  const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
+  
+    useEffect(() => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+  
+      const formattedMaxDate = `${year}-${month}-${day}`;
+      const formattedMinDate = `${year}-${month}-01`; // First day of current month
+  
+      setMaxDate(formattedMaxDate);
+      setMinDate(formattedMinDate);
+  
+      // Optionally set default date = today
+      setDate(formattedMaxDate);
+    }, []);
+  
 
   const [categoryItem, setCategoryItem] = useState("");
   const handleCategoryItem = async (e: any) => {
@@ -596,7 +604,7 @@ const Purchase = () => {
             <div className="label">
               <span className="label-text-alt">ENTRY DATE</span>
             </div>
-            <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered rounded-md bg-white text-black  w-full max-w-xs h-[40px]" required />
+            <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate} max={maxDate} value={date} className="input input-bordered rounded-md bg-white text-black  w-full max-w-xs h-[40px]" required />
           </label>
           <label className="form-control w-full max-w-xs">
             <div className="label">

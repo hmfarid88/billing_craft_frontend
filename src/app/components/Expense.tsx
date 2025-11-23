@@ -10,16 +10,25 @@ const Expense = () => {
 
   const [pending, setPending] = useState(false);
   const [date, setDate] = useState("");
+  const [minDate, setMinDate] = useState('');
   const [maxDate, setMaxDate] = useState('');
+
   useEffect(() => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-    setMaxDate(formattedDate);
-    setDate(formattedDate);
+
+    const formattedMaxDate = `${year}-${month}-${day}`;
+    const formattedMinDate = `${year}-${month}-01`; // First day of current month
+
+    setMaxDate(formattedMaxDate);
+    setMinDate(formattedMinDate);
+
+    // Optionally set default date = today
+    setDate(formattedMaxDate);
   }, []);
+
 
   // expense
   const [expenseName, setExpenseName] = useState("");
@@ -63,7 +72,7 @@ const Expense = () => {
           <div className="label">
             <span className="label-text-alt">DATE</span>
           </div>
-          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
+          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate} max={maxDate} value={date} className="input input-bordered w-full max-w-xs" />
         </label>
 
 

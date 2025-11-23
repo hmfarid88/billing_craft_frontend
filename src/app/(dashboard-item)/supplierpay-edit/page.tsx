@@ -24,17 +24,23 @@ const Page = () => {
 
     const [editableProduct, setEditableProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
-    const [maxDate, setMaxDate] = useState('');
-
-    useEffect(() => {
+     const [minDate, setMinDate] = useState('');
+      const [maxDate, setMaxDate] = useState('');
+    
+      useEffect(() => {
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        setMaxDate(formattedDate);
+    
+        const formattedMaxDate = `${year}-${month}-${day}`;
+        const formattedMinDate = `${year}-${month}-01`; 
+    
+        setMaxDate(formattedMaxDate);
+        setMinDate(formattedMinDate);
+    
+      }, []);
 
-    }, []);
     useEffect(() => {
         setLoading(true);
         fetch(`${apiBaseUrl}/payment/getSupplierPayById?id=${id}&username=${username}`)
@@ -141,7 +147,7 @@ const handleDeleteSubmit = async (e: any) => {
                                             <input
                                                 type="date"
                                                 className="input input-sm w-[50%] input-bordered"
-                                                value={editableProduct.date} max={maxDate}
+                                                value={editableProduct.date} min={minDate} max={maxDate}
                                                 onChange={(e) => handleInputChange('date', e.target.value)}
                                             />
                                         </td>

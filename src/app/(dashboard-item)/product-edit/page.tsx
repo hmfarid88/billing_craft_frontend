@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector } from "@/app/store";
 import { useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Product {
     proId: number;
@@ -73,7 +73,7 @@ const Page = () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    toast.info(data.message || "Product updated successfully!");
+                    toast.success(data.message || "Information update successful!");
                 } else {
                     toast.warning(data.message || "Failed to update product.");
                 }
@@ -227,6 +227,7 @@ const Page = () => {
                     <p>Sorry, No product data found for the given product number.</p>
                 )}
             </div>
+            <ToastContainer autoClose={1000} theme="dark" />
         </div>
     );
 };

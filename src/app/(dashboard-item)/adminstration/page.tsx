@@ -14,34 +14,39 @@ import SmsSetting from '@/app/components/SmsSetting'
 import SupplierPayEdit from '@/app/components/SupplierPayEdit'
 import UserChange from '@/app/components/UserChange'
 import VatInfo from '@/app/components/VatInfo'
-import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useRouter} from 'next/navigation'
+import React, { useEffect} from 'react'
 import { CgEditExposure } from 'react-icons/cg'
 import { FaBalanceScale } from 'react-icons/fa'
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlinePassword } from 'react-icons/md'
 import { TbTruckReturn } from 'react-icons/tb'
+import { toast, ToastContainer } from 'react-toastify'
 
 const Page = () => {
 
-    const searchParams = useSearchParams();
-    const access = searchParams.get('access');
-    const [isAuthorized, setIsAuthorized] = useState(false);
-
+    const router = useRouter();
+    
     useEffect(() => {
-        setIsAuthorized(access === "granted");
-    }, [access]);
+        const isAdmin = localStorage.getItem("adminAccess");
+        if (!isAdmin) {
+            router.replace("/dashboard"); 
+        }
+    }, []);
 
-    if (!isAuthorized) {
-        return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-228px)]">
-                <p className='text-red-500 uppercase font-semibold'>Unauthorized access !!!</p>
-            </div>
-        )
-    }
-
+    // prevent flashing
+    const isAdmin = typeof window !== "undefined" && localStorage.getItem("adminAccess");
+    if (!isAdmin) return null;
+    const logout = () => {
+        localStorage.removeItem("adminAccess");
+        toast.success("Logged out!");
+        router.replace("/dashboard");
+    };
     return (
         <div className="container min-h-screen">
+            <div className="flex">
+                <button onClick={logout} className="btn btn-error btn-sm btn-ghost btn-outline">Admin Logout</button>
+            </div>
             <div className="flex w-full items-center justify-center">
                 <div className="tabs tabs-bordered w-full p-3 items-center justify-center">
                     {/* Tab 1: SETTINGS */}
@@ -206,6 +211,7 @@ const Page = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer autoClose={1000} theme='dark' />
         </div>
     );
 };
