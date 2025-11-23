@@ -107,7 +107,10 @@ const Page = () => {
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
                 <h4 className="font-bold">STOCK DETAILS</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
-                <div className="flex items-center">
+                <div className="flex flex-col items-center">
+                    <div className="flex pb-3 font-bold">
+                       Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
+                    </div>
                     <table className="table table-xs">
                     <thead className="sticky top-16 bg-base-100">
                             <tr>
