@@ -70,7 +70,7 @@ const WalletPayment = () => {
     };
     const handlePaymentSubmit = async (e: any) => {
         e.preventDefault();
-        if (!paymentName || !paymentType || !paymentAmount) {
+        if (!date || !paymentName || !paymentType || !paymentNote || !paymentAmount) {
             toast.warning("Item is empty !");
             return;
         }

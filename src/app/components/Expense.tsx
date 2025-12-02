@@ -37,7 +37,7 @@ const Expense = () => {
 
   const handleExpenseSubmit = async (e: any) => {
     e.preventDefault();
-    if (!expenseName || !expensAmount) {
+    if (!date || !expenseName || !expenseNote || !expensAmount) {
       toast.warning("Item is empty !");
       return;
     }

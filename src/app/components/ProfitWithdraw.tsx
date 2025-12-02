@@ -39,7 +39,7 @@ const ProfitWithdraw = () => {
 
     const handleProfitSubmit = async (e: any) => {
         e.preventDefault();
-        if (!month || !year || !type || !amount) {
+        if (!date|| !month || !year || !type || !note|| !amount) {
             toast.warning("Item is empty !");
             return;
         }

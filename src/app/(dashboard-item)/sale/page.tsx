@@ -518,7 +518,7 @@ const Page: React.FC = () => {
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex flex-col">
         <div className="flex pt-5 px-10 pb-0">
-          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)}  max={maxDate} value={date} className="input input-ghost" />
+          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate}  max={maxDate} value={date} className="input input-ghost" />
         </div>
         <div className="flex flex-col w-full">
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>

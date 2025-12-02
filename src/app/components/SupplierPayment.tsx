@@ -37,7 +37,7 @@ const SupplierPayment = () => {
 
   const handleSupplierPayment = async (e: any) => {
     e.preventDefault();
-    if (!supplierName || !paymentType || !supplierAmount) {
+    if (!date || !supplierName || !paymentType || !supplierNote|| !supplierAmount) {
       toast.warning("Item is empty !");
       return;
     }
