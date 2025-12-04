@@ -438,7 +438,7 @@ const Page: React.FC = () => {
         const transformedData = data.map((item: any) => ({
           id: item.proId,
           value: item.proId,
-          label: item.productName + ", " + item.productno
+          label: item.category + ", " + item.brand + ", " + item.productName + ", " + item.color + ", "+ item.productno
         }));
         setProductOption(transformedData);
       })
