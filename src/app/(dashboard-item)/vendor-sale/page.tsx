@@ -31,24 +31,24 @@ const Page: React.FC = () => {
     const selectRef = useRef<any>(null);
 
     const [minDate, setMinDate] = useState('');
-      const [maxDate, setMaxDate] = useState('');
-    
-      useEffect(() => {
+    const [maxDate, setMaxDate] = useState('');
+
+    useEffect(() => {
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-    
+
         const formattedMaxDate = `${year}-${month}-${day}`;
         const formattedMinDate = `${year}-${month}-01`; // First day of current month
-    
+
         setMaxDate(formattedMaxDate);
         setMinDate(formattedMinDate);
-    
+
         // Optionally set default date = today
         setDate(formattedMaxDate);
-      }, []);
-    
+    }, []);
+
 
     useEffect(() => {
         calculateTotal();
@@ -124,7 +124,7 @@ const Page: React.FC = () => {
                 const transformedData = data.map((item: any) => ({
                     id: item.proId,
                     value: item.proId,
-                    label: item.category + ", " + item.brand + ", " + item.productName + ", " + item.color + ", "+ item.productno
+                    label: item.category + ", " + item.brand + ", " + item.productName + ", " + item.color + ", " + item.productno
                 }));
                 setProductOption(transformedData);
             })
@@ -154,12 +154,11 @@ const Page: React.FC = () => {
                     <div className="divider divider-accent tracking-widest font-bold p-5">VENDOR SALE AREA</div>
                 </div>
                 <div className="flex gap-2 items-center justify-center z-10">
-                    <Select
+                    {/* <Select
                         className="text-black w-64 md:w-96"
                         ref={selectRef}
                         autoFocus={true}
                         value={selectedProidOption}
-                        isMulti={true}  
                         onChange={async (selectedOption: any) => {
                             if (!selectedOption) return;
                             setSelectedProidOption(selectedOption);
@@ -194,7 +193,65 @@ const Page: React.FC = () => {
                             }
                         }}
                         options={productOption}
+                    /> */}
+
+                    <Select
+                        className="text-black w-64 md:w-96"
+                        ref={selectRef}
+                        autoFocus={true}
+                        value={selectedProidOption}
+                        options={productOption}
+                        isMulti={true}                 // ✅ Multi selection
+                        closeMenuOnSelect={false}      // ✅ Search continues after selecting
+                        onChange={async (selectedOptions: any) => {
+
+                            if (!selectedOptions || selectedOptions.length === 0) {
+                                setSelectedProidOption(null);
+                                return;
+                            }
+
+                            setSelectedProidOption(selectedOptions);
+
+                            try {
+                                for (const option of selectedOptions) {
+                                    const response = await fetch(
+                                        `${apiBaseUrl}/api/getSingleProduct?proId=${option.value}`
+                                    );
+
+                                    if (!response.ok) {
+                                        toast.error("Error fetching product data");
+                                        continue;
+                                    }
+
+                                    const data = await response.json();
+
+                                    const productToVendor = {
+                                        id: uid(),
+                                        proId: data.proId,
+                                        brand: data.brand,
+                                        color: data.color,
+                                        productName: data.productName,
+                                        productno: data.productno,
+                                        pprice: data.pprice,
+                                        username: username,
+                                    };
+
+                                    dispatch(addProducts(productToVendor));
+                                }
+
+                                // clear selected values after adding
+                                setSelectedProidOption(null);
+
+                                if (selectRef.current) {
+                                    selectRef.current.focus();
+                                }
+
+                            } catch (error) {
+                                console.error('Error fetching product:', error);
+                            }
+                        }}
                     />
+
                     <div className="flex">
                         <div className="avatar-group -space-x-6 rtl:space-x-reverse">
                             <div className="avatar placeholder">

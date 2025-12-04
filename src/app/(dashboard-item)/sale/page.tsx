@@ -54,24 +54,24 @@ const Page: React.FC = () => {
   const cid = uid();
 
   const [minDate, setMinDate] = useState('');
-    const [maxDate, setMaxDate] = useState('');
-  
-    useEffect(() => {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-  
-      const formattedMaxDate = `${year}-${month}-${day}`;
-      const formattedMinDate = `${year}-${month}-01`; 
-  
-      setMaxDate(formattedMaxDate);
-      setMinDate(formattedMinDate);
-  
-      // Optionally set default date = today
-      setDate(formattedMaxDate);
-    }, []);
-  
+  const [maxDate, setMaxDate] = useState('');
+
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const formattedMaxDate = `${year}-${month}-${day}`;
+    const formattedMinDate = `${year}-${month}-01`;
+
+    setMaxDate(formattedMaxDate);
+    setMinDate(formattedMinDate);
+
+    // Optionally set default date = today
+    setDate(formattedMaxDate);
+  }, []);
+
 
   const handleReceivedChange = (e: any) => {
     const receivedValue = e.target.value;
@@ -259,12 +259,12 @@ const Page: React.FC = () => {
         if (!response.ok) {
           const data = await response.json();
           toast.error(data.message);
-          setPending(false); 
+          setPending(false);
           return;
         }
       } catch (error) {
         toast.error("Invalid transaction !");
-        setPending(false); 
+        setPending(false);
         return;
       }
     }
@@ -322,7 +322,7 @@ const Page: React.FC = () => {
       toast.error("Your product list is empty!");
       return;
     }
- if (walletName && !walletAmount) {
+    if (walletName && !walletAmount) {
       toast.info("Please fill wallet amount");
       setPending(false);
       return;
@@ -359,12 +359,12 @@ const Page: React.FC = () => {
         if (!response.ok) {
           const data = await response.json();
           toast.error(data.message);
-          setPending(false); 
+          setPending(false);
           return;
         }
       } catch (error) {
         toast.error("Invalid transaction !");
-        setPending(false); 
+        setPending(false);
         return;
       }
     }
@@ -372,11 +372,11 @@ const Page: React.FC = () => {
     const salesRequest = {
       customer: {
         cid,
-        cname: dueName, 
+        cname: dueName,
         phoneNumber,
         address,
         soldby,
-        cardPay:walletAmount,
+        cardPay: walletAmount,
         vatAmount,
         received,
         username,
@@ -438,7 +438,7 @@ const Page: React.FC = () => {
         const transformedData = data.map((item: any) => ({
           id: item.proId,
           value: item.proId,
-          label: item.category + ", " + item.brand + ", " + item.productName + ", " + item.color + ", "+ item.productno
+          label: item.category + ", " + item.brand + ", " + item.productName + ", " + item.color + ", " + item.productno
         }));
         setProductOption(transformedData);
       })
@@ -518,20 +518,19 @@ const Page: React.FC = () => {
     <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex flex-col">
         <div className="flex pt-5 px-10 pb-0">
-          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate}  max={maxDate} value={date} className="input input-ghost" />
+          <input type="date" name="date" onChange={(e: any) => setDate(e.target.value)} min={minDate} max={maxDate} value={date} className="input input-ghost" />
         </div>
         <div className="flex flex-col w-full">
           <div className="divider divider-accent tracking-widest font-bold p-5">SALES AREA</div>
         </div>
 
         <div className="flex items-center gap-2 justify-center">
-          <Select
+          {/* <Select
             className="text-black w-64 md:w-96 z-10"
             ref={selectRef}
             autoFocus={true}
             value={selectedProidOption}
             options={productOption}
-            isMulti={true}  
             onChange={async (selectedOption: any) => {
               if (!selectedOption) return;
               setSelectedProidOption(selectedOption);
@@ -566,7 +565,65 @@ const Page: React.FC = () => {
 
               }
             }}
+          /> */}
+          <Select
+            className="text-black w-64 md:w-96 z-10"
+            ref={selectRef}
+            autoFocus={true}
+            value={selectedProidOption}
+            options={productOption}
+            isMulti={true}          // ✅ Enable multiple selection + multiple search
+            onChange={async (selectedOptions: any) => {
+
+              if (!selectedOptions) {
+                setSelectedProidOption(null);
+                return;
+              }
+
+              setSelectedProidOption(selectedOptions); // ⬅ store multiple
+
+              try {
+                // loop through selected items
+                for (const option of selectedOptions) {
+                  const response = await fetch(
+                    `${apiBaseUrl}/api/getSingleProduct?proId=${option.value}`
+                  );
+
+                  if (!response.ok) {
+                    toast.error("Error fetching product data");
+                    continue;
+                  }
+
+                  const data = await response.json();
+                  const productToSale = {
+                    id: uid(),
+                    proId: data.proId,
+                    brand: data.brand,
+                    color: data.color,
+                    productName: data.productName,
+                    productno: data.productno,
+                    sprice: data.sprice,
+                    discount: 0,
+                    offer: 0,
+                    username: username,
+                  };
+
+                  dispatch(addProducts(productToSale));
+                }
+
+                // clear selection after adding
+                setSelectedProidOption(null);
+
+                if (selectRef.current) {
+                  selectRef.current.focus();
+                }
+
+              } catch (error) {
+                console.error("Error fetching product:", error);
+              }
+            }}
           />
+
           <div className="flex">
             <div className="avatar-group -space-x-6 rtl:space-x-reverse">
               <div className="avatar placeholder">
