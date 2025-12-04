@@ -531,7 +531,7 @@ const Page: React.FC = () => {
             autoFocus={true}
             value={selectedProidOption}
             options={productOption}
-
+            isMulti={true}  
             onChange={async (selectedOption: any) => {
               if (!selectedOption) return;
               setSelectedProidOption(selectedOption);
