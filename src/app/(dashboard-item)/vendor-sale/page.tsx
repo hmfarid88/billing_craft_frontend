@@ -201,8 +201,7 @@ const Page: React.FC = () => {
                         autoFocus={true}
                         value={selectedProidOption}
                         options={productOption}
-                        isMulti={true}                 // ✅ Multi selection
-                        closeMenuOnSelect={false}      // ✅ Search continues after selecting
+                        isMulti={true}
                         onChange={async (selectedOptions: any) => {
 
                             if (!selectedOptions || selectedOptions.length === 0) {

@@ -572,7 +572,7 @@ const Page: React.FC = () => {
             autoFocus={true}
             value={selectedProidOption}
             options={productOption}
-            isMulti={true}          // ✅ Enable multiple selection + multiple search
+            isMulti={true}        
             onChange={async (selectedOptions: any) => {
 
               if (!selectedOptions) {
@@ -580,7 +580,7 @@ const Page: React.FC = () => {
                 return;
               }
 
-              setSelectedProidOption(selectedOptions); // ⬅ store multiple
+              setSelectedProidOption(selectedOptions); 
 
               try {
                 // loop through selected items
