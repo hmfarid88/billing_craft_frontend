@@ -60,6 +60,7 @@ const Page = () => {
             searchWords.every(word =>
                 (product.category?.toLowerCase().includes(word) || '') ||
                 (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.cid?.toLowerCase().includes(word) || '') ||
                 (product.date?.toLowerCase().includes(word) || '') ||
                 (product.color?.toLowerCase().includes(word) || '') ||
                 (product.productno?.toLowerCase().includes(word) || '') ||
