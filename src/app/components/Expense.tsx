@@ -61,6 +61,7 @@ const Expense = () => {
       toast.error("Invalid transaction !")
     } finally {
       setPending(false);
+      setExpenseName("");
       setExpenseNote("");
       setExpenseAmount("");
     }
@@ -80,13 +81,14 @@ const Expense = () => {
           <div className="label">
             <span className="label-text-alt">EXPENSE NAME</span>
           </div>
-          <select className='select select-bordered' onChange={(e: any) => { setExpenseName(e.target.value) }}>
+          {/* <select className='select select-bordered' onChange={(e: any) => { setExpenseName(e.target.value) }}>
             <option selected disabled>Select . . .</option>
             <option value="Office Expense">Office Expense</option>
             <option value="Employee Salary">Employee Salary</option>
             <option value="Shop Rent">Shop Rent</option>
             <option value="Others">Others</option>
-          </select>
+          </select> */}
+          <input type="text" name='name' autoComplete='name' value={expenseName} onChange={(e) => setExpenseName(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" />
 
         </label>
 
