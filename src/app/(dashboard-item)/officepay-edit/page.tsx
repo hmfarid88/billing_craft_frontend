@@ -24,22 +24,43 @@ const Page = () => {
 
     const [editableProduct, setEditableProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
-     const [minDate, setMinDate] = useState('');
-      const [maxDate, setMaxDate] = useState('');
-    
-      useEffect(() => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-    
-        const formattedMaxDate = `${year}-${month}-${day}`;
-        const formattedMinDate = `${year}-${month}-01`; // First day of current month
-    
-        setMaxDate(formattedMaxDate);
-        setMinDate(formattedMinDate);
-    
-      }, []);
+    const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
+
+    // useEffect(() => {
+    //     const today = new Date();
+    //     const year = today.getFullYear();
+    //     const month = String(today.getMonth() + 1).padStart(2, '0');
+    //     const day = String(today.getDate()).padStart(2, '0');
+
+    //     const formattedMaxDate = `${year}-${month}-${day}`;
+    //     const formattedMinDate = `${year}-${month}-01`; // First day of current month
+
+    //     setMaxDate(formattedMaxDate);
+    //     setMinDate(formattedMinDate);
+
+    // }, []);
+
+    useEffect(() => {
+  const today = new Date();
+
+  // Today (max date)
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const formattedMaxDate = `${year}-${month}-${day}`;
+
+  // First day of last month (min date)
+  const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+  const minYear = firstDayLastMonth.getFullYear();
+  const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+  const formattedMinDate = `${minYear}-${minMonth}-01`;
+
+  setMinDate(formattedMinDate);
+  setMaxDate(formattedMaxDate);
+
+}, []);
+
 
     useEffect(() => {
         setLoading(true);
@@ -106,28 +127,28 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
     const handleDeleteSubmit = async (e: any) => {
-            e.preventDefault();
-            try {
-                const response = await fetch(`${apiBaseUrl}/payment/deleteOfficepayById/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-    
-                });
-    
-                if (!response.ok) {
-                    // const error = await response.json();
-                    toast.error("Sorry, payment is not deleted!");
-                } else {
-                    toast.success("Information deleted successfully.");
-    
-                }
-    
-            } catch (error: any) {
-                toast.error(error.message)
+        e.preventDefault();
+        try {
+            const response = await fetch(`${apiBaseUrl}/payment/deleteOfficepayById/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+            });
+
+            if (!response.ok) {
+                // const error = await response.json();
+                toast.error("Sorry, payment is not deleted!");
+            } else {
+                toast.success("Information deleted successfully.");
+
             }
+
+        } catch (error: any) {
+            toast.error(error.message)
         }
+    }
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
             <div className="flex flex-col p-2 items-center justify-center">
