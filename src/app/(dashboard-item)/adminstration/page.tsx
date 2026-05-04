@@ -26,8 +26,7 @@ import { toast, ToastContainer } from 'react-toastify'
 const Page = () => {
 
     const router = useRouter();
-    
-    useEffect(() => {
+      useEffect(() => {
         const isAdmin = localStorage.getItem("adminAccess");
         if (!isAdmin) {
             router.replace("/dashboard"); 
@@ -42,6 +41,7 @@ const Page = () => {
         toast.success("Logged out!");
         router.replace("/dashboard");
     };
+    
     return (
         <div className="container min-h-screen">
             <div className="flex">

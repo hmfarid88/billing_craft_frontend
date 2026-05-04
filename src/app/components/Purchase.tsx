@@ -36,19 +36,41 @@ const Purchase = () => {
   const [minDate, setMinDate] = useState('');
     const [maxDate, setMaxDate] = useState('');
   
+    // useEffect(() => {
+    //   const today = new Date();
+    //   const year = today.getFullYear();
+    //   const month = String(today.getMonth() + 1).padStart(2, '0');
+    //   const day = String(today.getDate()).padStart(2, '0');
+  
+    //   const formattedMaxDate = `${year}-${month}-${day}`;
+    //   const formattedMinDate = `${year}-${month}-01`; // First day of current month
+  
+    //   setMaxDate(formattedMaxDate);
+    //   setMinDate(formattedMinDate);
+  
+    //   // Optionally set default date = today
+    //   setDate(formattedMaxDate);
+    // }, []);
+
     useEffect(() => {
       const today = new Date();
+    
+      // Today (max date)
       const year = today.getFullYear();
       const month = String(today.getMonth() + 1).padStart(2, '0');
       const day = String(today.getDate()).padStart(2, '0');
-  
       const formattedMaxDate = `${year}-${month}-${day}`;
-      const formattedMinDate = `${year}-${month}-01`; // First day of current month
-  
-      setMaxDate(formattedMaxDate);
+    
+      // First day of last month (min date)
+      const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+      const minYear = firstDayLastMonth.getFullYear();
+      const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+      const formattedMinDate = `${minYear}-${minMonth}-01`;
+    
       setMinDate(formattedMinDate);
-  
-      // Optionally set default date = today
+      setMaxDate(formattedMaxDate);
+    
+      // Optional: default selected date = today
       setDate(formattedMaxDate);
     }, []);
   
