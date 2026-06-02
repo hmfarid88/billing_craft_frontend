@@ -16,7 +16,6 @@ const Page: React.FC = () => {
     router.push(`/product-edit?productno=${productno}`);
   }
 
-
   return (
     <div className="container-2xl min-h-[calc(100vh-228px)]">
       <div className='card card-actions  p-3'>
