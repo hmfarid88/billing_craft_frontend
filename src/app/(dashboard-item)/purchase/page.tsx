@@ -38,7 +38,6 @@ const Page: React.FC = () => {
               </div>
             </label>
           </div>
-
           <div className="modal-action">
             <a href="#" className="btn btn-square btn-ghost">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10">
@@ -48,7 +47,7 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-<ToastContainer theme="dark" autoClose={1000} />
+      <ToastContainer theme="dark" autoClose={1000} />
     </div>
   )
 }
