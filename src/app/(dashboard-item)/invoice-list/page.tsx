@@ -26,7 +26,6 @@ const Page = () => {
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
     });
-
     const findInvoice = (cid: string) => {
         router.push(`/invoice?cid=${cid}`);
     };
