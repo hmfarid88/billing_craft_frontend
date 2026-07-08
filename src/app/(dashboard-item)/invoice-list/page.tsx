@@ -52,7 +52,6 @@ const Page = () => {
                     <FcPrint size={36} />
                 </button>
             </div>
-
             <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
                 <h4 className="font-bold">INVOICE INFO</h4>
                 <h4 className="p-2"><CurrentDate /></h4>
