@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from "react-toastify";
 import { FcPlus } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
-
+import Select from "react-select";
 
 const OfficeCost = () => {
   const uname = useAppSelector((state) => state.username.username);
@@ -17,45 +17,30 @@ const OfficeCost = () => {
   const [paymentNote, setPaymentNote] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
-   const [minDate, setMinDate] = useState('');
-    const [maxDate, setMaxDate] = useState('');
-  
-    // useEffect(() => {
-    //   const today = new Date();
-    //   const year = today.getFullYear();
-    //   const month = String(today.getMonth() + 1).padStart(2, '0');
-    //   const day = String(today.getDate()).padStart(2, '0');
-  
-    //   const formattedMaxDate = `${year}-${month}-${day}`;
-    //   const formattedMinDate = `${year}-${month}-01`; // First day of current month
-  
-    //   setMaxDate(formattedMaxDate);
-    //   setMinDate(formattedMinDate);
-  
-    //   // Optionally set default date = today
-    //   setDate(formattedMaxDate);
-    // }, []);
-    useEffect(() => {
-  const today = new Date();
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
 
-  // Today (max date)
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const formattedMaxDate = `${year}-${month}-${day}`;
+  useEffect(() => {
+    const today = new Date();
 
-  // First day of last month (min date)
-  const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
-  const minYear = firstDayLastMonth.getFullYear();
-  const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
-  const formattedMinDate = `${minYear}-${minMonth}-01`;
+    // Today (max date)
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedMaxDate = `${year}-${month}-${day}`;
 
-  setMinDate(formattedMinDate);
-  setMaxDate(formattedMaxDate);
+    // First day of last month (min date)
+    const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+    const minYear = firstDayLastMonth.getFullYear();
+    const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+    const formattedMinDate = `${minYear}-${minMonth}-01`;
 
-  // Optional: default selected date = today
-  setDate(formattedMaxDate);
-}, []);
+    setMinDate(formattedMinDate);
+    setMaxDate(formattedMaxDate);
+
+    // Optional: default selected date = today
+    setDate(formattedMaxDate);
+  }, []);
 
 
   const [paymentPerson, setPaymentPerson] = useState("");
@@ -123,10 +108,15 @@ const OfficeCost = () => {
     fetch(`${apiBaseUrl}/payment/getPaymentPerson?username=${username}`)
       .then(response => response.json())
       .then(data => {
-        setPaymentPersonOption(data);
+        const transformedData = data.map((item: any) => ({
+          id: item.id,
+          value: item.paymentPerson,
+          label: item.paymentPerson
+        }));
+        setPaymentPersonOption(transformedData);
       })
       .catch(error => console.error('Error fetching products:', error));
-  }, [paymentPerson, apiBaseUrl, username]);
+  }, [apiBaseUrl, username, paymentPerson]);
 
   return (
     <div className="flex items-center justify-center">
@@ -143,16 +133,8 @@ const OfficeCost = () => {
             <span className="label-text-alt">TRANSACTION NAME</span>
             <a href="#my_modal_addPaymentName" className="btn btn-xs btn-circle btn-ghost"><FcPlus size={20} /></a>
           </div>
-          <select className='select select-bordered' onChange={(e: any) => { setPaymentName(e.target.value) }}>
-            <option selected disabled>Select . . .</option>
-            {paymentPersonOption?.map((name: any, index) => (
-              <option key={index} value={name.paymentPerson}>
-                {name.paymentPerson}
-              </option>
-            ))}
-          </select>
+          <Select className="text-black" name="pcatagory" onChange={(selectedOption: any) => setPaymentName(selectedOption.value)} options={paymentPersonOption} required />
         </label>
-
 
         <label className="form-control w-full max-w-xs">
           <div className="label">

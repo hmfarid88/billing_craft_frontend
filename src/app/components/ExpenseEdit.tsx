@@ -8,8 +8,8 @@ const ExpenseEdit = () => {
     const username = uname ? uname.username : 'Guest';
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const router = useRouter();
-    
-    const [expenseno, setExpenseno]=useState();
+
+    const [expenseno, setExpenseno] = useState();
     const [expenseOption, setExpenseOption] = useState([]);
     useEffect(() => {
         fetch(`${apiBaseUrl}/payment/getLast7daysExpense?username=${username}`)
@@ -40,7 +40,17 @@ const ExpenseEdit = () => {
                     <div className="label">
                         <span className="label-text-alt">SELECT EXPENSE</span>
                     </div>
-                    <Select className="text-black" onChange={(selectedOption: any) => setExpenseno(selectedOption.value)} options={expenseOption} />
+                    <Select className="text-black" onChange={(selectedOption: any) => setExpenseno(selectedOption.value)} options={expenseOption}
+                        maxMenuHeight={400}
+                        menuPlacement="auto"
+                        menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+                        menuPosition="fixed"
+                        styles={{
+                            menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                            }),
+                        }} />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <button onClick={handleEdit} className="btn btn-outline btn-success">NEXT</button>

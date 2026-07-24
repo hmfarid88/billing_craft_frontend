@@ -456,7 +456,7 @@ const Purchase = () => {
 
   useEffect(() => {
     if (brand && productName) {
-      fetch(`${apiBaseUrl}/api/product/last-entry?username=${username}&brand=${brand}&productName=${productName}`)
+      fetch(`${apiBaseUrl}/api/product/last-entry?username=${encodeURIComponent(username)}&brand=${encodeURIComponent(brand)}&productName=${encodeURIComponent(productName)}`)
         .then((res) => res.json())
         .then((data) => {
           if (data) {
@@ -769,7 +769,7 @@ const Purchase = () => {
 
         </div>
       </div>
-      <div className="modal sm:modal-middle" role="dialog" id="my_modal_product_itemadd">
+      <div className="modal sm:modal-middle" role="dialog" id="product_itemadd">
         <div className="modal-box">
           <div className="flex flex-col w-full">
             <div className="divider divider-accent tracking-widest font-bold text-sm p-2">ADD / DELETE ITEM</div>

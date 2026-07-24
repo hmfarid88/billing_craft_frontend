@@ -9,8 +9,8 @@ const OfficePayEdit = () => {
     const username = uname ? uname.username : 'Guest';
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const router = useRouter();
-    
-    const [paymentno, setPaymentno]=useState();
+
+    const [paymentno, setPaymentno] = useState();
     const [paymentOption, setPaymentOption] = useState([]);
     useEffect(() => {
         fetch(`${apiBaseUrl}/payment/getLast7daysOfficePayment?username=${username}`)
@@ -41,7 +41,16 @@ const OfficePayEdit = () => {
                     <div className="label">
                         <span className="label-text-alt">SELECT PAYMENT</span>
                     </div>
-                    <Select className="text-black" onChange={(selectedOption: any) => setPaymentno(selectedOption.value)} options={paymentOption} />
+                    <Select className="text-black z-50 " onChange={(selectedOption: any) => setPaymentno(selectedOption.value)} options={paymentOption} maxMenuHeight={400}
+                        menuPlacement="auto"
+                        menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+                        menuPosition="fixed"
+                        styles={{
+                            menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                            }),
+                        }} />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <button onClick={handleEdit} className="btn btn-outline btn-success">NEXT</button>

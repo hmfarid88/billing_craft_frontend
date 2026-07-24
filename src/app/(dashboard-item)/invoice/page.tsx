@@ -12,6 +12,10 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { toWords } from 'number-to-words';
 import Logo from '@/app/components/Logo';
+import { toast } from 'react-toastify';
+import { LiaUserEditSolid } from 'react-icons/lia';
+import revalidate from '@/app/revalidate';
+
 
 
 const Invoice = () => {
@@ -29,6 +33,11 @@ const Invoice = () => {
     const [invoiceData, setInvoiceData] = useState<invoiceData[]>([]);
     const [prevInvoice, setPrevInvoice] = useState("");
     const [nextInvoice, setNextInvoice] = useState("");
+
+
+    const [cName, setCName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
 
     interface invoiceData {
         cname: string,
@@ -59,11 +68,6 @@ const Invoice = () => {
         address: string,
         email: string
     }
-    // useEffect(() => {
-    //     if (invoiceData) {
-    //         handlePrint();
-    //     }
-    // }, [invoiceData]);
 
     const [shopInfo, setShopInfo] = useState<shopData>();
     useEffect(() => {
@@ -96,26 +100,104 @@ const Invoice = () => {
             .catch((err) => console.error("Error fetching status:", err));
     }, [apiBaseUrl, username]);
 
-    useEffect(() => {
-        if (username && cid) {
-            fetch(`${apiBaseUrl}/api/getInvoiceData?username=${username}&cid=${cid}`)
-                .then(response => response.json())
-                .then(data => {
-                    const updatedData = data.map((item: invoiceData) => {
-                        if (item.saleType === 'vendor') {
-                            return { ...item, sprice: item.pprice };
-                        }
-                        if (item.saleType === 'customer' && discountStatus === 'HIDE') {
-                            return { ...item, sprice: item.rsprice };
-                        }
-                        return item;
-                    });
-                    setInvoiceData(updatedData);
-                })
-                .catch(error => console.error('Error fetching invoice data:', error));
+
+    // useEffect(() => {
+    //     if (username && cid) {
+    //         fetch(`${apiBaseUrl}/api/getInvoiceData?username=${username}&cid=${cid}`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 const updatedData = data.map((item: invoiceData) => {
+    //                     if (item.saleType === 'vendor') {
+    //                         return { ...item, sprice: item.pprice };
+    //                     }
+    //                     if (item.saleType === 'customer' && discountStatus === 'HIDE') {
+    //                         return { ...item, sprice: item.rsprice };
+    //                     }
+    //                     return item;
+    //                 });
+    //                 setInvoiceData(updatedData);
+    //             })
+    //             .catch(error => console.error('Error fetching invoice data:', error));
+    //     }
+    // }, [apiBaseUrl, username, cid, discountStatus]);
+
+    const fetchInvoiceData = async () => {
+        if (!username || !cid) return;
+
+        try {
+            const response = await fetch(
+                `${apiBaseUrl}/api/getInvoiceData?username=${username}&cid=${cid}`
+            );
+
+            const data = await response.json();
+
+            const updatedData = data.map((item: invoiceData) => {
+                if (item.saleType === 'vendor') {
+                    return { ...item, sprice: item.pprice };
+                }
+
+                if (
+                    item.saleType === 'customer' &&
+                    discountStatus === 'HIDE'
+                ) {
+                    return { ...item, sprice: item.rsprice };
+                }
+
+                return item;
+            });
+
+            setInvoiceData(updatedData);
+        } catch (error) {
+            console.error('Error fetching invoice data:', error);
         }
+    };
+
+    useEffect(() => {
+        fetchInvoiceData();
     }, [apiBaseUrl, username, cid, discountStatus]);
 
+    useEffect(() => {
+        if (invoiceData?.length > 0) {
+            setCName(invoiceData[0].cname || '');
+            setPhoneNumber(invoiceData[0].phoneNumber || '');
+            setAddress(invoiceData[0].address || '');
+        }
+    }, [invoiceData]);
+
+    const handleUpdateCustomer = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!cName || !phoneNumber) {
+            toast.warning("Customer Name & Phone Number Required")
+            return;
+        }
+        try {
+            const response = await fetch(
+                `${apiBaseUrl}/customer/update/${username}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cid: cid, cname: cName, phoneNumber, address }),
+                }
+            );
+
+            const result = await response.text();
+
+            if (response.ok) {
+                setCName('')
+                setPhoneNumber('')
+                setAddress('')
+                toast.success(result);
+                await fetchInvoiceData();
+            } else {
+                toast.warning(result);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update customer');
+        }
+    };
     const isVendorSale = invoiceData.some(item => item.saleType === 'vendor');
     const saleLink = isVendorSale ? "/vendor-sale" : "/sale";
 
@@ -183,9 +265,11 @@ const Invoice = () => {
     if (!invoiceData) {
         return <div><Loading /></div>;
     }
+
     return (
         <div className="container min-h-[calc(100vh-228px)]">
             <div className="flex justify-end pr-10 pt-5 gap-3">
+                <a href="#customer_info_update" className="btn btn-square btn-ghost"><LiaUserEditSolid size={32} /></a>
                 <Link href={saleLink}>  <button className='btn btn-ghost btn-square'><FcPlus size={30} /></button></Link>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
@@ -304,6 +388,51 @@ const Invoice = () => {
             <div className="flex items-center justify-center gap-10 pb-5">
                 <button className='text-success btn btn-ghost btn-square' onClick={() => handleNavigation("prev")} disabled={!prevInvoice.length}><CiSquareChevLeft size={36} /></button>
                 <button className='text-success btn btn-ghost btn-square' onClick={() => handleNavigation("next")} disabled={!nextInvoice.length}><CiSquareChevRight size={36} /></button>
+            </div>
+            <div className="modal sm:modal-middle" role="dialog" id="customer_info_update">
+                <div className="modal-box">
+                    <div className="flex flex-col w-full">
+                        <div className="divider divider-accent tracking-widest font-bold text-sm p-2">CUSTOMER INFO</div>
+                    </div>
+                    <div className="flex w-full items-center justify-center gap-10">
+                        <form onSubmit={handleUpdateCustomer} className="space-y-3">
+                            <input
+                                type="text"
+                                placeholder="Customer Name"
+                                value={cName}
+                                onChange={(e) => setCName(e.target.value)}
+                                className="input input-bordered w-full"
+                            />
+
+                            <input
+                                type="text"
+                                placeholder="Phone Number"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                className="input input-bordered w-full"
+                            />
+
+                            <textarea
+                                placeholder="Address"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                className="textarea textarea-bordered w-full"
+                            />
+
+                            <button type="submit" className="btn btn-primary">
+                                Update Customer Info
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className="modal-action">
+                        <a href="#" className="btn btn-square btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     )

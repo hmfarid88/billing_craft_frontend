@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from "react-toastify";
 import { useAppSelector } from "@/app/store";
-
+import Select from "react-select";
 
 const SupplierPayment = () => {
   const uname = useAppSelector((state) => state.username.username);
@@ -16,51 +16,36 @@ const SupplierPayment = () => {
   const [supplierAmount, setSupplierAmount] = useState("");
   const [supplierNote, setSupplierNote] = useState("");
 
-   const [minDate, setMinDate] = useState('');
-    const [maxDate, setMaxDate] = useState('');
-  
-    // useEffect(() => {
-    //   const today = new Date();
-    //   const year = today.getFullYear();
-    //   const month = String(today.getMonth() + 1).padStart(2, '0');
-    //   const day = String(today.getDate()).padStart(2, '0');
-  
-    //   const formattedMaxDate = `${year}-${month}-${day}`;
-    //   const formattedMinDate = `${year}-${month}-01`; // First day of current month
-  
-    //   setMaxDate(formattedMaxDate);
-    //   setMinDate(formattedMinDate);
-  
-    //   // Optionally set default date = today
-    //   setDate(formattedMaxDate);
-    // }, []);
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
 
-    useEffect(() => {
-  const today = new Date();
 
-  // Today (max date)
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const formattedMaxDate = `${year}-${month}-${day}`;
+  useEffect(() => {
+    const today = new Date();
 
-  // First day of last month (min date)
-  const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
-  const minYear = firstDayLastMonth.getFullYear();
-  const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
-  const formattedMinDate = `${minYear}-${minMonth}-01`;
+    // Today (max date)
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedMaxDate = `${year}-${month}-${day}`;
 
-  setMinDate(formattedMinDate);
-  setMaxDate(formattedMaxDate);
+    // First day of last month (min date)
+    const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+    const minYear = firstDayLastMonth.getFullYear();
+    const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+    const formattedMinDate = `${minYear}-${minMonth}-01`;
 
-  // Optional: default selected date = today
-  setDate(formattedMaxDate);
-}, []);
+    setMinDate(formattedMinDate);
+    setMaxDate(formattedMaxDate);
+
+    // Optional: default selected date = today
+    setDate(formattedMaxDate);
+  }, []);
 
 
   const handleSupplierPayment = async (e: any) => {
     e.preventDefault();
-    if (!date || !supplierName || !paymentType || !supplierNote|| !supplierAmount) {
+    if (!date || !supplierName || !paymentType || !supplierNote || !supplierAmount) {
       toast.warning("Item is empty !");
       return;
     }
@@ -94,7 +79,12 @@ const SupplierPayment = () => {
     fetch(`${apiBaseUrl}/api/getSupplierItem?username=${username}`)
       .then(response => response.json())
       .then(data => {
-        setSupplierOption(data);
+        const transformedData = data.map((item: any) => ({
+          id: item.id,
+          value: item.supplierItem,
+          label: item.supplierItem
+        }));
+        setSupplierOption(transformedData);
       })
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
@@ -113,14 +103,7 @@ const SupplierPayment = () => {
           <div className="label">
             <span className="label-text-alt">SUPPLIER NAME</span>
           </div>
-          <select className='select select-bordered' onChange={(e: any) => { setSupplierName(e.target.value) }}>
-            <option selected disabled>Select . . .</option>
-            {supplierOption?.map((name: any, index) => (
-              <option key={index} value={name.supplierItem}>
-                {name.supplierItem}
-              </option>
-            ))}
-          </select>
+          <Select className="text-black" name="pcatagory" onChange={(selectedOption: any) => setSupplierName(selectedOption.value)} options={supplierOption} required />
 
         </label>
 
