@@ -84,7 +84,7 @@ const Page = () => {
                         <div ref={contentToPrint} className="flex-1 p-5">
                             <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PAY-RECV REPORT</h4>
                               <h4>{startDate} TO {endDate}</h4></div>
-                            <table className="table table-sm">
+                            <table className="table table-sm whitespace-nowrap">
                                 <thead className="sticky top-16 bg-base-100">
                                     <tr>
                                         <th>SN</th>
@@ -100,7 +100,7 @@ const Page = () => {
                                     {filteredProducts?.map((product, index) => (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td>{product.date}</td>
+                                            <td className="whitespace-nowrap">{product.date}</td>
                                             <td className="capitalize">{product.paymentName}</td>
                                             <td className="capitalize">{product.paymentType}</td>
                                             <td className="capitalize max-w-[200px] break-words">{product.paymentNote}</td>

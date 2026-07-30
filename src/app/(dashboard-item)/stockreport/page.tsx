@@ -203,7 +203,7 @@ const Page = () => {
             Total Qty: {totalPreQty + totalQty - totalSold} | Total Value: {(totalpprice).toLocaleString('en-IN')}
           </div>
           
-          <table className="table table-sm">
+          <table className="table table-sm whitespace-nowrap">
             <thead className="sticky top-16 bg-base-100">
               <tr>
                 <th>SN</th>

@@ -81,7 +81,7 @@ const Page = () => {
                         <div className="flex flex-col items-center pb-5"><h4 className="font-bold">EXPENSE REPORT</h4>
                             <h4>{startDate} TO {endDate}</h4>
                         </div>
-                        <table className="table table-sm">
+                        <table className="table table-sm whitespace-nowrap">
                             <thead className="sticky top-16 bg-base-100">
                                 <tr>
                                     <th>SN</th>
@@ -96,7 +96,7 @@ const Page = () => {
                                 {filteredProducts?.map((product, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{product.date}</td>
+                                        <td className="whitespace-nowrap">{product.date}</td>
                                         <td>{product.expenseName}</td>
                                         <td>{product.expenseNote}</td>
                                         <td>{Number(product.amount.toFixed(2)).toLocaleString('en-IN')}</td>

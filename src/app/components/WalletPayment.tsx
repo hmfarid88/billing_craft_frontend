@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { toast } from "react-toastify";
 import { FcPlus } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import Select from "react-select";
 
 
 const WalletPayment = () => {
@@ -17,46 +19,31 @@ const WalletPayment = () => {
     const [paymentNote, setPaymentNote] = useState("");
     const [paymentAmount, setPaymentAmount] = useState("");
 
-     const [minDate, setMinDate] = useState('');
-      const [maxDate, setMaxDate] = useState('');
-    
-    //   useEffect(() => {
-    //     const today = new Date();
-    //     const year = today.getFullYear();
-    //     const month = String(today.getMonth() + 1).padStart(2, '0');
-    //     const day = String(today.getDate()).padStart(2, '0');
-    
-    //     const formattedMaxDate = `${year}-${month}-${day}`;
-    //     const formattedMinDate = `${year}-${month}-01`; // First day of current month
-    
-    //     setMaxDate(formattedMaxDate);
-    //     setMinDate(formattedMinDate);
-    
-    //     // Optionally set default date = today
-    //     setDate(formattedMaxDate);
-    //   }, []);
+    const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
+
 
     useEffect(() => {
-  const today = new Date();
+        const today = new Date();
 
-  // Today (max date)
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const formattedMaxDate = `${year}-${month}-${day}`;
+        // Today (max date)
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedMaxDate = `${year}-${month}-${day}`;
 
-  // First day of last month (min date)
-  const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
-  const minYear = firstDayLastMonth.getFullYear();
-  const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
-  const formattedMinDate = `${minYear}-${minMonth}-01`;
+        // First day of last month (min date)
+        const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+        const minYear = firstDayLastMonth.getFullYear();
+        const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+        const formattedMinDate = `${minYear}-${minMonth}-01`;
 
-  setMinDate(formattedMinDate);
-  setMaxDate(formattedMaxDate);
+        setMinDate(formattedMinDate);
+        setMaxDate(formattedMaxDate);
 
-  // Optional: default selected date = today
-  setDate(formattedMaxDate);
-}, []);
+        // Optional: default selected date = today
+        setDate(formattedMaxDate);
+    }, []);
 
 
     const [walletName, setWalletName] = useState("");
@@ -74,7 +61,7 @@ const WalletPayment = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ walletName, rate:posRate, username }),
+                body: JSON.stringify({ walletName, rate: posRate, username }),
             });
 
             if (response.ok) {
@@ -121,15 +108,51 @@ const WalletPayment = () => {
             setPaymentAmount("");
         }
     };
+
+    const [delWaletName, setDelWaletName] = useState("");
+    const handleWaletNameDel = async (e: any) => {
+        e.preventDefault();
+        if (!delWaletName) {
+            toast.error("Payment name is empty !")
+            return;
+        }
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/payment/deleteWalletName?username=${encodeURIComponent(username)}&waletName=${encodeURIComponent(delWaletName)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                setDelWaletName("");
+                toast.success("Name delete successful !");
+            } else {
+                const data = await response.json();
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error("Sorry, Invalid name !")
+        } finally {
+
+        }
+    };
+
     const [paymentPersonOption, setPaymentPersonOption] = useState([]);
     useEffect(() => {
         fetch(`${apiBaseUrl}/payment/getWalletName?username=${username}`)
             .then(response => response.json())
             .then(data => {
-                setPaymentPersonOption(data);
+                const transformedData = data.map((item: any) => ({
+                    id: item.id,
+                    value: item.walletName,
+                    label: item.walletName
+                }));
+                setPaymentPersonOption(transformedData);
             })
             .catch(error => console.error('Error fetching products:', error));
-    }, [walletName, apiBaseUrl, username]);
+    }, [walletName, apiBaseUrl, username, delWaletName]);
 
     return (
         <div className="flex items-center justify-center">
@@ -146,14 +169,8 @@ const WalletPayment = () => {
                         <span className="label-text-alt">WALLET NAME</span>
                         <a href="#my_modal_addWalletName" className="btn btn-xs btn-circle btn-ghost"><FcPlus size={20} /></a>
                     </div>
-                    <select className='select select-bordered' onChange={(e: any) => { setPaymentName(e.target.value) }}>
-                        <option selected disabled>Select . . .</option>
-                        {paymentPersonOption?.map((name: any, index) => (
-                            <option key={index} value={name.walletName}>
-                                {name.walletName} ({name.rate} %)
-                            </option>
-                        ))}
-                    </select>
+                    <Select className="text-black" name="walletname" onChange={(selectedOption: any) => setPaymentName(selectedOption.value)} options={paymentPersonOption} required />
+
                 </label>
 
 
@@ -203,7 +220,24 @@ const WalletPayment = () => {
                                 <input type="number" value={posRate} name="posrate" onChange={(e: any) => setPosRate(e.target.value)} placeholder="Type here" className="input input-bordered w-full max-w-xs" required />
                             </label>
                             <button onClick={handlePaymentNameAdd} disabled={pending} className="btn btn-success">{pending ? "Adding..." : "ADD"}</button>
-
+                            <label className="form-control w-full max-w-xs">
+                                <div className="label">
+                                    <span className="label-text-alt">DELETE NAME</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Select className="text-black w-full" name="pcatagory" onChange={(selectedOption: any) => setDelWaletName(selectedOption.value)} options={paymentPersonOption} maxMenuHeight={400}
+                                        menuPlacement="auto"
+                                        menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+                                        menuPosition="fixed"
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999,
+                                            }),
+                                        }} />
+                                    <button onClick={handleWaletNameDel} className="btn btn-sm btn-square btn-outline btn-error"><RiDeleteBin6Line size={24} /></button>
+                                </div>
+                            </label>
                         </div>
                         <div className="modal-action">
                             <a href="#" className="btn btn-square btn-ghost">

@@ -79,7 +79,7 @@ export const Sidebar = () => {
                             </ul>
                         </details>
                     </li>
-                    <li><Link href="/payment-report"><GrTransaction size={20} /> PAY-RECV LEDGER</Link></li>
+                    <li><Link href="/pay-recev-report"><GrTransaction size={20} /> PAY-RECV LEDGER</Link></li>
                     <li><Link href="/supplier-report"><PiUserListBold size={20} /> SUPPLIER LEDGER</Link></li>
                     <li>
                         <details>

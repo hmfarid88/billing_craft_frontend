@@ -12,45 +12,30 @@ const ProfitWithdraw = () => {
     const [pending, setPending] = useState(false);
     const [date, setDate] = useState("");
 
-     const [minDate, setMinDate] = useState('');
-      const [maxDate, setMaxDate] = useState('');
-    
-    //   useEffect(() => {
-    //     const today = new Date();
-    //     const year = today.getFullYear();
-    //     const month = String(today.getMonth() + 1).padStart(2, '0');
-    //     const day = String(today.getDate()).padStart(2, '0');
-    
-    //     const formattedMaxDate = `${year}-${month}-${day}`;
-    //     const formattedMinDate = `${year}-${month}-01`; // First day of current month
-    
-    //     setMaxDate(formattedMaxDate);
-    //     setMinDate(formattedMinDate);
-    
-    //     // Optionally set default date = today
-    //     setDate(formattedMaxDate);
-    //   }, []);
-useEffect(() => {
-  const today = new Date();
+    const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
 
-  // Today (max date)
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const formattedMaxDate = `${year}-${month}-${day}`;
+    useEffect(() => {
+        const today = new Date();
 
-  // First day of last month (min date)
-  const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
-  const minYear = firstDayLastMonth.getFullYear();
-  const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
-  const formattedMinDate = `${minYear}-${minMonth}-01`;
+        // Today (max date)
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedMaxDate = `${year}-${month}-${day}`;
 
-  setMinDate(formattedMinDate);
-  setMaxDate(formattedMaxDate);
+        // First day of last month (min date)
+        const firstDayLastMonth = new Date(year, today.getMonth() - 1, 1);
+        const minYear = firstDayLastMonth.getFullYear();
+        const minMonth = String(firstDayLastMonth.getMonth() + 1).padStart(2, '0');
+        const formattedMinDate = `${minYear}-${minMonth}-01`;
 
-  // Optional: default selected date = today
-  setDate(formattedMaxDate);
-}, []);
+        setMinDate(formattedMinDate);
+        setMaxDate(formattedMaxDate);
+
+        // Optional: default selected date = today
+        setDate(formattedMaxDate);
+    }, []);
 
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
@@ -60,7 +45,7 @@ useEffect(() => {
 
     const handleProfitSubmit = async (e: any) => {
         e.preventDefault();
-        if (!date|| !month || !year || !type || !note|| !amount) {
+        if (!date || !month || !year || !type || !note || !amount) {
             toast.warning("Item is empty !");
             return;
         }

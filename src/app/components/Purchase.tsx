@@ -34,24 +34,8 @@ const Purchase = () => {
   const [colorOption, setColorOption] = useState([]);
   const [supplierOption, setSupplierOption] = useState([]);
   const [minDate, setMinDate] = useState('');
-    const [maxDate, setMaxDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   
-    // useEffect(() => {
-    //   const today = new Date();
-    //   const year = today.getFullYear();
-    //   const month = String(today.getMonth() + 1).padStart(2, '0');
-    //   const day = String(today.getDate()).padStart(2, '0');
-  
-    //   const formattedMaxDate = `${year}-${month}-${day}`;
-    //   const formattedMinDate = `${year}-${month}-01`; // First day of current month
-  
-    //   setMaxDate(formattedMaxDate);
-    //   setMinDate(formattedMinDate);
-  
-    //   // Optionally set default date = today
-    //   setDate(formattedMaxDate);
-    // }, []);
-
     useEffect(() => {
       const today = new Date();
     

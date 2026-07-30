@@ -133,7 +133,7 @@ const Page = () => {
                 <h4 className="font-bold">PROFIT / LOSS REPORT</h4>
                 <h4 className="pb-5">{getMonthName(month)} {year}</h4>
                 <div className="flex flex-col">
-                    <table className="table table-sm">
+                    <table className="table table-sm whitespace-nowrap">
                         <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>

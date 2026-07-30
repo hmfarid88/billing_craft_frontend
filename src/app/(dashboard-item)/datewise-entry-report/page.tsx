@@ -92,7 +92,7 @@ const Page = () => {
                 <h4 className="font-bold">PRODUCT ENTRY REPORT</h4>
                 <h4 className="pb-5">{startDate} TO {endDate}</h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
+                    <table className="table table-sm whitespace-nowrap">
                        <thead className="sticky top-16 bg-base-100">
                             <tr>
                             <th>SN</th>
@@ -113,7 +113,7 @@ const Page = () => {
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                 <th>{index + 1}</th>
-                                <td>{product.date}</td>
+                                <td className="whitespace-nowrap">{product.date}</td>
                                 <td>{product.time}</td>
                                 <td className="uppercase">{product.supplierInvoice}</td>
                                 <td className="capitalize">{product.supplier}</td>

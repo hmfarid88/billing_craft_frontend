@@ -111,7 +111,7 @@ const Page = () => {
                     <div className="flex pb-3 font-bold">
                        Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
                     </div>
-                    <table className="table table-xs">
+                    <table className="table table-xs whitespace-nowrap">
                     <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
@@ -141,7 +141,7 @@ const Page = () => {
                                     <td>{Number((product?.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
                                     <td>{product.supplier}</td>
                                     <td className="uppercase">{product.supplierInvoice}</td>
-                                    <td>{product.date}</td>
+                                    <td className="whitespace-nowrap">{product.date}</td>
                                     <td>{product.time}</td>
                                 </tr>
                             ))}

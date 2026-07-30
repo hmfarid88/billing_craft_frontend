@@ -25,7 +25,7 @@ const Page = () => {
     content: () => contentToPrint.current,
   });
   const handlePaymentsDetails=(paymentName:string)=>{
-    router.push(`/details-payment-report?paymentName=${paymentName}`);
+    router.push(`/details-pay-recev-report?paymentName=${paymentName}`);
   }
 
   const [filterCriteria, setFilterCriteria] = useState('');
@@ -77,12 +77,12 @@ const Page = () => {
         </div>
         <div className="overflow-x-auto items-center justify-center">
           <div ref={contentToPrint} className="flex-1 p-5">
-            <div className="flex flex-col items-center pb-5"><h4 className="font-bold">DEBTOR-CREDITOR</h4><CurrentDate /></div>
+            <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PAY-RECEIVE LEDGER</h4><CurrentDate /></div>
             <table className="table table-sm">
               <thead className="sticky top-16 bg-base-100">
                 <tr>
                   <th>SN</th>
-                  <th>DEBTOR/CREDITOR NAME</th>
+                  <th>PAY/RECEIVE NAME</th>
                   <th>BALANCE</th>
                   <th>DETAILS</th>
 

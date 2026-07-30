@@ -37,20 +37,8 @@ const Page = () => {
         setMaxDate(formattedDate);
     }, []);
 
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        if (!startDate || !endDate) {
-            toast.warning("Start date and end date required !");
-            return;
-        }
-        // Use the dynamic routePath for navigation
-        router.push(`/datewise-supplier-details?supplierName=${supplierName}&startDate=${startDate}&endDate=${endDate}`);
-        setStartDate("");
-        setEndDate("");
-    };
+
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
@@ -58,24 +46,27 @@ const Page = () => {
 
     const searchParams = useSearchParams();
     const supplierName = searchParams.get('supplierName');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [allProducts, setAllProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        fetch(`${apiBaseUrl}/payment/getSupplierBalance-details?username=${encodeURIComponent(username)}&supplierName=${encodeURIComponent(supplierName ?? "")}`)
+        fetch(`${apiBaseUrl}/payment/getDatewise-Supplier-details?username=${encodeURIComponent(username)}&supplierName=${encodeURIComponent(supplierName ?? "")}&fromDate=${startDate}&toDate=${endDate}`)
             .then(response => response.json())
             .then(data => {
                 setAllProducts(data);
                 setFilteredProducts(data);
             })
             .catch(error => console.error('Error fetching products:', error));
-    }, [apiBaseUrl, username, supplierName]);
+    }, [apiBaseUrl, username, supplierName, startDate, endDate]);
 
 
     useEffect(() => {
         const searchWords = filterCriteria.toLowerCase().split(" ");
+
         const filtered = allProducts.filter(product =>
             searchWords.every(word =>
                 (product.date?.toLowerCase().includes(word) || '') ||
@@ -96,42 +87,7 @@ const Page = () => {
     return (
         <div className="container-2xl">
             <div className="flex flex-col w-full  min-h-[calc(100vh-228px)] items-center justify-center p-4">
-                <div className='flex gap-3'>
-                    <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                            <span className="label-text-alt">START DATE</span>
-                        </div>
-                        <input
-                            type="date"
-                            name="date"
-                            onChange={(e: any) => setStartDate(e.target.value)}
-                            max={maxDate}
-                            value={startDate}
-                            className="input input-bordered"
-                        />
-                    </label>
 
-                    <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                            <span className="label-text-alt">END DATE</span>
-                        </div>
-                        <input
-                            type="date"
-                            name="date"
-                            onChange={(e: any) => setEndDate(e.target.value)}
-                            max={maxDate}
-                            value={endDate}
-                            className="input input-bordered"
-                        />
-                    </label>
-
-                    <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                            <span className="label-text-alt">SEARCH</span>
-                        </div>
-                        <button onClick={handleSubmit} className='btn btn-success'>{'>>'}</button>
-                    </label>
-                </div>
                 <div className="flex w-full justify-between p-5">
                     <label className="input input-bordered flex max-w-xs  items-center gap-2">
                         <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
@@ -145,8 +101,7 @@ const Page = () => {
                     <div ref={contentToPrint} className="flex-1 p-5">
                         <div className="flex flex-col items-center justify-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
                             <h4>Supplier: {supplierName}</h4>
-                            <CurrentMonthYear />
-                            </div>
+                            {startDate} TO {endDate}</div>
                         <table className="table table-sm whitespace-nowrap">
                             <thead className="sticky top-16 bg-base-100">
                                 <tr>

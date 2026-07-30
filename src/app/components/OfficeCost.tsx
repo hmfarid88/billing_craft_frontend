@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { FcPlus } from "react-icons/fc";
 import { useAppSelector } from "@/app/store";
 import Select from "react-select";
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 const OfficeCost = () => {
   const uname = useAppSelector((state) => state.username.username);
@@ -73,6 +74,36 @@ const OfficeCost = () => {
       setPaymentPerson("");
     }
   };
+
+  const [delPaymentName, setDelPaymentName] = useState("");
+  const handlePaymentNameDel = async (e: any) => {
+    e.preventDefault();
+    if (!delPaymentName) {
+      toast.error("Payment name is empty !")
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/payment/deletePaymentName?username=${encodeURIComponent(username)}&paymentName=${encodeURIComponent(delPaymentName)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        setDelPaymentName("");
+        toast.success("Name delete successful !");
+      } else {
+        const data = await response.json();
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Sorry, Invalid name !")
+    } finally {
+
+    }
+  };
   const handlePaymentSubmit = async (e: any) => {
     e.preventDefault();
     if (!date || !paymentName || !paymentType || !paymentNote || !paymentAmount) {
@@ -116,7 +147,7 @@ const OfficeCost = () => {
         setPaymentPersonOption(transformedData);
       })
       .catch(error => console.error('Error fetching products:', error));
-  }, [apiBaseUrl, username, paymentPerson]);
+  }, [apiBaseUrl, username, paymentPerson, delPaymentName]);
 
   return (
     <div className="flex items-center justify-center">
@@ -167,7 +198,7 @@ const OfficeCost = () => {
         </label>
         <div className="modal sm:modal-middle" role="dialog" id="my_modal_addPaymentName">
           <div className="modal-box">
-            <div className="flex w-full items-center justify-center p-2">
+            <div className="flex flex-col w-full items-center justify-center gap-5 p-2">
               <label className="form-control w-full max-w-xs">
                 <div className="label">
                   <span className="label-text-alt">TRANSACTION NAME</span>
@@ -175,6 +206,24 @@ const OfficeCost = () => {
                 <div className="flex items-center justify-between">
                   <input type="text" value={paymentPerson} name="supplierItem" onChange={(e: any) => setPaymentPerson(e.target.value)} placeholder="Type here" className="input input-bordered w-3/4 max-w-xs" required />
                   <button onClick={handlePaymentNameAdd} disabled={pending} className="btn btn-square btn-success">{pending ? "Adding..." : "ADD"}</button>
+                </div>
+              </label>
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text-alt">DELETE NAME</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Select className="text-black w-full" name="pcatagory" onChange={(selectedOption: any) => setDelPaymentName(selectedOption.value)} options={paymentPersonOption} maxMenuHeight={400}
+                    menuPlacement="auto"
+                    menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                    styles={{
+                      menuPortal: (base) => ({
+                        ...base,
+                        zIndex: 9999,
+                      }),
+                    }} />
+                  <button onClick={handlePaymentNameDel} className="btn btn-sm btn-square btn-outline btn-error"><RiDeleteBin6Line size={24} /></button>
                 </div>
               </label>
             </div>

@@ -3,22 +3,49 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/store";
 import { FcPrint } from "react-icons/fc";
 import { useReactToPrint } from 'react-to-print';
-import CurrentDate from "@/app/components/CurrentDate";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import CurrentMonthYear from "@/app/components/CurrentMonthYear";
+import { toast } from "react-toastify";
 
 type Product = {
     date: string;
     note: string;
     payment: number;
     receive: number;
-  
+    balance: number;
+    openingBalance: number;
+
 };
 
 const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
-    
+    const [maxDate, setMaxDate] = useState('');
+    const router = useRouter();
+    useEffect(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        setMaxDate(formattedDate);
+    }, []);
+
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        if (!startDate || !endDate) {
+            toast.warning("Start date and end date required !");
+            return;
+        }
+        // Use the dynamic routePath for navigation
+        router.push(`/datewise-payrecev-details?paymentName=${paymentName}&startDate=${startDate}&endDate=${endDate}`);
+        setStartDate("");
+        setEndDate("");
+    };
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
@@ -44,16 +71,16 @@ const Page = () => {
 
     useEffect(() => {
         const searchWords = filterCriteria.toLowerCase().split(" ");
-      
+
         const filtered = allProducts.filter(product =>
-          searchWords.every(word =>
-            (product.date?.toLowerCase().includes(word) || '') ||
-            (product.note?.toLowerCase().includes(word) || '')
-          )
+            searchWords.every(word =>
+                (product.date?.toLowerCase().includes(word) || '') ||
+                (product.note?.toLowerCase().includes(word) || '')
+            )
         );
-      
+
         setFilteredProducts(filtered);
-      }, [filterCriteria, allProducts]);
+    }, [filterCriteria, allProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -65,11 +92,45 @@ const Page = () => {
         return total + product.receive;
     }, 0);
 
-    let cumulativeBalance = 0;
     return (
         <div className="container-2xl">
             <div className="flex flex-col w-full  min-h-[calc(100vh-228px)] items-center justify-center p-4">
+                <div className='flex gap-3'>
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text-alt">START DATE</span>
+                        </div>
+                        <input
+                            type="date"
+                            name="date"
+                            onChange={(e: any) => setStartDate(e.target.value)}
+                            max={maxDate}
+                            value={startDate}
+                            className="input input-bordered"
+                        />
+                    </label>
 
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text-alt">END DATE</span>
+                        </div>
+                        <input
+                            type="date"
+                            name="date"
+                            onChange={(e: any) => setEndDate(e.target.value)}
+                            max={maxDate}
+                            value={endDate}
+                            className="input input-bordered"
+                        />
+                    </label>
+
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text-alt">SEARCH</span>
+                        </div>
+                        <button onClick={handleSubmit} className='btn btn-success'>{'>>'}</button>
+                    </label>
+                </div>
                 <div className="flex w-full justify-between p-5">
                     <label className="input input-bordered flex max-w-xs  items-center gap-2">
                         <input type="text" value={filterCriteria} onChange={handleFilterChange} className="grow" placeholder="Search" />
@@ -81,8 +142,8 @@ const Page = () => {
                 </div>
                 <div className="overflow-x-auto items-center justify-center">
                     <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">DEBTOR-CREDITOR</h4><CurrentDate /></div>
-                        <table className="table table-sm">
+                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PAY-RECEIVE REPORT</h4><CurrentMonthYear /></div>
+                        <table className="table table-sm whitespace-nowrap">
                             <thead className="sticky top-16 bg-base-100">
                                 <tr>
                                     <th>SN</th>
@@ -95,28 +156,34 @@ const Page = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {filteredProducts?.map((product, index) => {
-                                    const currentBalance = product.payment - product.receive;
-                                    cumulativeBalance += currentBalance;
-
-                                    return (
+                                {filteredProducts.length > 0 && (
+                                    <tr className="font-bold bg-base-200">
+                                        <td></td>
+                                        <td colSpan={4}>Opening Balance</td>
+                                        <td>
+                                            {Number(
+                                                (filteredProducts[0].openingBalance ?? 0).toFixed(2)
+                                            ).toLocaleString('en-IN')}
+                                        </td>
+                                    </tr>
+                                )}
+                                {filteredProducts?.map((product, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{product?.date}</td>
+                                        <td className="whitespace-nowrap">{product?.date}</td>
                                         <td className="capitalize max-w-[150px] break-words">{product?.note}</td>
                                         <td>{Number((product?.payment)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number((product?.receive)?.toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number(cumulativeBalance.toFixed(2)).toLocaleString('en-IN')}</td>
-
+                                        <td>{Number(product.balance.toFixed(2)).toLocaleString('en-IN')}</td>
                                     </tr>
-                                      );
-                                    })}
+                                ))}
                             </tbody>
                             <tfoot>
                                 <tr className="font-bold text-sm">
-                                    <td colSpan={4}></td>
+                                    <td colSpan={2}></td>
                                     <td>TOTAL</td>
-                                    <td>{Number((totalPayment - totalReceive).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((totalPayment).toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number((totalReceive).toFixed(2)).toLocaleString('en-IN')}</td>
                                 </tr>
                             </tfoot>
                         </table>

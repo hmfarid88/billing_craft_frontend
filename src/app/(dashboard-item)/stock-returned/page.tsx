@@ -90,7 +90,7 @@ const Page = () => {
                 <h4 className="font-bold">STOCK RETURNED</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
                 <div className="flex items-center justify-center">
-                    <table className="table table-sm">
+                    <table className="table table-sm whitespace-nowrap">
                         <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>
@@ -120,7 +120,7 @@ const Page = () => {
                                     <td>{product.sprice}</td>
                                     <td>{product.supplier}</td>
                                     <td>{product.supplierInvoice}</td>
-                                    <td>{product.date}</td>
+                                    <td className="whitespace-nowrap">{product.date}</td>
                                     <td>{product.time}</td>
                                 </tr>
                             ))}
