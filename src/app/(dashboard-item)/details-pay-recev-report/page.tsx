@@ -142,7 +142,10 @@ const Page = () => {
                 </div>
                 <div className="overflow-x-auto items-center justify-center">
                     <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PAY-RECEIVE REPORT</h4><CurrentMonthYear /></div>
+                        <div className="flex flex-col items-center pb-5"><h4 className="font-bold">PAY-RECEIVE REPORT</h4>
+                            <h5 className="font-bold uppercase">{paymentName}</h5>
+                            <h5 className="font-bold capitalize"><CurrentMonthYear /></h5>
+                        </div>
                         <table className="table table-sm whitespace-nowrap">
                             <thead className="sticky top-16 bg-base-100">
                                 <tr>
@@ -171,7 +174,7 @@ const Page = () => {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td className="whitespace-nowrap">{product?.date}</td>
-                                        <td className="capitalize max-w-[150px] break-words">{product?.note}</td>
+                                        <td className="capitalize max-w-[200px] text-wrap">{product?.note}</td>
                                         <td>{Number((product?.payment)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number((product?.receive)?.toFixed(2)).toLocaleString('en-IN')}</td>
                                         <td>{Number(product.balance.toFixed(2)).toLocaleString('en-IN')}</td>
