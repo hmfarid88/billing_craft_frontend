@@ -1,0 +1,136 @@
+
+'use client'
+import React, { useState, useEffect, useRef } from "react";
+import { useAppSelector } from "@/app/store";
+import { FcPrint } from "react-icons/fc";
+import { useReactToPrint } from "react-to-print";
+import { CgDetailsMore } from "react-icons/cg";
+import { useRouter, useSearchParams } from "next/navigation";
+
+
+interface Product {
+    username: string;
+    saleQty: number;
+    saleValue: number;
+    purchaseValue: number;
+    profit: number;
+
+}
+
+const Page = () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const uname = useAppSelector((state) => state.username.username);
+    const username = uname ? uname.username : 'Guest';
+    const router = useRouter();
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
+    const [filterCriteria, setFilterCriteria] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
+    const searchParams = useSearchParams();
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
+    const contentToPrint = useRef(null);
+
+    const handlePrint = useReactToPrint({
+        content: () => contentToPrint.current,
+    });
+
+    // const handleStockDetails = (username: string) => {
+    //     router.push(`/userwise-stock?username=${encodeURIComponent(username)}`);
+    // }
+
+    useEffect(() => {
+        fetch(`${apiBaseUrl}/sales/groupSaleSummaryDateWise?username=${username}&fromDate=${startDate}&toDate=${endDate}`)
+            .then(res => res.json())
+            .then(data => {
+                setAllProducts(data);
+                setFilteredProducts(data);
+            })
+            .catch(err => console.error('Error fetching stock summary:', err));
+    }, [apiBaseUrl, username, startDate, endDate]);
+
+    useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+        const filtered = allProducts.filter(product =>
+            searchWords.every(word =>
+                (product.username?.toLowerCase().includes(word) || '')
+
+            )
+        );
+        setFilteredProducts(filtered);
+    }, [filterCriteria, allProducts]);
+
+    const totalQty = filteredProducts.reduce((total, product) => {
+        return total + product?.saleQty;
+    }, 0);
+    const totalSale = filteredProducts.reduce((total, product) => {
+        return total + product?.saleValue;
+    }, 0);
+    const totalPurchase = filteredProducts.reduce((total, product) => {
+        return total + product?.purchaseValue;
+    }, 0);
+    const totalProfit = filteredProducts.reduce((total, product) => {
+        return total + product?.profit;
+    }, 0);
+    return (
+        <div className="container-2xl min-h-[calc(100vh-228px)]">
+            <div className="flex flex-col p-5">
+                <div className="flex justify-between items-center pl-5 pr-5 pt-5">
+                    <label className="input input-bordered flex max-w-xs items-center gap-2">
+                        <input type="text" value={filterCriteria} onChange={(e) => setFilterCriteria(e.target.value)} className="grow" placeholder="Search" />
+                    </label>
+                    <div className="flex items-center gap-3">
+                        <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
+                    </div>
+                </div>
+
+                <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+                    <h4 className="font-bold">SALES & PROFIT</h4>
+                    <h4 className="text-lg">FROM {startDate} TO {endDate}</h4>
+
+                    <div className="flex flex-col items-center justify-center">
+
+                        <table className="table table-lg table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>USER NAME</th>
+                                    <th>SALE QTY</th>
+                                    <th>SALE VALUE</th>
+                                    <th>PURCHASE VALUE</th>
+                                    <th>PROFIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredProducts.map((item, index) => (
+                                    <tr key={item.username}>
+                                        <td>{index + 1}</td>
+                                        <td className="capitalize">{item.username}</td>
+                                        <td>{item.saleQty}</td>
+                                        <td>{item.saleValue.toLocaleString()}</td>
+                                        <td>{item.purchaseValue.toLocaleString()}</td>
+                                        <td>{item.profit.toLocaleString()}</td>
+                                        {/* <td><button onClick={() => handleStockDetails(item.username)} className="btn btn-success btn-xs btn-outline"><CgDetailsMore size={18} /></button></td> */}
+                                    </tr>
+                                ))}
+                            </tbody>
+                            <tfoot>
+                                <tr className="font-bold text-sm">
+                                    <td></td>
+                                    <td>TOTAL</td>
+                                    <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalSale.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalPurchase.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalProfit.toFixed(2)).toLocaleString('en-IN')}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Page;
+

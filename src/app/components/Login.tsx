@@ -55,8 +55,10 @@ const Login = () => {
                         router.push("/dashboard");
                     } else if (data.roles === 'ROLE_ADMIN') {
                         router.push("/admin-dashboard");
+                    }else if (data.roles === 'ROLE_OWNER') {
+                        router.push("/owner-dashboard");
                     }
-                    toast.success("Congrats, login successful.");
+                    toast.success("Congrats, login Successful.");
                 }
             }
 

@@ -8,15 +8,17 @@ const Page = () => {
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [roles, setRoles] = useState("");
+    const [ownerGroup, setOwnerGroup] = useState("");
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const handleUserAdd = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!email || !username || !password || !roles) {
+        if (!email || !username || !password || !roles || !ownerGroup) {
             toast.error("All fields are required!");
             return;
         }
+
         setPending(true);
         try {
             const response = await fetch(`${apiBaseUrl}/auth/addNewUser`, {
@@ -24,7 +26,7 @@ const Page = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, username, password, roles }),
+                body: JSON.stringify({ email, username, password, roles, ownerGroup }),
             });
 
             if (response.ok) {
@@ -32,6 +34,7 @@ const Page = () => {
                 setUserName("");
                 setPassword("");
                 setRoles("");
+                setOwnerGroup("");
                 toast.success("User added successfully!");
 
             } else {
@@ -73,9 +76,17 @@ const Page = () => {
                                 <select name='roles' value={roles} onChange={(e) => setRoles(e.target.value)} className="select select-bordered w-full max-w-xs">
                                     <option selected>SELECT ROLE</option>
                                     <option value="ROLE_USER">USER</option>
+                                    <option value="ROLE_OWNER">OWNER</option>
                                     <option value="ROLE_ADMIN">ADMIN</option>
                                 </select>
                             </div>
+                            <div className="flex p-2">
+                                <label className="input input-bordered flex items-center w-full max-w-xs gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
+                                    <input type="text" name='name' value={ownerGroup} onChange={(e: any) => setOwnerGroup(e.target.value)} className="grow" placeholder="Owner Group" />
+                                </label>
+                            </div>
+                           
                             <div className="flex p-2">
                                 <button type='submit' className='btn btn-success w-full max-w-xs'>{pending ? "Submitting..." : "ADD USER"}</button>
                             </div>

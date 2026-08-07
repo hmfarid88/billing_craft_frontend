@@ -68,11 +68,12 @@ import { decrypt } from '@/app/lib/auth';
 import { cookies } from 'next/headers';
 
 // Define the roles as a union type
-type UserRole = 'ROLE_ADMIN' | 'ROLE_USER' ;
+type UserRole = 'ROLE_ADMIN' | 'ROLE_USER' | 'ROLE_OWNER' ;
 
 // Role-based protected routes mapping
 const roleRouteMap: Record<UserRole, string[]> = {
   ROLE_ADMIN: ['/admin-dashboard', '/addadmin', '/adduser'],
+  ROLE_OWNER: ['/owner-dashboard', '/owner-daybook', '/owner-profit', '/owner-sales', '/owner-stock'],
   ROLE_USER: [
     '/adminstration',
     '/cashbook',
@@ -154,6 +155,12 @@ export default async function middleware(req: NextRequest) {
           !req.nextUrl.pathname.startsWith('/admin-dashboard')
         ) {
           return NextResponse.redirect(new URL('/admin-dashboard', req.nextUrl));
+        }
+        if (
+          session.roles === 'ROLE_OWNER' &&
+          !req.nextUrl.pathname.startsWith('/owner-dashboard')
+        ) {
+          return NextResponse.redirect(new URL('/owner-dashboard', req.nextUrl));
         }
         if (
           session.roles === 'ROLE_USER' &&

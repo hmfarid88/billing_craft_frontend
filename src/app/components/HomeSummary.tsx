@@ -26,7 +26,7 @@ const HomeSummary = () => {
   const [monthlyTotalValue, setMonthlySaleValue] = useState<number>(0);
   const [payValue, setPayValue] = useState<number>(0);
   const [recvValue, setRecvValue] = useState<number>(0);
-  
+
 
   const dashboardData = [
     { id: 1, title: "Stock Today" },
@@ -35,7 +35,7 @@ const HomeSummary = () => {
     { id: 4, title: "Payment Today" },
     { id: 5, title: "Cash Balance" }
   ];
-interface Currency{currency:string}
+  interface Currency { currency: string }
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getProductStock?username=${username}`)
       .then(response => response.json())
@@ -75,17 +75,17 @@ interface Currency{currency:string}
       .catch(error => console.error('Error fetching products:', error));
   }, [apiBaseUrl, username]);
 
-   useEffect(() => {
-      fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}&date=${date}`)
-        .then(response => response.json())
-        .then(data => {
-          const saleValue = data.reduce((total: any, product: { value: any; }) => {
-            return total + product.value;
-          }, 0);
-          setSaleAndVat(saleValue);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }, [apiBaseUrl, username, date]);
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/cashbook/sales/customer?username=${username}&date=${date}`)
+      .then(response => response.json())
+      .then(data => {
+        const saleValue = data.reduce((total: any, product: { value: any; }) => {
+          return total + product.value;
+        }, 0);
+        setSaleAndVat(saleValue);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, [apiBaseUrl, username, date]);
 
   useEffect(() => {
     fetch(`${apiBaseUrl}/api/getMonthlyProductSale?username=${username}`)
