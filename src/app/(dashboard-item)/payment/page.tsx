@@ -9,7 +9,7 @@ import WalletPayment from '@/app/components/WalletPayment'
 
 const page = () => {
   return (
-    <div className='container-2xl min-h-screen'>
+    <div className='container-2xl min-h-[calc(100vh-228px)]'>
       <div className="flex-col md:flex-row w-full items-center justify-center">
         <div role="tablist" className="tabs tabs-bordered items-center justify-center">
           <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="EXPENSE" defaultChecked />

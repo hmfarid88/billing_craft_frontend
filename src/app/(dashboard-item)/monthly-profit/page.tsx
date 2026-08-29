@@ -129,12 +129,12 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
                 <h4 className="font-bold">PROFIT / LOSS REPORT</h4>
                 <h4 className="pb-5">{getMonthName(month)} {year}</h4>
-                <div className="flex flex-col">
+                <div className="overflow-x-auto w-full">
                     <table className="table table-sm whitespace-nowrap">
-                        <thead className="sticky top-16 bg-base-100">
+                        <thead className="bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>CATEGORY</th>

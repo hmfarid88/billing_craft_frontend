@@ -95,11 +95,11 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
                 <h4 className="font-bold">VENDOR SALE REPORT</h4>
                 <h4 className="pb-5"><CurrentMonthYear /></h4>
-                <div className="flex items-center justify-center">
-                    <table className="table table-sm whitespace-nowrap">
+                <div className="overflow-x-auto w-full">
+                    <table className="table table-sm whitespace-nowrap min-w-[1000px]">
                         <thead className="sticky top-16 bg-base-100">
                             <tr>
                                 <th>SN</th>

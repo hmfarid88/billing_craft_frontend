@@ -80,12 +80,12 @@ const Page = () => {
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
 
-            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
                 <h4 className="font-bold">PRICE-DROP LIST</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
-                <div className="flex items-center justify-center">
-                    <table className="table table-sm capitalize">
-                        <thead className="sticky top-16 bg-base-100">
+                <div className="overflow-x-auto w-full">
+                    <table className="table table-sm capitalize min-w-[1000px]">
+                        <thead className="bg-base-100">
                             <tr>
                                 <th>SN</th>
                                 <th>DATE</th>

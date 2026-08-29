@@ -195,65 +195,72 @@ const Page = () => {
         </div>
       </div>
 
-      <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+      <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
         <h4 className="font-bold">STOCK SUMMARY</h4>
         <h4 className="pb-5"><CurrentDate /></h4>
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex font-bold pb-3">
-            Total Qty: {totalPreQty + totalQty - totalSold} | Total Value: {(totalpprice).toLocaleString('en-IN')}
+        <div className="w-full">
+          <div className="flex flex-wrap justify-center font-bold pb-3 text-center">
+            <span>
+              Total Qty: {totalPreQty + totalQty - totalSold}
+            </span>
+            <span className="mx-2">|</span>
+            <span>
+              Total Value: {totalpprice.toLocaleString("en-IN")}
+            </span>
           </div>
-          
-          <table className="table table-sm whitespace-nowrap">
-            <thead className="sticky top-16 bg-base-100">
-              <tr>
-                <th>SN</th>
-                <th>CATEGORY</th>
-                <th>BRAND</th>
-                <th>PRODUCT</th>
-                {showByColor && <th>COLOR</th>}
-                <th>PREVIOUS</th>
-                <th>TODAY</th>
-                <th>SOLD / RETURN</th>
-                <th>PRESENT</th>
-                <th>STOCK VALUE</th>
-              </tr>
-            </thead>
-           
-            <tbody>
-              {displayProducts.map((product, index) => {
-                const present = product.countBeforeToday + product.countToday - product.soldToday;
+          <div className="w-full overflow-x-auto">
+            <table className="table table-sm whitespace-nowrap min-w-[1000px]">
+              <thead className="bg-base-100">
+                <tr>
+                  <th>SN</th>
+                  <th>CATEGORY</th>
+                  <th>BRAND</th>
+                  <th>PRODUCT</th>
+                  {showByColor && <th>COLOR</th>}
+                  <th>PREVIOUS</th>
+                  <th>TODAY</th>
+                  <th>SOLD / RETURN</th>
+                  <th>PRESENT</th>
+                  <th>STOCK VALUE</th>
+                </tr>
+              </thead>
 
-                // ✅ Skip row if present is 0
-                if (present === 0) return null;
+              <tbody>
+                {displayProducts.map((product, index) => {
+                  const present = product.countBeforeToday + product.countToday - product.soldToday;
 
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{product.category}</td>
-                    <td>{product.brand}</td>
-                    <td>{product.productName}</td>
-                    {showByColor && <td>{product.color}</td>}
-                    <td>{product.countBeforeToday}</td>
-                    <td>{product.countToday}</td>
-                    <td>{product.soldToday}</td>
-                    <td className={present < 3 ? "text-red-500 font-bold" : ""}>{present}</td>
-                    <td>{product.pprice * present}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <tfoot>
-              <tr className="font-bold text-sm">
-                <td colSpan={showByColor ? 4 : 3}></td>
-                <td>TOTAL</td>
-                <td>{totalPreQty.toLocaleString('en-IN')}</td>
-                <td>{totalQty.toLocaleString('en-IN')}</td>
-                <td>{totalSold.toLocaleString('en-IN')}</td>
-                <td>{(totalPreQty + totalQty - totalSold).toLocaleString('en-IN')}</td>
-                <td>{(totalpprice).toLocaleString('en-IN')}</td>
-              </tr>
-            </tfoot>
-          </table>
+                  // ✅ Skip row if present is 0
+                  if (present === 0) return null;
+
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{product.category}</td>
+                      <td>{product.brand}</td>
+                      <td>{product.productName}</td>
+                      {showByColor && <td>{product.color}</td>}
+                      <td>{product.countBeforeToday}</td>
+                      <td>{product.countToday}</td>
+                      <td>{product.soldToday}</td>
+                      <td className={present < 3 ? "text-red-500 font-bold" : ""}>{present}</td>
+                      <td>{product.pprice * present}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr className="font-bold text-sm">
+                  <td colSpan={showByColor ? 4 : 3}></td>
+                  <td>TOTAL</td>
+                  <td>{totalPreQty.toLocaleString('en-IN')}</td>
+                  <td>{totalQty.toLocaleString('en-IN')}</td>
+                  <td>{totalSold.toLocaleString('en-IN')}</td>
+                  <td>{(totalPreQty + totalQty - totalSold).toLocaleString('en-IN')}</td>
+                  <td>{(totalpprice).toLocaleString('en-IN')}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
       </div>
       <div className="modal sm:modal-middle" role="dialog" id="my_modal_stock">

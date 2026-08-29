@@ -89,11 +89,11 @@ const Page = () => {
                             {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td className="whitespace-nowrap">{product.date}</td>
-                                    <td className="uppercase">{product.cid}</td>
-                                    <td className="uppercase">{product.cname}</td>
-                                    <td>{product.phoneNumber}</td>
-                                    <td>{product.vatAmount}</td>
+                                    <td className="whitespace-nowrap">{product?.date}</td>
+                                    <td className="uppercase">{product?.cid}</td>
+                                    <td className="uppercase">{product?.cname}</td>
+                                    <td>{product?.phoneNumber}</td>
+                                    <td>{product?.vatAmount}</td>
                                   
                                 </tr>
                             ))}

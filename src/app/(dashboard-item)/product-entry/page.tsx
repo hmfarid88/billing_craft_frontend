@@ -32,7 +32,7 @@ const Page = () => {
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-     useEffect(() => {
+    useEffect(() => {
         fetch(`${apiBaseUrl}/api/getMonthlyProductEntry?username=${username}`)
             .then(response => response.json())
             .then(data => {
@@ -42,11 +42,11 @@ const Page = () => {
             .catch(error => console.error('Error fetching products:', error));
     }, [apiBaseUrl, username]);
 
-     useEffect(() => {
-            const searchWords = filterCriteria.toLowerCase().split(" ");
-          
-            const filtered = soldProducts.filter(product =>
-              searchWords.every(word =>
+    useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+
+        const filtered = soldProducts.filter(product =>
+            searchWords.every(word =>
                 (product.category?.toLowerCase().includes(word) || '') ||
                 (product.brand?.toLowerCase().includes(word) || '') ||
                 (product.date?.toLowerCase().includes(word) || '') ||
@@ -55,11 +55,11 @@ const Page = () => {
                 (product.supplier?.toLowerCase().includes(word) || '') ||
                 (product.supplierInvoice?.toLowerCase().includes(word) || '') ||
                 (product.productName?.toLowerCase().includes(word) || '')
-              )
-            );
-          
-            setFilteredProducts(filtered);
-          }, [filterCriteria, soldProducts]);
+            )
+        );
+
+        setFilteredProducts(filtered);
+    }, [filterCriteria, soldProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -77,7 +77,7 @@ const Page = () => {
 
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
-            <div className="flex justify-center pl-5 pr-5 pt-5">
+            <div className="flex flex-wrap justify-center pl-5 pr-5 pt-5 w-full">
                 <DateToDate routePath="/datewise-entry-report" />
 
             </div>
@@ -90,60 +90,62 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
                 <h4 className="font-bold">PRODUCT ENTRY REPORT</h4>
                 <h4 className="pb-5"><CurrentMonthYear /></h4>
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center w-full">
                     <div className="flex pb-3 font-bold">
-                       Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
+                        Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
                     </div>
-                    <table className="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>SN</th>
-                                <th>ENTRY DATE</th>
-                                <th>ENTRY TIME</th>
-                                <th>INVOICE NO</th>
-                                <th>SUPPLIER</th>
-                                <th>CATEGORY</th>
-                                <th>BRAND</th>
-                                <th>PRODUCT</th>
-                                <th>COLOR</th>
-                                <th>PRODUCT NO</th>
-                                <th>PURCHASE PRICE</th>
-                                <th>SALE PRICE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredProducts?.map((product, index) => (
-                                <tr key={index}>
-                                    <th>{index + 1}</th>
-                                    <td>{product.date}</td>
-                                    <td>{product.time}</td>
-                                    <td className="uppercase">{product.supplierInvoice}</td>
-                                    <td className="capitalize">{product.supplier}</td>
-                                    <td className="capitalize">{product.category}</td>
-                                    <td className="capitalize">{product.brand}</td>
-                                    <td className="capitalize">{product.productName}</td>
-                                    <td className="capitalize">{product.color}</td>
-                                    <td>{product.productno}</td>
-                                    <td>{product.pprice}</td>
-                                    <td>{product.sprice}</td>
+                    <div className="w-full overflow-x-auto">
+                        <table className="table table-sm whitespace-nowrap min-w-[1000px]">
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>ENTRY DATE</th>
+                                    <th>ENTRY TIME</th>
+                                    <th>INVOICE NO</th>
+                                    <th>SUPPLIER</th>
+                                    <th>CATEGORY</th>
+                                    <th>BRAND</th>
+                                    <th>PRODUCT</th>
+                                    <th>COLOR</th>
+                                    <th>PRODUCT NO</th>
+                                    <th>PURCHASE PRICE</th>
+                                    <th>SALE PRICE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredProducts?.map((product, index) => (
+                                    <tr key={index}>
+                                        <th>{index + 1}</th>
+                                        <td>{product.date}</td>
+                                        <td>{product.time}</td>
+                                        <td className="uppercase">{product.supplierInvoice}</td>
+                                        <td className="capitalize">{product.supplier}</td>
+                                        <td className="capitalize">{product.category}</td>
+                                        <td className="capitalize">{product.brand}</td>
+                                        <td className="capitalize">{product.productName}</td>
+                                        <td className="capitalize">{product.color}</td>
+                                        <td>{product.productno}</td>
+                                        <td>{product.pprice}</td>
+                                        <td>{product.sprice}</td>
+
+                                    </tr>
+                                ))}
+                            </tbody>
+                            <tfoot>
+                                <tr className="font-bold text-sm">
+                                    <td colSpan={8}></td>
+                                    <td>TOTAL</td>
+                                    <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
 
                                 </tr>
-                            ))}
-                        </tbody>
-                        <tfoot>
-                            <tr className="font-bold text-sm">
-                                <td colSpan={8}></td>
-                                <td>TOTAL</td>
-                                <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
-
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

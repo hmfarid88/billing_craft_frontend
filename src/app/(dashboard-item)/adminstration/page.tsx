@@ -8,28 +8,29 @@ import InvoiceNote from '@/app/components/InvoiceNote'
 import OfficePayEdit from '@/app/components/OfficePayEdit'
 import ProductEdit from '@/app/components/ProductEdit'
 import PurchaseReturn from '@/app/components/PurchaseReturn'
+import SaleInfoEdit from '@/app/components/SaleInfoEdit'
 import SaleReturn from '@/app/components/SaleReturn'
 import ShopInfo from '@/app/components/ShopInfo'
 import SmsSetting from '@/app/components/SmsSetting'
 import SupplierPayEdit from '@/app/components/SupplierPayEdit'
 import UserChange from '@/app/components/UserChange'
 import VatInfo from '@/app/components/VatInfo'
-import { useRouter} from 'next/navigation'
-import React, { useEffect} from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 import { CgEditExposure } from 'react-icons/cg'
 import { FaBalanceScale } from 'react-icons/fa'
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlinePassword } from 'react-icons/md'
+import { MdOutlineEditNote, MdOutlinePassword } from 'react-icons/md'
 import { TbTruckReturn } from 'react-icons/tb'
 import { toast, ToastContainer } from 'react-toastify'
 
 const Page = () => {
 
     const router = useRouter();
-      useEffect(() => {
+    useEffect(() => {
         const isAdmin = localStorage.getItem("adminAccess");
         if (!isAdmin) {
-            router.replace("/dashboard"); 
+            router.replace("/dashboard");
         }
     }, []);
 
@@ -41,23 +42,24 @@ const Page = () => {
         toast.success("Logged out!");
         router.replace("/dashboard");
     };
-    
+
     return (
-        <div className="container min-h-screen">
+        <div className="container min-h-[calc(100vh-228px)]">
             <div className="flex">
                 <button onClick={logout} className="btn btn-error btn-sm btn-ghost btn-outline">Admin Logout</button>
             </div>
-            <div className="flex w-full items-center justify-center">
-                <div className="tabs tabs-bordered w-full p-3 items-center justify-center">
-                    {/* Tab 1: SETTINGS */}
+            {/* <div className="flex items-center justify-center w-full px-1 sm:px-2">
+                <div className="tabs tabs-bordered w-full p-1 sm:p-3">
+                    
                     <input type="radio" id="settings-tab" name="my_tabs_2" className="hidden peer/settings" defaultChecked />
-                    <label htmlFor="settings-tab" className="tab flex items-center gap-2 cursor-pointer">
+                    <label htmlFor="settings-tab" className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4">
                         <IoSettingsOutline size={20} /> SETTINGS
                     </label>
                     <div className="hidden peer-checked/settings:block tab-content bg-base-100 border p-6 rounded-box">
                         <div className="flex flex-col gap-3">
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">SHOP ADDRESS</div>
                                 <div className="collapse-content">
@@ -65,7 +67,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">VAT SETTING</div>
                                 <div className="collapse-content">
@@ -73,7 +75,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">CURRENCY SETTING</div>
                                 <div className="collapse-content">
@@ -81,7 +83,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">INVOICE SETTING</div>
                                 <div className="collapse-content">
@@ -89,7 +91,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">SMS SETTING</div>
                                 <div className="collapse-content">
@@ -97,7 +99,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">DISCOUNT SETTING</div>
                                 <div className="collapse-content">
@@ -107,7 +109,6 @@ const Page = () => {
                         </div>
                     </div>
 
-                    {/* Tab 2: RETURN */}
                     <input type="radio" id="return-tab" name="my_tabs_2" className="hidden peer/return" />
                     <label htmlFor="return-tab" className="tab flex items-center gap-2 cursor-pointer">
                         <TbTruckReturn size={20} /> RETURN
@@ -115,7 +116,7 @@ const Page = () => {
                     <div className="hidden peer-checked/return:block tab-content bg-base-100 border p-6 rounded-box">
                         <div className="flex flex-col gap-3">
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">PURCHASE RETURN</div>
                                 <div className="collapse-content">
@@ -123,7 +124,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">SALE RETURN</div>
                                 <div className="collapse-content">
@@ -131,7 +132,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">PRODUCT EDIT</div>
                                 <div className="collapse-content">
@@ -141,7 +142,6 @@ const Page = () => {
                         </div>
                     </div>
 
-                    {/* Tab 3: BALANCE SHEET */}
                     <input type="radio" id="balance-tab" name="my_tabs_2" className="hidden peer/balance" />
                     <label htmlFor="balance-tab" className="tab flex items-center gap-2 cursor-pointer">
                         <FaBalanceScale size={20} /> BALANCE SHEET
@@ -152,7 +152,6 @@ const Page = () => {
                         </div>
                     </div>
 
-                    {/* Tab 4: PASSWORD */}
                     <input type="radio" id="password-tab" name="my_tabs_2" className="hidden peer/password" />
                     <label htmlFor="password-tab" className="tab flex items-center gap-2 cursor-pointer">
                         <MdOutlinePassword size={20} /> PASSWORD
@@ -160,7 +159,7 @@ const Page = () => {
                     <div className="hidden peer-checked/password:block tab-content bg-base-100 border p-6 rounded-box">
                         <div className="flex flex-col gap-3">
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">ADMIN PASSWORD</div>
                                 <div className="collapse-content">
@@ -168,7 +167,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">USER PASSWORD</div>
                                 <div className="collapse-content">
@@ -184,7 +183,7 @@ const Page = () => {
                     <div className="hidden peer-checked/payment:block tab-content bg-base-100 border p-6 rounded-box">
                         <div className="flex flex-col gap-3">
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">EXPENSE</div>
                                 <div className="collapse-content">
@@ -192,7 +191,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">OFFICE PAYMENT</div>
                                 <div className="collapse-content">
@@ -200,7 +199,7 @@ const Page = () => {
                                 </div>
                             </div>
                             <div className="collapse collapse-arrow bg-base-200">
-                                {/* <input type="radio" name="my-accordion-2" /> */}
+                                <input type="radio" name="my-accordion-2" />
                                 <input type="checkbox" className="peer" />
                                 <div className="collapse-title text-sm font-medium">SUPPLIER PAYMENT</div>
                                 <div className="collapse-content">
@@ -209,6 +208,336 @@ const Page = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div> */}
+
+            <div className="flex items-center justify-center w-full mt-5 px-1 sm:px-2">
+                <div className="tabs tabs-bordered w-full p-1 sm:p-3">
+
+                    {/* ================= SETTINGS ================= */}
+                    <input
+                        type="radio"
+                        id="settings-tab"
+                        name="my_tabs_2"
+                        className="hidden peer/settings"
+                        defaultChecked
+                    />
+
+                    <label
+                        htmlFor="settings-tab"
+                        className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4"
+                    >
+                        <IoSettingsOutline size={18} />
+                        <span>SETTINGS</span>
+                    </label>
+
+                    <div className="hidden peer-checked/settings:block
+                        tab-content bg-base-100 border
+                        p-2 sm:p-4 md:p-6 rounded-box w-full">
+
+                        <div className="flex flex-col gap-2 sm:gap-3">
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    SHOP ADDRESS
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <ShopInfo />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    VAT SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <VatInfo />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    CURRENCY SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <Currency />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    INVOICE SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <InvoiceNote />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    SMS SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <SmsSetting />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    DISCOUNT SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <DiscountHide />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    {/* ================= RETURN ================= */}
+                    <input
+                        type="radio"
+                        id="return-tab"
+                        name="my_tabs_2"
+                        className="hidden peer/return"
+                    />
+
+                    <label
+                        htmlFor="return-tab"
+                        className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4"
+                    >
+                        <MdOutlineEditNote size={24} />
+                        <span>RETURN / EDIT</span>
+                    </label>
+
+                    <div className="hidden peer-checked/return:block
+                        tab-content bg-base-100 border
+                        p-2 sm:p-4 md:p-6 rounded-box w-full">
+
+                        <div className="flex flex-col gap-2 sm:gap-3">
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    PURCHASE RETURN
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <PurchaseReturn />
+                                </div>
+                            </div>
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    PURCHASE EDIT
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <ProductEdit />
+                                </div>
+                            </div>
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    SELL RETURN
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <SaleReturn />
+                                </div>
+                            </div>
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    SELL EDIT
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <SaleInfoEdit />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    {/* ================= BALANCE SHEET ================= */}
+                    <input
+                        type="radio"
+                        id="balance-tab"
+                        name="my_tabs_2"
+                        className="hidden peer/balance"
+                    />
+
+                    <label
+                        htmlFor="balance-tab"
+                        className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4"
+                    >
+                        <FaBalanceScale size={18} />
+                        <span>BALANCE SHEET</span>
+                    </label>
+
+                    <div className="hidden peer-checked/balance:block
+                        tab-content bg-base-100 border
+                        p-2 sm:p-4 md:p-6 rounded-box w-full">
+
+                        <div className="w-full overflow-x-auto">
+                            <BalanceSheet />
+                        </div>
+
+                    </div>
+
+
+                    {/* ================= PASSWORD ================= */}
+                    <input
+                        type="radio"
+                        id="password-tab"
+                        name="my_tabs_2"
+                        className="hidden peer/password"
+                    />
+
+                    <label
+                        htmlFor="password-tab"
+                        className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4"
+                    >
+                        <MdOutlinePassword size={18} />
+                        <span>PASSWORD</span>
+                    </label>
+
+                    <div className="hidden peer-checked/password:block
+                        tab-content bg-base-100 border
+                        p-2 sm:p-4 md:p-6 rounded-box w-full">
+
+                        <div className="flex flex-col gap-2 sm:gap-3">
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    ADMIN PASSWORD
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <AdminChange />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    USER PASSWORD
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <UserChange />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    {/* ================= PAYMENT ================= */}
+                    <input
+                        type="radio"
+                        id="payment-tab"
+                        name="my_tabs_2"
+                        className="hidden peer/payment"
+                    />
+
+                    <label
+                        htmlFor="payment-tab"
+                        className="tab flex items-center gap-1 sm:gap-2 cursor-pointer
+                       text-xs sm:text-sm whitespace-nowrap px-2 sm:px-4"
+                    >
+                        <CgEditExposure size={18} />
+                        <span>PAYMENT</span>
+                    </label>
+
+                    <div className="hidden peer-checked/payment:block
+                        tab-content bg-base-100 border
+                        p-2 sm:p-4 md:p-6 rounded-box w-full">
+
+                        <div className="flex flex-col gap-2 sm:gap-3">
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    EXPENSE
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <ExpenseEdit />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    OFFICE PAYMENT
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <OfficePayEdit />
+                                </div>
+                            </div>
+
+
+                            <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    SUPPLIER PAYMENT
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <SupplierPayEdit />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <ToastContainer autoClose={1000} theme='dark' />

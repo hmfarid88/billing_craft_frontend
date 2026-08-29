@@ -141,60 +141,62 @@ const Page = () => {
                     </label>
                     <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
                 </div>
-                <div className="overflow-x-auto items-center justify-center">
-                    <div ref={contentToPrint} className="flex-1 p-5">
+                <div ref={contentToPrint} className="items-center justify-center w-full">
+                    <div className="flex flex-col p-5 w-full">
                         <div className="flex flex-col items-center justify-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
                             <h4>Supplier: {supplierName}</h4>
                             <CurrentMonthYear />
-                            </div>
-                        <table className="table table-sm whitespace-nowrap">
-                            <thead className="sticky top-16 bg-base-100">
-                                <tr>
-                                    <th>SN</th>
-                                    <th>DATE</th>
-                                    <th>INVOICE NO</th>
-                                    <th>QTY</th>
-                                    <th>PURCHASE VALUE</th>
-                                    <th>RETURNED VALUE</th>
-                                    <th>SALE VALUE</th>
-                                    <th>NOTE</th>
-                                    <th>PAYMENT</th>
-                                    <th>RECEIVE</th>
-                                    <th>BALANCE</th>
+                        </div>
+                        <div className="overflow-x-auto w-full">
+                            <table className="table table-sm whitespace-nowrap min-w-[1000px]">
+                                <thead className="bg-base-100">
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>DATE</th>
+                                        <th>INVOICE NO</th>
+                                        <th>QTY</th>
+                                        <th>PURCHASE VALUE</th>
+                                        <th>RETURNED VALUE</th>
+                                        <th>SALE VALUE</th>
+                                        <th>NOTE</th>
+                                        <th>PAYMENT</th>
+                                        <th>RECEIVE</th>
+                                        <th>BALANCE</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredProducts.length > 0 && (
-                                    <tr className="font-bold bg-base-200">
-                                        <td></td>
-                                        <td></td>
-                                        <td colSpan={8}>Opening Balance</td>
-                                        <td>
-                                            {Number(
-                                                (filteredProducts[0].openingBalance ?? 0).toFixed(2)
-                                            ).toLocaleString('en-IN')}
-                                        </td>
                                     </tr>
-                                )}
+                                </thead>
+                                <tbody>
+                                    {filteredProducts.length > 0 && (
+                                        <tr className="font-bold bg-base-200">
+                                            <td></td>
+                                            <td></td>
+                                            <td colSpan={8}>Opening Balance</td>
+                                            <td>
+                                                {Number(
+                                                    (filteredProducts[0].openingBalance ?? 0).toFixed(2)
+                                                ).toLocaleString('en-IN')}
+                                            </td>
+                                        </tr>
+                                    )}
 
-                                {filteredProducts.map((product, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td className="whitespace-nowrap">{product.date}</td>
-                                        <td className="uppercase">{product.invoice}</td>
-                                        <td>{product.qty}</td>
-                                        <td>{Number((product.pvalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number((product.rvalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number((product.svalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td className="capitalize">{product.note}</td>
-                                        <td>{Number((product.payment ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number((product.receive ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                        <td>{Number((product.runningBalance ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                    {filteredProducts.map((product, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td className="whitespace-nowrap">{product.date}</td>
+                                            <td className="uppercase">{product.invoice}</td>
+                                            <td>{product.qty}</td>
+                                            <td>{Number((product.pvalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td>{Number((product.rvalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td>{Number((product.svalue ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td className="capitalize">{product.note}</td>
+                                            <td>{Number((product.payment ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td>{Number((product.receive ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                            <td>{Number((product.runningBalance ?? 0).toFixed(2)).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 

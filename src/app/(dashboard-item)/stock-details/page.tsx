@@ -103,59 +103,61 @@ const Page = () => {
                 </label>
                 <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
             </div>
-           
-            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center">
+
+            <div ref={contentToPrint} className="flex flex-col p-2 items-center justify-center w-full">
                 <h4 className="font-bold">STOCK DETAILS</h4>
                 <h4 className="pb-5"><CurrentDate /></h4>
-                <div className="flex flex-col items-center">
-                    <div className="flex pb-3 font-bold">
-                       Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
+                <div className="flex flex-col items-center w-full">
+                    <div className="flex flex-wrap pb-3 font-bold">
+                        Total Qty: {Number(totalQty.toFixed(2)).toLocaleString('en-IN')} | Total Value: {Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}
                     </div>
-                    <table className="table table-xs whitespace-nowrap">
-                    <thead className="sticky top-16 bg-base-100">
-                            <tr>
-                                <th>SN</th>
-                                <th>CATEGORY</th>
-                                <th>BRAND</th>
-                                <th>PRODUCT</th>
-                                <th>COLOR</th>
-                                <th>PRODUCT NO</th>
-                                <th>P PRICE</th>
-                                <th>S PRICE</th>
-                                <th>SUPPLIER</th>
-                                <th>S INVOICE</th>
-                                <th>STOCK DATE</th>
-                                <th>STOCK TIME</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredProducts?.map((product, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{product.category}</td>
-                                    <td>{product.brand}</td>
-                                    <td>{product.productName}</td>
-                                    <td>{product.color}</td>
-                                    <td>{product.productno}</td>
-                                    <td>{Number((product?.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
-                                    <td>{Number((product?.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
-                                    <td>{product.supplier}</td>
-                                    <td className="uppercase">{product.supplierInvoice}</td>
-                                    <td className="whitespace-nowrap">{product.date}</td>
-                                    <td>{product.time}</td>
+                    <div className="w-full overflow-x-auto">
+                        <table className="table table-sm whitespace-nowrap min-w-[1000px]">
+                            <thead className="bg-base-100">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>CATEGORY</th>
+                                    <th>BRAND</th>
+                                    <th>PRODUCT</th>
+                                    <th>COLOR</th>
+                                    <th>PRODUCT NO</th>
+                                    <th>P PRICE</th>
+                                    <th>S PRICE</th>
+                                    <th>SUPPLIER</th>
+                                    <th>S INVOICE</th>
+                                    <th>STOCK DATE</th>
+                                    <th>STOCK TIME</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                        <tfoot>
-                            <tr className="font-bold text-sm">
-                                <td colSpan={4}></td>
-                                <td>TOTAL</td>
-                                <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                                <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filteredProducts?.map((product, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{product.category}</td>
+                                        <td>{product.brand}</td>
+                                        <td>{product.productName}</td>
+                                        <td>{product.color}</td>
+                                        <td>{product.productno}</td>
+                                        <td>{Number((product?.pprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                        <td>{Number((product?.sprice).toFixed(2)).toLocaleString('en-IN')}</td>
+                                        <td>{product.supplier}</td>
+                                        <td className="uppercase">{product.supplierInvoice}</td>
+                                        <td className="whitespace-nowrap">{product.date}</td>
+                                        <td>{product.time}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            <tfoot>
+                                <tr className="font-bold text-sm">
+                                    <td colSpan={4}></td>
+                                    <td>TOTAL</td>
+                                    <td>{Number(totalQty.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalPprice.toFixed(2)).toLocaleString('en-IN')}</td>
+                                    <td>{Number(totalSprice.toFixed(2)).toLocaleString('en-IN')}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

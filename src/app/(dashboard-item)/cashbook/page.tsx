@@ -81,115 +81,321 @@ const Page = () => {
   };
 
   return (
-    <div className='container min-h-screen'>
-      <div className="flex justify-between pl-5 pr-5">
-        <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
+    // <div className='container min-h-screen'>
+    //   <div className="flex justify-between pl-5 pr-5">
+    //     <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
+    //   </div>
+    //   <div className="w-full card">
+    //     <div ref={contentToPrint} className="flex flex-col w-full items-center justify-center pt-5 pb-5">
+    //       <div className="flex flex-col items-center justify-center">
+    //         <h4 className='font-bold'>CASH BOOK</h4>
+    //         <h4 className='font-semibold'>{date}</h4>
+    //       </div>
+    //       <div className="overflow-x-auto">
+    //         <div className="flex w-full items-center justify-between text-sm font-semibold p-5">
+    //           <h4>DEBIT</h4>
+    //           <h4>CREDIT</h4>
+    //         </div>
+    //         <div className="flex w-full gap-10">
+    //           <div className="flex">
+    //             <table className="table table-sm">
+    //               <thead>
+    //                 <tr>
+    //                   <th>DATE</th>
+    //                   <th>DESCRIPTION</th>
+    //                   <th>AMOUNT</th>
+    //                 </tr>
+    //               </thead>
+    //               <tbody>
+    //                 <tr>
+    //                   <td>{date}</td>
+    //                   <td>BALANCE B/D</td>
+    //                   <td>{(netSumAmount ?? 0).toLocaleString('en-IN')}</td>
+    //                 </tr>
+    //                 {saledata?.map((sold, index) => (
+    //                   <tr key={index}>
+    //                     <td>{sold.date}</td>
+    //                     <td className='uppercase'>{sold.invoice}</td>
+    //                     <td>{(sold.value).toLocaleString('en-IN')}</td>
+    //                   </tr>
+    //                 ))}
+    //                 {receives?.map((receive, index) => (
+    //                   <tr key={index}>
+    //                     <td>{receive.date}</td>
+    //                     <td className='capitalize'>{receive.name}({receive.note})</td>
+    //                     <td>{(receive.amount ?? 0).toLocaleString('en-IN')}</td>
+    //                   </tr>
+    //                 ))}
+
+    //                 <tr className='text-sm font-bold'>
+    //                   <td colSpan={1}></td>
+    //                   <td>TOTAL</td>
+    //                   <td>{(totalDebit() + totalSale() + netSumAmount).toLocaleString('en-IN')}</td>
+    //                 </tr>
+
+    //               </tbody>
+    //               <tfoot>
+    //                 <tr className='text-sm font-bold'>
+    //                   <td></td>
+    //                   <td>BALANCE B/D</td>
+    //                   <td>{Number((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+    //                 </tr>
+    //               </tfoot>
+    //             </table>
+    //           </div>
+    //           <div>
+    //             <table className="table table-sm">
+    //               <thead>
+    //                 <tr>
+    //                   <th>DATE</th>
+    //                   <th>DESCRIPTION</th>
+    //                   <th>AMOUNT</th>
+    //                 </tr>
+    //               </thead>
+    //               <tbody>
+    //                 {payments.map((payment, index) => (
+    //                   <tr key={index}>
+    //                     <td>{payment.date}</td>
+    //                     <td className='capitalize'>{payment.name}({payment.note})</td>
+    //                     <td>{(payment.amount ?? 0).toLocaleString('en-IN')}</td>
+    //                   </tr>
+    //                 ))}
+    //                 <tr className='font-semibold'>
+    //                   <td>{date}</td>
+    //                   <td className='text-sm'>TOTAL CREDIT</td>
+    //                   <td>{Number(totalCredit()).toLocaleString('en-IN')}</td>
+    //                 </tr>
+    //                 <tr className='font-semibold'>
+    //                   <td>{date}</td>
+    //                   <td className='text-sm'>BALANCE C/D</td>
+    //                   <td>{((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+    //                 </tr>
+    //                 <tr className='text-sm font-bold'>
+    //                   <td colSpan={1}></td>
+    //                   <td>TOTAL</td>
+    //                   <td>{(totalCredit() + ((totalDebit() + totalSale() + netSumAmount) - (totalCredit()))).toLocaleString('en-IN')}</td>
+    //                 </tr>
+    //               </tbody>
+    //               <tfoot>
+    //                 <tr>
+    //                   <td></td>
+    //                   <td></td>
+    //                   <td></td>
+    //                 </tr>
+    //               </tfoot>
+    //             </table>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+
+    <div className="container mx-auto min-h-[calc(100vh-228px)] px-2 sm:px-4">
+  {/* Print button */}
+  <div className="flex justify-between px-2 sm:px-5 py-2">
+    <button
+      onClick={handlePrint}
+      className="btn btn-ghost btn-square"
+    >
+      <FcPrint size={36} />
+    </button>
+  </div>
+
+  <div className="w-full card bg-base-100">
+    <div
+      ref={contentToPrint}
+      className="flex flex-col w-full items-center justify-center pt-5 pb-5"
+    >
+      {/* Header */}
+      <div className="flex flex-col items-center justify-center mb-5">
+        <h4 className="font-bold text-lg">CASH BOOK</h4>
+        <h4 className="font-semibold">{date}</h4>
       </div>
-      <div className="w-full card">
-        <div ref={contentToPrint} className="flex flex-col w-full items-center justify-center pt-5 pb-5">
-          <div className="flex flex-col items-center justify-center">
-            <h4 className='font-bold'>CASH BOOK</h4>
-            <h4 className='font-semibold'>{date}</h4>
-          </div>
-          <div className="overflow-x-auto">
-            <div className="flex w-full items-center justify-between text-sm font-semibold p-5">
-              <h4>DEBIT</h4>
-              <h4>CREDIT</h4>
-            </div>
-            <div className="flex w-full gap-10">
-              <div className="flex">
-                <table className="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>DATE</th>
-                      <th>DESCRIPTION</th>
-                      <th>AMOUNT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{date}</td>
-                      <td>BALANCE B/D</td>
-                      <td>{(netSumAmount ?? 0).toLocaleString('en-IN')}</td>
-                    </tr>
-                    {saledata?.map((sold, index) => (
-                      <tr key={index}>
-                        <td>{sold.date}</td>
-                        <td className='uppercase'>{sold.invoice}</td>
-                        <td>{(sold.value).toLocaleString('en-IN')}</td>
-                      </tr>
-                    ))}
-                    {receives?.map((receive, index) => (
-                      <tr key={index}>
-                        <td>{receive.date}</td>
-                        <td className='capitalize'>{receive.name}({receive.note})</td>
-                        <td>{(receive.amount ?? 0).toLocaleString('en-IN')}</td>
-                      </tr>
-                    ))}
 
-                    <tr className='text-sm font-bold'>
-                      <td colSpan={1}></td>
-                      <td>TOTAL</td>
-                      <td>{(totalDebit() + totalSale() + netSumAmount).toLocaleString('en-IN')}</td>
-                    </tr>
+      {/* Debit / Credit */}
+      <div className="w-full px-2 sm:px-4 lg:px-6">
 
-                  </tbody>
-                  <tfoot>
-                    <tr className='text-sm font-bold'>
-                      <td></td>
-                      <td>BALANCE B/D</td>
-                      <td>{Number((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
+        {/* Labels */}
+        <div className="hidden md:flex w-full items-center justify-between text-sm font-semibold px-2 pb-2">
+          <h4 className="w-1/2 text-center">DEBIT</h4>
+          <h4 className="w-1/2 text-center">CREDIT</h4>
+        </div>
+
+        {/* Tables container */}
+        <div className="flex flex-col md:flex-row w-full gap-6 lg:gap-10">
+
+          {/* ================= DEBIT ================= */}
+          <div className="w-full md:w-1/2 min-w-0">
+
+            {/* Mobile title */}
+            <h4 className="md:hidden text-center font-bold text-sm mb-2">
+              DEBIT
+            </h4>
+
+            <div className="w-full overflow-x-auto">
+              <table className="table table-sm w-full">
+                <thead>
+                  <tr>
+                    <th>DATE</th>
+                    <th>DESCRIPTION</th>
+                    <th>AMOUNT</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>{date}</td>
+                    <td>BALANCE B/D</td>
+                    <td>
+                      {(netSumAmount ?? 0).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+
+                  {saledata?.map((sold, index) => (
+                    <tr key={index}>
+                      <td>{sold.date}</td>
+                      <td className="uppercase">
+                        {sold.invoice}
+                      </td>
+                      <td>
+                        {sold.value.toLocaleString("en-IN")}
+                      </td>
                     </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <div>
-                <table className="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>DATE</th>
-                      <th>DESCRIPTION</th>
-                      <th>AMOUNT</th>
+                  ))}
+
+                  {receives?.map((receive, index) => (
+                    <tr key={index}>
+                      <td>{receive.date}</td>
+                      <td className="capitalize">
+                        {receive.name}({receive.note})
+                      </td>
+                      <td>
+                        {(receive.amount ?? 0).toLocaleString("en-IN")}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {payments.map((payment, index) => (
-                      <tr key={index}>
-                        <td>{payment.date}</td>
-                        <td className='capitalize'>{payment.name}({payment.note})</td>
-                        <td>{(payment.amount ?? 0).toLocaleString('en-IN')}</td>
-                      </tr>
-                    ))}
-                    <tr className='font-semibold'>
-                      <td>{date}</td>
-                      <td className='text-sm'>TOTAL CREDIT</td>
-                      <td>{Number(totalCredit()).toLocaleString('en-IN')}</td>
-                    </tr>
-                    <tr className='font-semibold'>
-                      <td>{date}</td>
-                      <td className='text-sm'>BALANCE C/D</td>
-                      <td>{((totalDebit() + totalSale() + netSumAmount) - (totalCredit())).toLocaleString('en-IN')}</td>
-                    </tr>
-                    <tr className='text-sm font-bold'>
-                      <td colSpan={1}></td>
-                      <td>TOTAL</td>
-                      <td>{(totalCredit() + ((totalDebit() + totalSale() + netSumAmount) - (totalCredit()))).toLocaleString('en-IN')}</td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+                  ))}
+
+                  <tr className="text-sm font-bold">
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td>
+                      {(
+                        totalDebit() +
+                        totalSale() +
+                        netSumAmount
+                      ).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+                </tbody>
+
+                <tfoot>
+                  <tr className="text-sm font-bold">
+                    <td></td>
+                    <td>BALANCE B/D</td>
+                    <td>
+                      {Number(
+                        totalDebit() +
+                        totalSale() +
+                        netSumAmount -
+                        totalCredit()
+                      ).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </div>
+
+          {/* ================= CREDIT ================= */}
+          <div className="w-full md:w-1/2 min-w-0">
+
+            {/* Mobile title */}
+            <h4 className="md:hidden text-center font-bold text-sm mb-2">
+              CREDIT
+            </h4>
+
+            <div className="w-full overflow-x-auto">
+              <table className="table table-sm w-full">
+                <thead>
+                  <tr>
+                    <th>DATE</th>
+                    <th>DESCRIPTION</th>
+                    <th>AMOUNT</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {payments.map((payment, index) => (
+                    <tr key={index}>
+                      <td>{payment.date}</td>
+                      <td className="capitalize">
+                        {payment.name}({payment.note})
+                      </td>
+                      <td>
+                        {(payment.amount ?? 0).toLocaleString("en-IN")}
+                      </td>
+                    </tr>
+                  ))}
+
+                  <tr className="font-semibold">
+                    <td>{date}</td>
+                    <td className="text-sm">
+                      TOTAL CREDIT
+                    </td>
+                    <td>
+                      {Number(totalCredit()).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+
+                  <tr className="font-semibold">
+                    <td>{date}</td>
+                    <td className="text-sm">
+                      BALANCE C/D
+                    </td>
+                    <td>
+                      {(
+                        totalDebit() +
+                        totalSale() +
+                        netSumAmount -
+                        totalCredit()
+                      ).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+
+                  <tr className="text-sm font-bold">
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td>
+                      {(
+                        totalCredit() +
+                        (
+                          totalDebit() +
+                          totalSale() +
+                          netSumAmount -
+                          totalCredit()
+                        )
+                      ).toLocaleString("en-IN")}
+                    </td>
+                  </tr>
+                </tbody>
+
+                <tfoot>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+  </div>
+</div>
   )
 }
 

@@ -97,13 +97,14 @@ const Page = () => {
                     </label>
                     <button onClick={handlePrint} className='btn btn-ghost btn-square'><FcPrint size={36} /></button>
                 </div>
-                <div className="overflow-x-auto items-center justify-center">
-                    <div ref={contentToPrint} className="flex-1 p-5">
-                        <div className="flex flex-col items-center justify-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
-                            <h4>Supplier: {supplierName}</h4>
-                            {startDate} TO {endDate}</div>
-                        <table className="table table-sm whitespace-nowrap">
-                            <thead className="sticky top-16 bg-base-100">
+                <div ref={contentToPrint} className="items-center justify-center w-full">
+
+                    <div className="flex flex-col items-center justify-center pb-5"><h4 className="font-bold">DETAILS SUPPLIER</h4>
+                        <h4>Supplier: {supplierName}</h4>
+                        {startDate} TO {endDate}</div>
+                    <div className="overflow-x-auto w-full">
+                        <table className="table table-sm whitespace-nowrap min-w-[1000px]">
+                            <thead className="bg-base-100">
                                 <tr>
                                     <th>SN</th>
                                     <th>DATE</th>
