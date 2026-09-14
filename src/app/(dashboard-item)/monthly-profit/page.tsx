@@ -74,6 +74,42 @@ const Page = () => {
     const [soldProducts, setSoldProducts] = useState<Product[]>([]);
     const [filterCriteria, setFilterCriteria] = useState('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+    const [currentPercent, setCurrentPercent] = useState<number>(100);
+
+    useEffect(() => {
+        const fetchCurrentPercent = async () => {
+            try {
+                const response = await fetch(
+                    `${apiBaseUrl}/api/getDataPercent?username=${encodeURIComponent(username)}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch current percentage");
+                }
+
+                const data = await response.json();
+                if (data === null || data === undefined || data === "") {
+                    setCurrentPercent(100);
+                } else if (typeof data === "object" && data !== null) {
+                    setCurrentPercent(
+                        data.percent !== null && data.percent !== undefined
+                            ? Number(data.percent)
+                            : 100
+                    );
+                } else {
+                    setCurrentPercent(Number(data) || 100);
+                }
+            } catch (error: any) {
+                console.error(error);
+            }
+        };
+
+        if (username && username !== "Guest") {
+            fetchCurrentPercent();
+        }
+    }, [apiBaseUrl, username]);
+
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getSelectedProfitSale?username=${username}&year=${year}&month=${month}`)
             .then(response => response.json())
@@ -85,18 +121,35 @@ const Page = () => {
     }, [apiBaseUrl, username, year, month]);
 
     useEffect(() => {
-        const searchWords = filterCriteria.toLowerCase().split(" ");
-      
-        const filtered = soldProducts.filter(product =>
-          searchWords.every(word =>
-            (product.category?.toLowerCase().includes(word) || '') ||
-            (product.brand?.toLowerCase().includes(word) || '') ||
-            (product.productName?.toLowerCase().includes(word) || '')
-          )
+        if (!soldProducts.length) {
+            setDisplayedProducts([]);
+            return;
+        }
+
+        const percentage = Math.max(0, Math.min(100, currentPercent));
+
+        const count = Math.ceil(
+            (soldProducts.length * percentage) / 100
         );
-      
+
+        // Randomly select sales according to percentage
+        const shuffled = [...soldProducts].sort(() => Math.random() - 0.5);
+
+        setDisplayedProducts(shuffled.slice(0, count));
+    }, [soldProducts, currentPercent]);
+
+    useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+        const filtered = displayedProducts.filter(product =>
+            searchWords.every(word =>
+                (product.category?.toLowerCase().includes(word) || '') ||
+                (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.productName?.toLowerCase().includes(word) || '')
+            )
+        );
+
         setFilteredProducts(filtered);
-      }, [filterCriteria, soldProducts]);
+    }, [filterCriteria, displayedProducts]);
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -117,6 +170,7 @@ const Page = () => {
     const totalQty = filteredProducts.reduce((total, product) => {
         return total + product.qty;
     }, 0);
+    
     return (
         <div className="container-2xl min-h-[calc(100vh-228px)]">
 

@@ -2,6 +2,7 @@
 import AdminChange from '@/app/components/AdminChange'
 import BalanceSheet from '@/app/components/BalanceSheet'
 import Currency from '@/app/components/Currency'
+import DataShow from '@/app/components/DataShow'
 import DiscountHide from '@/app/components/DiscountHide'
 import ExpenseEdit from '@/app/components/ExpenseEdit'
 import InvoiceNote from '@/app/components/InvoiceNote'
@@ -312,6 +313,18 @@ const Page = () => {
 
                                 <div className="collapse-content px-2 sm:px-4">
                                     <DiscountHide />
+                                </div>
+                            </div>
+
+                             <div className="collapse collapse-arrow bg-base-200">
+                                <input type="checkbox" className="peer" />
+
+                                <div className="collapse-title text-xs sm:text-sm font-medium px-4 sm:px-6">
+                                    DATA SETTING
+                                </div>
+
+                                <div className="collapse-content px-2 sm:px-4">
+                                    <DataShow />
                                 </div>
                             </div>
 
