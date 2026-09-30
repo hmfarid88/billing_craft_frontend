@@ -88,7 +88,7 @@ const Page = () => {
     const findInvoice = (cid: string) => {
         router.push(`/invoice?cid=${cid}`);
     };
-    
+
     useEffect(() => {
         if (!soldProducts.length) {
             setDisplayedProducts([]);
@@ -181,7 +181,7 @@ const Page = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProducts?.map((product, index) => (
+                            {/* {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                     <th>{index + 1}</th>
                                     <td className="whitespace-nowrap">{product.date}</td>
@@ -196,7 +196,40 @@ const Page = () => {
                                     <td>{product.offer}</td>
                                     <td>{product.sprice - product.discount - product.offer}</td>
                                 </tr>
-                            ))}
+                            ))} */}
+
+                            {[...(filteredProducts ?? [])]
+                                .sort((a, b) => {
+                                    const dateA = new Date(`${a.date}T${a.time}`).getTime();
+                                    const dateB = new Date(`${b.date}T${b.time}`).getTime();
+
+                                    return dateA - dateB;
+                                })
+                                .map((product, index) => (
+                                    <tr key={index}>
+                                        <th>{index + 1}</th>
+                                        <td className="whitespace-nowrap">{product.date}</td>
+                                        <td>{product.time}</td>
+                                        <td className="uppercase">
+                                            <button onClick={() => findInvoice(product.cid)}
+                                                className="btn btn-link uppercase">
+                                                {product.cid}
+                                            </button>
+                                        </td>
+                                        <td className="capitalize">
+                                            {product.cname}, {product.phoneNumber} {product.address}
+                                        </td>
+                                        <td className="capitalize">{product.soldby}</td>
+                                        <td className="capitalize">
+                                            {product.category}, {product.brand}, {product.productName}
+                                        </td>
+                                        <td>{product.productno}</td>
+                                        <td>{product.sprice}</td>
+                                        <td>{product.discount}</td>
+                                        <td>{product.offer}</td>
+                                        <td>{product.sprice - product.discount - product.offer}</td>
+                                    </tr>
+                                ))}
                         </tbody>
                         <tfoot>
                             <tr className="font-bold text-sm">

@@ -28,7 +28,7 @@ const Page = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const uname = useAppSelector((state) => state.username.username);
     const username = uname ? uname.username : 'Guest';
-    const router=useRouter();
+    const router = useRouter();
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
         content: () => contentToPrint.current,
@@ -40,37 +40,37 @@ const Page = () => {
     const [currentPercent, setCurrentPercent] = useState<number>(100);
 
     useEffect(() => {
-            const fetchCurrentPercent = async () => {
-                try {
-                    const response = await fetch(
-                        `${apiBaseUrl}/api/getDataPercent?username=${encodeURIComponent(username)}`
-                    );
-    
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch current percentage");
-                    }
-    
-                    const data = await response.json();
-                    if (data === null || data === undefined || data === "") {
-                        setCurrentPercent(100);
-                    } else if (typeof data === "object" && data !== null) {
-                        setCurrentPercent(
-                            data.percent !== null && data.percent !== undefined
-                                ? Number(data.percent)
-                                : 100
-                        );
-                    } else {
-                        setCurrentPercent(Number(data) || 100);
-                    }
-                } catch (error: any) {
-                    console.error(error);
+        const fetchCurrentPercent = async () => {
+            try {
+                const response = await fetch(
+                    `${apiBaseUrl}/api/getDataPercent?username=${encodeURIComponent(username)}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch current percentage");
                 }
-            };
-    
-            if (username && username !== "Guest") {
-                fetchCurrentPercent();
+
+                const data = await response.json();
+                if (data === null || data === undefined || data === "") {
+                    setCurrentPercent(100);
+                } else if (typeof data === "object" && data !== null) {
+                    setCurrentPercent(
+                        data.percent !== null && data.percent !== undefined
+                            ? Number(data.percent)
+                            : 100
+                    );
+                } else {
+                    setCurrentPercent(Number(data) || 100);
+                }
+            } catch (error: any) {
+                console.error(error);
             }
-        }, [apiBaseUrl, username]);
+        };
+
+        if (username && username !== "Guest") {
+            fetchCurrentPercent();
+        }
+    }, [apiBaseUrl, username]);
 
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/getMonthlyProductSale?username=${encodeURIComponent(username)}`)
@@ -83,47 +83,47 @@ const Page = () => {
     }, [apiBaseUrl, username]);
 
     const findInvoice = (cid: string) => {
-    router.push(`/invoice?cid=${cid}`);
-  };
+        router.push(`/invoice?cid=${cid}`);
+    };
 
-  useEffect(() => {
-    if (!soldProducts.length) {
-        setDisplayedProducts([]);
-        return;
-    }
+    useEffect(() => {
+        if (!soldProducts.length) {
+            setDisplayedProducts([]);
+            return;
+        }
 
-    const percentage = Math.max(0, Math.min(100, currentPercent));
+        const percentage = Math.max(0, Math.min(100, currentPercent));
 
-    const count = Math.ceil(
-        (soldProducts.length * percentage) / 100
-    );
+        const count = Math.ceil(
+            (soldProducts.length * percentage) / 100
+        );
 
-    // Randomly select sales according to percentage
-    const shuffled = [...soldProducts].sort(() => Math.random() - 0.5);
+        // Randomly select sales according to percentage
+        const shuffled = [...soldProducts].sort(() => Math.random() - 0.5);
 
-    setDisplayedProducts(shuffled.slice(0, count));
-}, [soldProducts, currentPercent]);
+        setDisplayedProducts(shuffled.slice(0, count));
+    }, [soldProducts, currentPercent]);
 
-       useEffect(() => {
-                  const searchWords = filterCriteria.toLowerCase().split(" ");
-                  const filtered = displayedProducts.filter(product =>
-                    searchWords.every(word =>
-                      (product.category?.toLowerCase().includes(word) || '') ||
-                      (product.brand?.toLowerCase().includes(word) || '') ||
-                      (product.cid?.toLowerCase().includes(word) || '') ||
-                      (product.date?.toLowerCase().includes(word) || '') ||
-                      (product.color?.toLowerCase().includes(word) || '') ||
-                      (product.productno?.toLowerCase().includes(word) || '') ||
-                      (product.cname?.toLowerCase().includes(word) || '') ||
-                      (product.soldby?.toLowerCase().includes(word) || '') ||
-                      (product.phoneNumber?.toLowerCase().includes(word) || '') ||
-                      (product.productName?.toLowerCase().includes(word) || '')
-                    )
-                  );
-                
-                  setFilteredProducts(filtered);
-                }, [filterCriteria, displayedProducts]);
-   
+    useEffect(() => {
+        const searchWords = filterCriteria.toLowerCase().split(" ");
+        const filtered = displayedProducts.filter(product =>
+            searchWords.every(word =>
+                (product.category?.toLowerCase().includes(word) || '') ||
+                (product.brand?.toLowerCase().includes(word) || '') ||
+                (product.cid?.toLowerCase().includes(word) || '') ||
+                (product.date?.toLowerCase().includes(word) || '') ||
+                (product.color?.toLowerCase().includes(word) || '') ||
+                (product.productno?.toLowerCase().includes(word) || '') ||
+                (product.cname?.toLowerCase().includes(word) || '') ||
+                (product.soldby?.toLowerCase().includes(word) || '') ||
+                (product.phoneNumber?.toLowerCase().includes(word) || '') ||
+                (product.productName?.toLowerCase().includes(word) || '')
+            )
+        );
+
+        setFilteredProducts(filtered);
+    }, [filterCriteria, displayedProducts]);
+
 
     const handleFilterChange = (e: any) => {
         setFilterCriteria(e.target.value);
@@ -177,7 +177,7 @@ const Page = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProducts?.map((product, index) => (
+                            {/* {filteredProducts?.map((product, index) => (
                                 <tr key={index}>
                                     <th>{index + 1}</th>
                                     <td className="whitespace-nowrap">{product.date}</td>
@@ -192,7 +192,40 @@ const Page = () => {
                                     <td>{product.offer}</td>
                                     <td>{product.sprice - product.discount - product.offer}</td>
                                 </tr>
-                            ))}
+                            ))} */}
+
+                            {[...(filteredProducts ?? [])]
+                                .sort((a, b) => {
+                                    const dateA = new Date(`${a.date}T${a.time}`).getTime();
+                                    const dateB = new Date(`${b.date}T${b.time}`).getTime();
+
+                                    return dateA - dateB;
+                                })
+                                .map((product, index) => (
+                                    <tr key={index}>
+                                        <th>{index + 1}</th>
+                                        <td className="whitespace-nowrap">{product.date}</td>
+                                        <td>{product.time}</td>
+                                        <td className="uppercase">
+                                            <button onClick={() => findInvoice(product.cid)}
+                                                className="btn btn-link uppercase">
+                                                {product.cid}
+                                            </button>
+                                        </td>
+                                        <td className="capitalize">
+                                            {product.cname}, {product.phoneNumber} {product.address}
+                                        </td>
+                                        <td className="capitalize">{product.soldby}</td>
+                                        <td className="capitalize">
+                                            {product.category}, {product.brand}, {product.productName}
+                                        </td>
+                                        <td>{product.productno}</td>
+                                        <td>{product.sprice}</td>
+                                        <td>{product.discount}</td>
+                                        <td>{product.offer}</td>
+                                        <td>{product.sprice - product.discount - product.offer}</td>
+                                    </tr>
+                                ))}
                         </tbody>
                         <tfoot>
                             <tr className="font-bold text-sm">
