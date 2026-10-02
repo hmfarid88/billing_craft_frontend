@@ -101,10 +101,10 @@ const Page = () => {
             (soldProducts.length * percentage) / 100
         );
 
-        // Randomly select sales according to percentage
-        const shuffled = [...soldProducts].sort(() => Math.random() - 0.5);
+        // // Randomly select sales according to percentage
+        // const shuffled = [...soldProducts].sort(() => Math.random() - 0.5);
 
-        setDisplayedProducts(shuffled.slice(0, count));
+        setDisplayedProducts(soldProducts.slice(0, count));
     }, [soldProducts, currentPercent]);
 
     useEffect(() => {
